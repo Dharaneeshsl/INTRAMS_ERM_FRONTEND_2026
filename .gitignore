@@ -27,7 +27,7 @@ dist-ssr/
 Thumbs.db
 
 # Environment variables
-.env
+.env.*
 .env.local
 .env.*.local
 
