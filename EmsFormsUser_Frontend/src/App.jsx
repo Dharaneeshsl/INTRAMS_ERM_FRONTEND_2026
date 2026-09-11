@@ -8,6 +8,8 @@ import EventDetails from './components/EventDetails';
 import CreateEventLayout from './components/CreateEventLayout';
 import UpdateEventController from './components/UpdateEventController';
 
+import NotFound from './components/NotFound';
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
@@ -67,7 +69,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path="/404" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

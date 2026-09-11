@@ -21,19 +21,19 @@ function StepProgress({ currentStep, totalSteps = 5 }) {
             <React.Fragment key={step.number}>
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all shadow-md ${
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all shadow-lg ${
                     isCompleted
-                      ? 'bg-green-500 text-white'
+                      ? 'bg-emerald-500 text-white'
                       : isCurrent
-                      ? 'bg-gradient-to-r from-accent-orange to-accent-yellow text-white ring-4 ring-orange-200'
-                      : 'bg-gray-200 text-gray-500'
+                      ? 'bg-white text-black ring-4 ring-zinc-700'
+                      : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
                   {isCompleted ? <Check className="w-5 h-5" /> : step.number}
                 </div>
                 <span
                   className={`text-xs font-medium mt-2 hidden sm:block ${
-                    isCurrent ? 'text-accent-orange font-bold' : isCompleted ? 'text-green-600' : 'text-gray-400'
+                    isCurrent ? 'text-white font-bold' : isCompleted ? 'text-emerald-400' : 'text-zinc-500'
                   }`}
                 >
                   {step.label}
@@ -43,7 +43,7 @@ function StepProgress({ currentStep, totalSteps = 5 }) {
               {idx < steps.length - 1 && (
                 <div
                   className={`flex-1 h-1 mx-2 rounded-full transition-all ${
-                    currentStep > step.number ? 'bg-green-500' : 'bg-gray-200'
+                    currentStep > step.number ? 'bg-emerald-500' : 'bg-zinc-800'
                   }`}
                 />
               )}
