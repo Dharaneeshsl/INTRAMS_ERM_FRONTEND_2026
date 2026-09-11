@@ -15,7 +15,6 @@ import GrantEventItems from './components/grantEventItems';
 import GrantLogs from './components/grantLogs';
 import EditAccess from './components/editaccess';
 import RolePdf from './components/rolePdf';
-import Logs from './components/Logs';
 
 function AppRoutes() {
   return (
@@ -109,14 +108,6 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['admin', 'member']}>
             <RolePdf />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/logs"
-        element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <Logs />
           </ProtectedRoute>
         }
       />

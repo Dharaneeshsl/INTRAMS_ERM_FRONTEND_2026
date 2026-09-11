@@ -65,7 +65,6 @@ export default function Layout({ children }) {
     { to: '/grant-logs',  icon: History,     label: 'Past Grants'  },
     { to: '/edit-access', icon: ShieldCheck, label: 'Edit Access'  },
     { to: '/role-pdf',    icon: Users,       label: 'Role PDFs'    },
-    { to: '/logs',        icon: FileText,    label: 'Server Logs'  },
   ];
 
   const memberItems = [
