@@ -17,6 +17,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.clear();
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const adminAPI = {
   login: (credentials) => api.post('/admin/login', credentials),
   forgotPassword: (email) => api.post('/admin/forgot-password', { email }),
@@ -30,6 +43,7 @@ export const adminAPI = {
 
   // Events & Access
   getEvents: () => api.get('/admin/events'),
+  updateEventStatus: (id, status, reason) => api.put(`/admin/events/${id}/status`, { status, reason }),
   getRequestedEvents: () => api.get('/admin/edit-requests'),
   giveEditAccess: (requestId, decision) => api.post(`/admin/edit-requests/${requestId}`, { decision }),
   deleteEvent: (id) => api.delete(`/admin/events/${id}`),

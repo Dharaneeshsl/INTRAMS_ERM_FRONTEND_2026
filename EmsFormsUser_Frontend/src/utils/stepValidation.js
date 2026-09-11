@@ -37,8 +37,25 @@ export const validateStep = (step, formData) => {
     }
 
     case 5: {
-      // Items / Equipment (optional or standard)
-      return { isValid: true, errors: {} };
+      // Items / Equipment validation (if items are requested)
+      const errors = {};
+      if (Array.isArray(formData.items) && formData.items.length > 0) {
+        const itemNames = new Set();
+        formData.items.forEach((item, idx) => {
+          if (!item.item_name?.trim()) {
+            errors[`item_${idx}_name`] = `Item ${idx + 1}: Select an item name`;
+          } else {
+            if (itemNames.has(item.item_name.trim().toLowerCase())) {
+              errors[`item_${idx}_duplicate`] = `Item ${idx + 1}: Duplicate item selected`;
+            }
+            itemNames.add(item.item_name.trim().toLowerCase());
+          }
+          if (item.quantity === undefined || item.quantity === null || Number(item.quantity) <= 0) {
+            errors[`item_${idx}_quantity`] = `Item ${idx + 1}: Quantity must be greater than 0`;
+          }
+        });
+      }
+      return { isValid: Object.keys(errors).length === 0, errors };
     }
 
     default:

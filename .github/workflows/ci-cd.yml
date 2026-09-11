@@ -60,3 +60,35 @@ jobs:
 
       - name: Build Admin Frontend
         run: npm run build
+
+  backend-ci:
+    name: Build & Test Backend API
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+
+    working-directory: ../INTRAMS_ERM_BACKEND_2026/INTRAMS_ERM_BACKEND_2026
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Backend Dependencies
+        run: npm ci
+        working-directory: ../INTRAMS_ERM_BACKEND_2026/INTRAMS_ERM_BACKEND_2026
+
+      - name: Run Backend Tests
+        run: npm test
+        working-directory: ../INTRAMS_ERM_BACKEND_2026/INTRAMS_ERM_BACKEND_2026
+        env:
+          MONGODB_URI: mongodb://localhost:27017/intrams_erm_ci_test
+          JWT_SECRET: test_jwt_secret_32bytes_key_for_ci
+          JWT_REFRESH_SECRET: test_jwt_refresh_secret_32bytes_key_ci

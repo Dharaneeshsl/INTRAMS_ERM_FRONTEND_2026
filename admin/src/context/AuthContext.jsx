@@ -28,26 +28,15 @@ export const AuthProvider = ({ children }) => {
       const res = await adminAPI.login({ username, password });
       const data = res.data;
       if (data.token) {
-        const userData = data.user || { username, role: data.role || 'admin' };
+        const userData = data.user || data.admin || { username, role: data.role || 'admin' };
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('role', userData.role);
+        localStorage.setItem('role', userData.role || 'admin');
         setUser(userData);
         return { success: true };
       }
       return { success: false, error: data.message || 'Login failed' };
     } catch (err) {
-      if (
-        (username.toLowerCase() === 'admin' || username.toLowerCase() === 'admin@psgtech.ac.in') &&
-        password === 'password123'
-      ) {
-        const demoAdmin = { username: 'Admin', role: 'admin', email: 'admin@psgtech.ac.in' };
-        localStorage.setItem('token', 'demo-admin-token-2026');
-        localStorage.setItem('user', JSON.stringify(demoAdmin));
-        localStorage.setItem('role', 'admin');
-        setUser(demoAdmin);
-        return { success: true };
-      }
       return {
         success: false,
         error: err.response?.data?.message || err.message || 'Server error',

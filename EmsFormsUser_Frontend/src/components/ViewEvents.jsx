@@ -67,11 +67,22 @@ function ViewEvents() {
     }
   };
 
-  const handleRequestEditAccess = async (eventId) => {
-    setRequestingId(eventId);
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [editModalEvent, setEditModalEvent] = useState(null);
+  const [editReason, setEditReason] = useState('');
+
+  const openEditModal = (ev) => {
+    setEditModalEvent(ev);
+    setEditReason('');
+  };
+
+  const handleRequestEditAccess = async () => {
+    if (!editModalEvent) return;
+    setRequestingId(editModalEvent._id);
     try {
-      await userAPI.requestEditAccess(eventId);
+      await userAPI.requestEditAccess(editModalEvent._id, editReason || 'Requested edit access for proposal update');
       alert('✅ Edit access requested successfully! Admin will review your request.');
+      setEditModalEvent(null);
       fetchEvents();
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to request edit access.');
@@ -80,11 +91,13 @@ function ViewEvents() {
     }
   };
 
-  const filteredEvents = events.filter(
-    (e) =>
+  const filteredEvents = events.filter((e) => {
+    const matchesSearch =
       e.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      e.event_id?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      e.event_id?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'ALL' || e.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="min-h-screen relative bg-slate-950 text-slate-100 overflow-hidden flex flex-col ocean-gradient-bg">
@@ -105,16 +118,31 @@ function ViewEvents() {
           </button>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative mb-8">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-          <input
-            type="text"
-            placeholder="Search events by name or ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:ring-2 focus:ring-sky-500 outline-none transition-all shadow-xl"
-          />
+        {/* Search & Status Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+            <input
+              type="text"
+              placeholder="Search events by name or ID..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:ring-2 focus:ring-sky-500 outline-none transition-all shadow-xl"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-3.5 bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 rounded-2xl text-slate-200 focus:ring-2 focus:ring-sky-500 outline-none font-semibold text-sm shadow-xl"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="submitted">Submitted</option>
+            <option value="under_review">Under Review</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="edit_requested">Edit Requested</option>
+          </select>
         </div>
 
         {loading ? (
@@ -134,7 +162,7 @@ function ViewEvents() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredEvents.map((ev) => {
-              const isEditable = ev.edit_req_status === 'approved' || ev.isEditable;
+              const isEditable = ev.edit_req_status === 'approved' || ev.isEditable || ev.status === 'draft';
               return (
                 <div key={ev._id} className="glass-card rounded-3xl p-6 shadow-2xl border border-sky-500/15 flex flex-col justify-between hover:border-sky-500/40 transition-all">
                   <div>
@@ -165,8 +193,8 @@ function ViewEvents() {
                       </button>
                     ) : (
                       <button
-                        onClick={() => handleRequestEditAccess(ev._id)}
-                        disabled={requestingId === ev._id || ev.edit_req_status === 'requested'}
+                        onClick={() => openEditModal(ev)}
+                        disabled={requestingId === ev._id || ev.edit_req_status === 'requested' || ev.status === 'edit_requested'}
                         className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-xl text-xs font-semibold hover:text-white transition-all disabled:opacity-50"
                       >
                         {requestingId === ev._id ? (
@@ -174,13 +202,47 @@ function ViewEvents() {
                         ) : (
                           <Lock className="w-4 h-4 text-slate-500" />
                         )}
-                        {ev.edit_req_status === 'requested' ? 'Request Pending' : 'Request Edit'}
+                        {ev.edit_req_status === 'requested' || ev.status === 'edit_requested' ? 'Request Pending' : 'Request Edit'}
                       </button>
                     )}
                   </div>
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Edit Request Reason Modal */}
+        {editModalEvent && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+              <h3 className="text-xl font-bold text-white font-heading">Request Edit Access</h3>
+              <p className="text-slate-400 text-sm">
+                Provide a reason for updating proposal <span className="text-sky-400 font-semibold">{editModalEvent.name}</span>:
+              </p>
+              <textarea
+                rows={4}
+                value={editReason}
+                onChange={(e) => setEditReason(e.target.value)}
+                placeholder="Describe the updates required (e.g., changing time slot, adding convenor)..."
+                className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm outline-none focus:ring-2 focus:ring-sky-500"
+              />
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  onClick={() => setEditModalEvent(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleRequestEditAccess}
+                  disabled={requestingId === editModalEvent._id}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-sky-600/30"
+                >
+                  {requestingId === editModalEvent._id ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Request'}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>
