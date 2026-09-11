@@ -11,11 +11,13 @@ import UpdateEventController from './components/UpdateEventController';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  // Bypass signin barrier automatically if no user is logged in
-  if (!user) {
+  // In dev environment, bypass signin barrier automatically if no user is logged in
+  if (!user && import.meta.env.DEV) {
     const demoUser = { username: 'DemoClub', association_name: 'Demo Club' };
     localStorage.setItem('userToken', 'demo-token');
     localStorage.setItem('userData', JSON.stringify(demoUser));
+  } else if (!user && !localStorage.getItem('userToken')) {
+    return <Navigate to="/login" replace />;
   }
   return children;
 };

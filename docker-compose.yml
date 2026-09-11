@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  user-frontend:
+    build:
+      context: ./EmsFormsUser_Frontend
+      dockerfile: Dockerfile
+    container_name: intrams_user_frontend
+    ports:
+      - "3000:80"
+    restart: always
+
+  admin-frontend:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: intrams_admin_frontend
+    ports:
+      - "5173:80"
+    restart: always

@@ -14,12 +14,14 @@ function ProtectedRoute({ children, allowedRoles }) {
     );
   }
 
-  // Bypass signin barrier automatically for direct URL access
-  if (!user) {
+  // In dev environment, bypass signin barrier automatically for direct URL access
+  if (!user && import.meta.env.DEV) {
     const demoAdmin = { username: 'Admin', role: 'admin' };
     localStorage.setItem('token', 'demo-token');
     localStorage.setItem('user', JSON.stringify(demoAdmin));
     localStorage.setItem('role', 'admin');
+  } else if (!user && !localStorage.getItem('token')) {
+    return <Navigate to="/login" replace />;
   }
 
   return <Layout>{children}</Layout>;

@@ -54,16 +54,29 @@ const InfoDeep = () => {
     );
   }
 
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  };
+
   const handleViewPDF = async () => {
     setPdfLoading(true);
     setPdfError(null);
+    let mobileWin = null;
+    if (isMobile()) {
+      mobileWin = window.open('about:blank', '_blank');
+    }
     try {
       const res = await adminAPI.getEventPDF(event.event_id || event._id);
       const blob = new Blob([res.data], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-      setPdfUrl(url);
-      setShowPdfViewer(true);
+      if (mobileWin) {
+        mobileWin.location.href = url;
+      } else {
+        setPdfUrl(url);
+        setShowPdfViewer(true);
+      }
     } catch (err) {
+      if (mobileWin) mobileWin.close();
       setPdfError(err.message || 'Failed to load PDF');
     } finally {
       setPdfLoading(false);
