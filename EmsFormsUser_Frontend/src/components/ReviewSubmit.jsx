@@ -18,13 +18,13 @@ function ReviewSubmit({ formData, onSubmit, isSubmitting, isEdit = false }) {
     <div className="space-y-6">
       <EventPreview formData={formData} />
 
-      <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl border border-white/20">
-        <label className="flex items-start gap-3 cursor-pointer text-sm text-gray-700">
+      <div className="glass-card rounded-3xl p-6 shadow-2xl border border-slate-800 text-slate-100">
+        <label className="flex items-start gap-3 cursor-pointer text-sm text-slate-300">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-1 w-4 h-4 text-accent-orange border-gray-300 rounded focus:ring-accent-orange"
+            className="mt-1 w-4 h-4 text-sky-500 bg-slate-950 border-slate-800 rounded focus:ring-sky-500"
           />
           <span>
             I confirm that all details, round specifications, and item requests provided in this proposal are correct and approved by our club convenors.
@@ -35,7 +35,7 @@ function ReviewSubmit({ formData, onSubmit, isSubmitting, isEdit = false }) {
           <button
             onClick={handleSubmit}
             disabled={!agreed || isSubmitting}
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-accent-orange to-accent-yellow hover:from-orange-500 hover:to-yellow-500 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>

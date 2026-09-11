@@ -14,12 +14,12 @@ function Logs() {
 
   const particlesOptions = {
     background: {
-      color: { value: 'linear-gradient(135deg, #4c1d95 0%, #000000 100%)' },
+      color: { value: '#020617' },
     },
     fpsLimit: 120,
     particles: {
-      color: { value: '#ffffff' },
-      links: { color: '#ffffff', distance: 150, enable: true, opacity: 0.2 },
+      color: { value: '#38bdf8' },
+      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.25 },
       move: { enable: true, speed: 1 },
       number: { value: 60 },
       opacity: { value: 0.3 },
@@ -53,7 +53,7 @@ function Logs() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-              <Terminal className="w-8 h-8 text-accent-orange" /> System Audit Logs
+              <Terminal className="w-8 h-8 text-sky-400" /> System Audit Logs
             </h1>
             <p className="text-white/80 text-sm mt-1">Trace real-time operational events and administrative actions</p>
           </div>
@@ -69,7 +69,7 @@ function Logs() {
         <div className="bg-black/80 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl font-mono text-sm text-green-400 min-h-[400px]">
           {loading ? (
             <div className="flex justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+              <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
             </div>
           ) : logs.length === 0 ? (
             <p className="text-gray-500 text-center py-12">No activity logs recorded.</p>

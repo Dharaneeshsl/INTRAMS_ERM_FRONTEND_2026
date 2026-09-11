@@ -1,39 +1,48 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+import { Check, Compass } from 'lucide-react';
 
-function StepProgress({ currentStep, totalSteps = 5 }) {
+function StepProgress({ currentStep, totalSteps = 5, onStepClick }) {
   const steps = [
-    { number: 1, label: 'Instructions' },
-    { number: 2, label: 'Event Details' },
-    { number: 3, label: 'Description & Venue' },
+    { number: 1, label: 'Guidelines' },
+    { number: 2, label: 'Basic Concept' },
+    { number: 3, label: 'Venue & Logistics' },
     { number: 4, label: 'Rounds & Rules' },
-    { number: 5, label: 'Items & Review' },
+    { number: 5, label: 'Items & Finalize' },
   ];
 
   return (
     <div className="w-full py-4 mb-8">
-      <div className="flex items-center justify-between max-w-3xl mx-auto px-4">
+      <div className="flex items-center justify-between max-w-4xl mx-auto px-2 sm:px-4">
         {steps.map((step, idx) => {
           const isCompleted = currentStep > step.number;
           const isCurrent = currentStep === step.number;
+          const isClickable = onStepClick && (isCompleted || step.number < currentStep);
 
           return (
             <React.Fragment key={step.number}>
               <div className="flex flex-col items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all shadow-lg ${
+                <button
+                  type="button"
+                  disabled={!isClickable}
+                  onClick={() => isClickable && onStepClick(step.number)}
+                  aria-label={`Step ${step.number}: ${step.label}`}
+                  className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-300 shadow-lg ${
                     isCompleted
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-sky-500 text-white shadow-sky-500/20 cursor-pointer hover:bg-sky-400'
                       : isCurrent
-                      ? 'bg-white text-black ring-4 ring-zinc-700'
-                      : 'bg-zinc-800 text-zinc-400'
+                      ? 'bg-gradient-to-tr from-sky-400 to-indigo-500 text-white ring-4 ring-sky-500/30 shadow-sky-500/40 scale-105'
+                      : 'bg-slate-900 border border-slate-800 text-slate-500 cursor-not-allowed'
                   }`}
                 >
-                  {isCompleted ? <Check className="w-5 h-5" /> : step.number}
-                </div>
+                  {isCompleted ? <Check className="w-5 h-5 stroke-[2.5]" /> : step.number}
+                </button>
                 <span
-                  className={`text-xs font-medium mt-2 hidden sm:block ${
-                    isCurrent ? 'text-white font-bold' : isCompleted ? 'text-emerald-400' : 'text-zinc-500'
+                  className={`text-[11px] sm:text-xs font-semibold mt-2 text-center max-w-[80px] sm:max-w-[110px] leading-tight transition-colors ${
+                    isCurrent
+                      ? 'text-sky-300 font-bold'
+                      : isCompleted
+                      ? 'text-slate-300'
+                      : 'text-slate-600'
                   }`}
                 >
                   {step.label}
@@ -42,8 +51,8 @@ function StepProgress({ currentStep, totalSteps = 5 }) {
 
               {idx < steps.length - 1 && (
                 <div
-                  className={`flex-1 h-1 mx-2 rounded-full transition-all ${
-                    currentStep > step.number ? 'bg-emerald-500' : 'bg-zinc-800'
+                  className={`flex-1 h-1 mx-1 sm:mx-3 rounded-full transition-all duration-500 ${
+                    currentStep > step.number ? 'bg-sky-500 shadow-sm shadow-sky-500/50' : 'bg-slate-800/80'
                   }`}
                 />
               )}

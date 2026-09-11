@@ -13,11 +13,11 @@ function GrantItems() {
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: "linear-gradient(135deg, #4c1d95 0%, #000000 100%)" } },
+    background: { color: { value: "#020617" } },
     fpsLimit: 120,
     particles: {
-      color: { value: "#ffffff" },
-      links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.2 },
+      color: { value: "#38bdf8" },
+      links: { color: "#0284c7", distance: 150, enable: true, opacity: 0.25 },
       move: { enable: true, speed: 1 },
       number: { value: 60 },
       opacity: { value: 0.3 },
@@ -92,8 +92,8 @@ function GrantItems() {
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-4">
-            <Gift className="w-8 h-8 text-accent-orange" />
-            <h1 className="text-3xl font-bold text-accent-orange">Grant Items to Events</h1>
+            <Gift className="w-8 h-8 text-sky-400" />
+            <h1 className="text-3xl font-bold text-sky-400">Grant Items to Events</h1>
           </div>
           <p className="text-gray-600 mb-6">Select a club association to view their events and grant items.</p>
 
@@ -110,7 +110,7 @@ function GrantItems() {
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+              <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -121,14 +121,14 @@ function GrantItems() {
                   className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer group"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <Users className="w-6 h-6 text-accent-orange" />
-                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-accent-orange transition-colors">
+                    <Users className="w-6 h-6 text-sky-400" />
+                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-sky-400 transition-colors">
                       {assoc.association_name}
                     </h3>
                   </div>
                   <p className="text-xs text-gray-500 flex items-center justify-between mt-4">
                     <span>View Events &rarr;</span>
-                    <ChevronRight className="w-4 h-4 text-accent-orange" />
+                    <ChevronRight className="w-4 h-4 text-sky-400" />
                   </p>
                 </div>
               ))}
@@ -152,7 +152,7 @@ function GrantItems() {
             <div className="py-4 overflow-y-auto flex-1 space-y-3">
               {eventsLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-accent-orange" />
+                  <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
                 </div>
               ) : events.length === 0 ? (
                 <p className="text-center text-gray-500 py-8">No events found for this association.</p>
@@ -165,7 +165,7 @@ function GrantItems() {
                     </div>
                     <button
                       onClick={() => navigate(`/grant-event-items/${ev.mongoId || ev._id}`)}
-                      className="px-4 py-2 bg-accent-orange text-white rounded-xl font-semibold text-xs hover:bg-accent-yellow transition-colors"
+                      className="px-4 py-2 bg-sky-500 text-white rounded-xl font-semibold text-xs hover:bg-sky-400 transition-colors"
                     >
                       Grant Items
                     </button>

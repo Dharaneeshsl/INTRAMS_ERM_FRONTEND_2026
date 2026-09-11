@@ -8,7 +8,7 @@ import { adminAPI } from '../api';
 
 const particleGradient = {
   color: {
-    value: "linear-gradient(135deg, #4c1d95 0%, #000000 100%)",
+    value: "#020617",
   },
 };
 
@@ -218,7 +218,7 @@ const EditAccess = () => {
                             <p className="text-sm text-gray-500">Club: {associationName}</p>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-semibold text-accent-orange">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-sky-400">
                           <span>Type:</span>
                           <span>{type}</span>
                         </div>
@@ -247,7 +247,7 @@ const EditAccess = () => {
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                         <button
                           onClick={() => handleViewEvent(req._id, req)}
-                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-accent-orange to-accent-yellow px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110"
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110"
                         >
                           <Eye className="h-4 w-4" /> View Event
                         </button>

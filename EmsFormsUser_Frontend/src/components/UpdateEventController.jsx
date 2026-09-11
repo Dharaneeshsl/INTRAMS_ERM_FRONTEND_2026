@@ -27,14 +27,14 @@ function UpdateEventController() {
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: '#000000' } },
+    background: { color: { value: '#020617' } },
     fpsLimit: 120,
     particles: {
-      color: { value: '#ffffff' },
-      links: { color: '#ffffff', distance: 150, enable: true, opacity: 0.3, width: 1 },
-      move: { enable: true, speed: 1 },
-      number: { density: { enable: true, area: 800 }, value: 80 },
-      opacity: { value: 0.4 },
+      color: { value: '#38bdf8' },
+      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.25, width: 1 },
+      move: { enable: true, speed: 0.8 },
+      number: { density: { enable: true, area: 800 }, value: 70 },
+      opacity: { value: 0.35 },
       shape: { type: 'circle' },
       size: { value: { min: 1, max: 3 } },
     },

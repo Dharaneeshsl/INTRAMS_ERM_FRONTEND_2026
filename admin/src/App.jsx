@@ -20,8 +20,8 @@ import Logs from './components/Logs';
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signin" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
       <Route

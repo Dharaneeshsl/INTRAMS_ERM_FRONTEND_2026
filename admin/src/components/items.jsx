@@ -12,7 +12,7 @@ function Items() {
   const particlesOptions = {
     background: {
       color: {
-        value: "linear-gradient(135deg, #4c1d95 0%, #000000 100%)",
+        value: "#020617",
       },
     },
     fpsLimit: 120,
@@ -161,7 +161,7 @@ function Items() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-            <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4">
+            <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4">
               <h2 className="text-xl font-semibold text-white">All Items {filteredItems.length > 0 && `(${filteredItems.length})`}</h2>
             </div>
             <div className="p-6">
@@ -171,7 +171,7 @@ function Items() {
                   placeholder="Search items..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                  className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                 />
               </div>
 
@@ -190,7 +190,7 @@ function Items() {
                   <p className="text-gray-600">No items match your search</p>
                   <button
                     onClick={() => setSearchTerm("")}
-                    className="mt-2 text-accent-orange hover:text-accent-yellow underline"
+                    className="mt-2 text-sky-400 hover:text-sky-300 underline"
                   >
                     Clear search
                   </button>
@@ -213,7 +213,7 @@ function Items() {
                         <div className="flex gap-2 ml-4">
                           <button
                             onClick={() => handleEdit(item)}
-                            className="p-2 bg-accent-orange text-white hover:bg-accent-yellow rounded-lg transition-colors"
+                            className="p-2 bg-sky-500 text-white hover:bg-sky-400 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />
@@ -235,7 +235,7 @@ function Items() {
           </div>
 
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-            <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4">
+            <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                 <Plus className="w-5 h-5" />
                 Create Item
@@ -248,7 +248,7 @@ function Items() {
                   <input
                     type="text"
                     placeholder="Enter item name"
-                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                     value={formData.item_name}
                     onChange={(e) => setFormData({...formData, item_name: e.target.value})}
                   />
@@ -260,14 +260,14 @@ function Items() {
                     placeholder="Enter price"
                     min="0"
                     step="0.01"
-                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                     value={formData.price_per_unit}
                     onChange={(e) => setFormData({...formData, price_per_unit: e.target.value})}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-accent-orange to-accent-yellow text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:from-orange-500 hover:to-yellow-500 focus:ring-4 focus:ring-accent-yellow disabled:opacity-50 disabled:cursor-not-allowed transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:from-orange-500 hover:to-yellow-500 focus:ring-4 focus:ring-sky-400 disabled:opacity-50 disabled:cursor-not-allowed transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Create Item
                 </button>
@@ -279,7 +279,7 @@ function Items() {
         {showEditModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 max-w-md w-full">
-              <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4 rounded-t-3xl">
+              <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4 rounded-t-3xl">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                   <Edit className="w-5 h-5" />
                   Edit Item
@@ -291,7 +291,7 @@ function Items() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
                     <input
                       type="text"
-                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
+                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
                       value={editFormData.item_name}
                       onChange={(e) => setEditFormData({...editFormData, item_name: e.target.value})}
                     />
@@ -302,7 +302,7 @@ function Items() {
                       type="number"
                       min="0"
                       step="0.01"
-                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
+                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
                       value={editFormData.price_per_unit}
                       onChange={(e) => setEditFormData({...editFormData, price_per_unit: e.target.value})}
                     />
@@ -310,7 +310,7 @@ function Items() {
                   <div className="flex gap-3">
                     <button
                       type="submit"
-                      className="flex-1 bg-gradient-to-r from-accent-orange to-accent-yellow text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:from-orange-500 hover:to-yellow-500 transition-all duration-200"
+                      className="flex-1 bg-gradient-to-r from-sky-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:from-orange-500 hover:to-yellow-500 transition-all duration-200"
                     >
                       Update
                     </button>

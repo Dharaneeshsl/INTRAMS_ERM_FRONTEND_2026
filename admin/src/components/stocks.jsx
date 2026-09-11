@@ -18,7 +18,7 @@ function Stocks() {
 
   const particlesOptions = {
     background: {
-      color: { value: 'linear-gradient(135deg, #4c1d95 0%, #000000 100%)' },
+      color: { value: '#020617' },
     },
     fpsLimit: 120,
     particles: {
@@ -69,7 +69,7 @@ function Stocks() {
       <div className="relative z-10 max-w-5xl w-full mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            <Package className="w-8 h-8 text-accent-orange" /> Stock Inventory
+            <Package className="w-8 h-8 text-sky-400" /> Stock Inventory
           </h1>
           <p className="text-white/80">Manage available quantities for requested equipment items</p>
         </div>
@@ -88,7 +88,7 @@ function Stocks() {
 
           {loading ? (
             <div className="flex justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+              <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -104,14 +104,14 @@ function Stocks() {
                   {filtered.map((stock) => (
                     <tr key={stock._id} className="hover:bg-gray-50">
                       <td className="p-3 font-medium">{stock.item_name}</td>
-                      <td className="p-3 font-bold text-accent-orange">{stock.available_quantity ?? stock.quantity ?? 0}</td>
+                      <td className="p-3 font-bold text-sky-400">{stock.available_quantity ?? stock.quantity ?? 0}</td>
                       <td className="p-3">
                         <button
                           onClick={() => {
                             setEditingStock(stock);
                             setNewQty(stock.available_quantity ?? stock.quantity ?? 0);
                           }}
-                          className="p-2 bg-accent-orange text-white rounded-lg hover:bg-accent-yellow transition-colors"
+                          className="p-2 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -138,7 +138,7 @@ function Stocks() {
                 className="w-full p-3 border border-gray-300 rounded-xl outline-none text-gray-900"
               />
               <div className="flex gap-2">
-                <button type="submit" className="flex-1 py-2.5 bg-accent-orange text-white rounded-xl font-semibold">
+                <button type="submit" className="flex-1 py-2.5 bg-sky-500 text-white rounded-xl font-semibold">
                   Save
                 </button>
                 <button

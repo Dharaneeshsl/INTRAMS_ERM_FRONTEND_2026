@@ -50,7 +50,7 @@ export default function Layout({ children }) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-orange" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-sky-500/30" />
       </div>
     );
   }
@@ -133,11 +133,11 @@ export default function Layout({ children }) {
   };
 
   const SidebarContent = ({ mobile = false }) => (
-    <div className="flex flex-col h-full pt-4">
-      <div className="flex flex-col flex-grow px-4 py-4 bg-accent-yellow/10 backdrop-blur-sm rounded-lg mx-2">
-        <div className="mb-4 px-3 py-1.5 rounded-lg bg-white/10 text-center">
-          <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">
-            {userRole}
+    <div className="flex flex-col h-full pt-4 bg-slate-950/95 border-r border-slate-800/80 text-slate-100">
+      <div className="flex flex-col flex-grow px-4 py-4 bg-slate-900/60 backdrop-blur-sm rounded-xl mx-2 border border-slate-800/60">
+        <div className="mb-4 px-3 py-1.5 rounded-lg bg-sky-950/80 border border-sky-500/30 text-center">
+          <span className="text-xs font-semibold text-sky-400 uppercase tracking-widest font-mono">
+            {userRole} • Horizon
           </span>
         </div>
 
@@ -150,12 +150,12 @@ export default function Layout({ children }) {
             <button
               onClick={handleEventSummary}
               disabled={summaryLoading}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 mt-3 w-full rounded-lg text-sm font-medium transition-all bg-white/10 text-white hover:bg-white/20 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 mt-3 w-full rounded-xl text-sm font-medium transition-all bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {summaryLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin text-sky-400" />
               ) : (
-                <FileText className="w-5 h-5" />
+                <FileText className="w-5 h-5 text-sky-400" />
               )}
               Event Summary
             </button>
@@ -163,17 +163,17 @@ export default function Layout({ children }) {
         </nav>
 
         {summaryError && (
-          <div className="mt-3 px-3 py-2 text-xs text-white bg-white/10 border border-white/20 rounded-lg">
+          <div className="mt-3 px-3 py-2 text-xs text-red-300 bg-red-950/40 border border-red-500/30 rounded-lg">
             {summaryError}
           </div>
         )}
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-4 border-t border-slate-800/60">
           <button
             onClick={handleLogout}
-            className="flex items-center w-full px-4 py-2.5 bg-white/10 backdrop-blur-sm text-gray-200 hover:bg-accent-yellow hover:text-white rounded-lg text-sm transition-all"
+            className="flex items-center w-full px-4 py-2.5 bg-slate-900 text-slate-300 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-500/30 border border-slate-800 rounded-xl text-sm transition-all font-medium"
           >
-            <LogOut className="w-5 h-5 mr-3" />
+            <LogOut className="w-5 h-5 mr-3 text-slate-400" />
             Logout
           </button>
         </div>
@@ -182,17 +182,17 @@ export default function Layout({ children }) {
   );
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#020617] text-slate-100 ocean-gradient-bg">
       {desktopSidebarOpen && (
-        <div className="hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 w-60 bg-accent-orange shadow-xl">
-          <div className="flex items-center justify-between px-4 py-4 bg-gradient-to-r from-accent-orange to-accent-yellow">
+        <div className="hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 w-60 bg-slate-950 shadow-2xl border-r border-slate-800">
+          <div className="flex items-center justify-between px-4 py-4 bg-slate-900/90 border-b border-cyan-500/20">
             <button
               onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
-              className="p-2 rounded-md bg-accent-orange backdrop-blur-sm hover:bg-accent-orange text-white mr-3"
+              className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 mr-2 transition-colors"
             >
-              {desktopSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {desktopSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <h1 className="text-lg font-semibold text-white">INTRAMS ERM Forms</h1>
+            <h1 className="text-base font-bold text-white font-heading tracking-wide">INTRAMS Admin</h1>
           </div>
           <SidebarContent />
         </div>
@@ -200,35 +200,35 @@ export default function Layout({ children }) {
 
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-10 bg-black bg-opacity-40"
+          className="lg:hidden fixed inset-0 z-10 bg-slate-950/80 backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <div
-        className={`lg:hidden fixed inset-y-0 left-0 z-20 w-60 bg-accent-orange shadow-xl transform transition-transform ${
+        className={`lg:hidden fixed inset-y-0 left-0 z-20 w-60 bg-slate-950 shadow-2xl transform transition-transform ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <button
           onClick={() => setSidebarOpen(false)}
-          className="absolute top-4 left-4 p-2 rounded-md bg-accent-yellow text-white hover:bg-accent-orange z-30"
+          className="absolute top-4 left-4 p-2 rounded-xl bg-slate-800 text-white hover:bg-slate-700 z-30"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
         <SidebarContent mobile />
       </div>
 
-      <div className="lg:hidden fixed top-0 left-0 right-0 bg-accent-orange shadow-md z-20">
-        <div className="flex items-center px-6 py-4 bg-gradient-to-r from-accent-orange to-accent-yellow">
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-slate-950 border-b border-cyan-500/20 shadow-lg z-20">
+        <div className="flex items-center px-6 py-4 bg-slate-950">
           <div className="flex items-center">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-md bg-accent-orange backdrop-blur-sm hover:bg-accent-orange text-white mr-3"
+              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white mr-3"
             >
-              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <h1 className="text-lg font-semibold text-white">INTRAMS ERM Forms</h1>
+            <h1 className="text-base font-bold text-white font-heading">INTRAMS Admin</h1>
           </div>
         </div>
       </div>
@@ -237,7 +237,7 @@ export default function Layout({ children }) {
         {!desktopSidebarOpen && (
           <button
             onClick={() => setDesktopSidebarOpen(true)}
-            className="fixed top-4 left-4 z-30 p-2 rounded-md bg-accent-orange text-white hover:bg-accent-yellow shadow-lg"
+            className="fixed top-4 left-4 z-30 p-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white hover:from-sky-400 hover:to-indigo-500 shadow-xl shadow-sky-500/20"
           >
             <Menu className="w-6 h-6" />
           </button>
@@ -246,24 +246,24 @@ export default function Layout({ children }) {
       </div>
 
       {summaryModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-6xl h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                <FileText className="w-5 h-5" />
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900/95 rounded-3xl shadow-2xl border border-sky-500/20 w-full max-w-6xl h-[90vh] flex flex-col text-slate-100">
+            <div className="flex items-center justify-between p-6 border-b border-slate-800">
+              <h2 className="text-xl font-bold text-white font-heading flex items-center gap-2">
+                <FileText className="w-5 h-5 text-sky-400" />
                 Event Summary Report
               </h2>
               <div className="flex gap-2">
                 <button
                   onClick={handleSummaryDownload}
-                  className="flex items-center gap-2 px-4 py-2 bg-accent-orange text-white rounded-lg hover:bg-accent-yellow transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-sky-500/20 transition-all"
                 >
                   <Download className="w-4 h-4" />
                   Download
                 </button>
                 <button
                   onClick={closeSummaryModal}
-                  className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="p-2 text-slate-400 hover:text-white transition-colors"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -273,13 +273,13 @@ export default function Layout({ children }) {
               {summaryPdfUrl ? (
                 <iframe
                   src={summaryPdfUrl}
-                  className="w-full h-full border rounded-lg"
+                  className="w-full h-full border border-slate-800 rounded-xl bg-slate-950"
                   title="Event Summary PDF"
                   frameBorder="0"
                   style={{ minHeight: '500px' }}
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-500">
+                <div className="flex items-center justify-center h-full text-slate-500">
                   No PDF available.
                 </div>
               )}

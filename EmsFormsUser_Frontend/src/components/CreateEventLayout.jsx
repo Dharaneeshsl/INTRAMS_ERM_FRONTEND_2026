@@ -43,7 +43,7 @@ function CreateEventLayout() {
 
   const particlesOptions = {
     background: {
-      color: { value: '#000000' },
+      color: { value: '#020617' },
     },
     fpsLimit: 120,
     interactivity: {
@@ -58,11 +58,11 @@ function CreateEventLayout() {
       },
     },
     particles: {
-      color: { value: '#ffffff' },
-      links: { color: '#ffffff', distance: 150, enable: true, opacity: 0.3, width: 1 },
-      move: { direction: 'none', enable: true, outModes: { default: 'bounce' }, speed: 1 },
-      number: { density: { enable: true, area: 800 }, value: 80 },
-      opacity: { value: 0.4 },
+      color: { value: '#38bdf8' },
+      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.2, width: 1 },
+      move: { direction: 'none', enable: true, outModes: { default: 'bounce' }, speed: 0.8 },
+      number: { density: { enable: true, area: 800 }, value: 70 },
+      opacity: { value: 0.3 },
       shape: { type: 'circle' },
       size: { value: { min: 1, max: 3 } },
     },
@@ -98,53 +98,53 @@ function CreateEventLayout() {
   };
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden flex flex-col">
+    <div className="min-h-screen relative bg-[#020617] overflow-hidden flex flex-col ocean-gradient-bg">
       <Particles id="create-event-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
       <NavBar />
 
       <main className="relative z-10 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 flex-1">
-        <StepProgress currentStep={currentStep} totalSteps={5} />
+        <StepProgress currentStep={currentStep} totalSteps={5} onStepClick={(step) => setCurrentStep(step)} />
 
         {currentStep === 1 && <Instructions onNext={handleNext} />}
 
         {currentStep === 2 && (
-          <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Basic Event Information</h2>
+          <div className="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 text-white">
+            <h2 className="text-2xl font-bold text-white mb-6 font-heading">Basic Proposal Details</h2>
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Event Name *</label>
+                <label className="block text-sm font-semibold text-sky-200/90 mb-1">Event Name *</label>
                 <input
                   type="text"
                   placeholder="e.g. CodeStorm"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange outline-none text-gray-900"
+                  className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl focus:border-sky-400 focus:ring-2 focus:ring-sky-500/20 outline-none text-white placeholder-slate-500 transition-all"
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Tagline *</label>
+                <label className="block text-sm font-semibold text-sky-200/90 mb-1">Tagline *</label>
                 <input
                   type="text"
-                  placeholder="e.g. The Ultimate Hackathon of INTRAMS"
+                  placeholder="e.g. Navigating Technical Frontiers"
                   value={formData.tagline}
                   onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                  className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange outline-none text-gray-900"
+                  className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl focus:border-sky-400 focus:ring-2 focus:ring-sky-500/20 outline-none text-white placeholder-slate-500 transition-all"
                 />
-                {errors.tagline && <p className="text-red-500 text-xs mt-1">{errors.tagline}</p>}
+                {errors.tagline && <p className="text-red-400 text-xs mt-1">{errors.tagline}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">About Event *</label>
+                <label className="block text-sm font-semibold text-sky-200/90 mb-1">About Event *</label>
                 <textarea
                   rows="4"
                   placeholder="Detailed description of the event concept and objectives..."
                   value={formData.about}
                   onChange={(e) => setFormData({ ...formData, about: e.target.value })}
-                  className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange outline-none text-gray-900"
+                  className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl focus:border-sky-400 focus:ring-2 focus:ring-sky-500/20 outline-none text-white placeholder-slate-500 transition-all"
                 />
-                {errors.about && <p className="text-red-500 text-xs mt-1">{errors.about}</p>}
+                {errors.about && <p className="text-red-400 text-xs mt-1">{errors.about}</p>}
               </div>
             </div>
           </div>
@@ -169,13 +169,13 @@ function CreateEventLayout() {
           <div className="flex justify-between items-center mt-8">
             <button
               onClick={handleBack}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-xl text-sm font-semibold transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 rounded-xl text-sm font-semibold transition-all"
             >
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
             <button
               onClick={handleNext}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-accent-orange to-accent-yellow hover:from-orange-500 hover:to-yellow-500 text-white rounded-xl text-sm font-semibold shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-sky-500/20 transition-all transform hover:scale-[1.02]"
             >
               Next Step <ArrowRight className="w-4 h-4" />
             </button>

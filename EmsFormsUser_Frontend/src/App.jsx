@@ -13,12 +13,8 @@ import NotFound from './components/NotFound';
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  // In dev environment, bypass signin barrier automatically if no user is logged in
-  if (!user && import.meta.env.DEV) {
-    const demoUser = { username: 'DemoClub', association_name: 'Demo Club' };
-    localStorage.setItem('userToken', 'demo-token');
-    localStorage.setItem('userData', JSON.stringify(demoUser));
-  } else if (!user && !localStorage.getItem('userToken')) {
+  const token = localStorage.getItem('userToken');
+  if (!user && !token) {
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -27,8 +23,8 @@ const ProtectedRoute = ({ children }) => {
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signin" element={<Login />} />
       <Route
         path="/home"
         element={
@@ -69,6 +65,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      {/* Legacy Route Redirects */}
+      <Route path="/my-events" element={<Navigate to="/view-events" replace />} />
+      <Route path="/edit" element={<Navigate to="/view-events" replace />} />
+      <Route path="/attendance" element={<Navigate to="/view-events" replace />} />
+      <Route path="/items" element={<Navigate to="/create-event" replace />} />
+      <Route path="/rounds" element={<Navigate to="/create-event" replace />} />
+      <Route path="/review" element={<Navigate to="/create-event" replace />} />
+
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

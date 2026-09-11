@@ -14,7 +14,7 @@ function Stats() {
 
   const particlesOptions = {
     background: {
-      color: { value: 'linear-gradient(135deg, #4c1d95 0%, #000000 100%)' },
+      color: { value: '#020617' },
     },
     fpsLimit: 120,
     particles: {
@@ -49,19 +49,19 @@ function Stats() {
       <div className="relative z-10 max-w-5xl w-full mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-            <TrendingUp className="w-8 h-8 text-accent-orange" /> Portal Statistics
+            <TrendingUp className="w-8 h-8 text-sky-400" /> Portal Statistics
           </h1>
           <p className="text-white/80">Key metrics and statistics across events and clubs</p>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+            <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl border border-white/20 text-center">
-              <Calendar className="w-10 h-10 text-accent-orange mx-auto mb-3" />
+              <Calendar className="w-10 h-10 text-sky-400 mx-auto mb-3" />
               <h3 className="text-3xl font-bold text-gray-900">{stats?.totalEvents ?? 0}</h3>
               <p className="text-gray-600 text-sm mt-1">Total Events</p>
             </div>

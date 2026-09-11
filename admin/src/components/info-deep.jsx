@@ -12,12 +12,12 @@ const InfoDeep = () => {
 
   const particlesOptions = {
     background: {
-      color: { value: "linear-gradient(135deg, #4c1d95 0%, #000000 100%)" },
+      color: { value: "#020617" },
     },
     fpsLimit: 120,
     particles: {
-      color: { value: "#ffffff" },
-      links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.2 },
+      color: { value: "#38bdf8" },
+      links: { color: "#0284c7", distance: 150, enable: true, opacity: 0.25 },
       move: { enable: true, speed: 1 },
       number: { value: 60 },
       opacity: { value: 0.3 },
@@ -45,7 +45,7 @@ const InfoDeep = () => {
           <p className="text-gray-700 font-semibold mb-4">No event details loaded.</p>
           <button
             onClick={() => navigate('/cards')}
-            className="px-6 py-2.5 bg-gradient-to-r from-accent-orange to-accent-yellow text-white rounded-xl font-semibold shadow-md"
+            className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white rounded-xl font-semibold shadow-md"
           >
             Back to Events
           </button>
@@ -123,7 +123,7 @@ const InfoDeep = () => {
             <button
               onClick={handleViewPDF}
               disabled={pdfLoading}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-accent-orange to-accent-yellow text-white rounded-xl font-semibold shadow-md hover:brightness-110 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white rounded-xl font-semibold shadow-md hover:brightness-110 transition-all disabled:opacity-50"
             >
               {pdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Eye className="w-4 h-4" />} View Event PDF
             </button>

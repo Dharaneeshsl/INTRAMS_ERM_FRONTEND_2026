@@ -10,9 +10,9 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-white/95 backdrop-blur-lg border-r border-gray-200 min-h-screen p-4 flex flex-col gap-2">
+    <aside className="w-64 bg-slate-950/80 backdrop-blur-xl border-r border-slate-800/80 min-h-screen p-4 flex flex-col gap-2">
       <div className="px-3 py-4 mb-2">
-        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Navigation</h2>
+        <h2 className="text-xs font-semibold text-sky-400/70 uppercase tracking-widest font-mono">Navigation</h2>
       </div>
       {navItems.map((item) => {
         const Icon = item.icon;
@@ -23,8 +23,8 @@ function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-accent-orange to-accent-yellow text-white shadow-md'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/20 border border-sky-400/30'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-sky-200'
               }`
             }
           >

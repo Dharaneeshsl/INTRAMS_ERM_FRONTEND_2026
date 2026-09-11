@@ -22,7 +22,7 @@ function GrantLogs() {
   const particlesOptions = {
     background: {
       color: {
-        value: "linear-gradient(135deg, #4c1d95 0%, #000000 100%)",
+        value: "#020617",
       },
     },
     fpsLimit: 120,
@@ -123,7 +123,7 @@ function GrantLogs() {
       <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden">
         <Particles id="tsparticles-logs-loading" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
         <div className="relative z-10 flex items-center gap-3 bg-white/95 backdrop-blur-lg rounded-2xl p-6">
-          <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+          <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
           <span className="text-lg text-gray-600">Loading grant logs...</span>
         </div>
       </div>
@@ -139,7 +139,7 @@ function GrantLogs() {
           <p className="text-lg text-red-600">{error}</p>
           <button
             onClick={fetchGrantLogs}
-            className="px-6 py-2 bg-accent-orange text-white rounded-lg hover:bg-accent-yellow transition-colors"
+            className="px-6 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors"
           >
             Retry
           </button>
@@ -165,7 +165,7 @@ function GrantLogs() {
             <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/20">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-orange-100 rounded-lg">
-                  <Gift className="w-6 h-6 text-accent-orange" />
+                  <Gift className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Total Grants</p>
@@ -227,7 +227,7 @@ function GrantLogs() {
         )}
 
         <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-white/20 overflow-hidden">
-          <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4 text-white flex items-center justify-between flex-wrap gap-3">
+          <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4 text-white flex items-center justify-between flex-wrap gap-3">
             <h2 className="text-xl font-semibold flex items-center gap-2">
               <History className="w-5 h-5" /> All Grant Records
             </h2>
@@ -247,7 +247,7 @@ function GrantLogs() {
                 placeholder="Search by item, event, association, or grantee..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-orange"
+                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
           </div>
@@ -293,7 +293,7 @@ function GrantLogs() {
                           {grant.event_name || grant.event_id || '—'}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 text-accent-orange border border-orange-100 rounded-full text-xs font-medium">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 text-sky-400 border border-orange-100 rounded-full text-xs font-medium">
                             <Users className="w-3 h-3" />
                             {associationDisplay}
                           </span>

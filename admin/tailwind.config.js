@@ -7,8 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        'accent-orange': '#ffffff',
-        'accent-yellow': '#e4e4e7',
+        'horizon-sky': '#38bdf8',
+        'ocean-blue': '#0284c7',
+        'ocean-abyss': '#020617',
+        'ocean-slate': '#0f172a',
       }
     },
   },

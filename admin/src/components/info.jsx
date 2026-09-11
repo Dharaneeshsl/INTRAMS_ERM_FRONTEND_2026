@@ -14,7 +14,7 @@ const EventCards = () => {
   const particlesOptions = {
     background: {
       color: {
-        value: "#000000",
+        value: "#020617",
       },
     },
     fpsLimit: 120,
@@ -30,8 +30,8 @@ const EventCards = () => {
       },
     },
     particles: {
-      color: { value: "#ffffff" },
-      links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.3, width: 1 },
+      color: { value: "#38bdf8" },
+      links: { color: "#0284c7", distance: 150, enable: true, opacity: 0.25, width: 1 },
       move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 1, straight: false },
       number: { density: { enable: true, area: 800 }, value: 80 },
       opacity: { value: 0.4 },
@@ -112,14 +112,14 @@ const EventCards = () => {
               placeholder="Search Events or Club Associations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white/95 backdrop-blur-lg rounded-2xl border border-white/20 outline-none focus:ring-2 focus:ring-accent-orange text-gray-900"
+              className="w-full pl-11 pr-4 py-3 bg-white/95 backdrop-blur-lg rounded-2xl border border-white/20 outline-none focus:ring-2 focus:ring-sky-500 text-gray-900"
             />
           </div>
         </div>
 
         {loading && (
           <div className="text-center py-16 text-white flex flex-col items-center gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+            <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
             <p className="text-lg">Loading events...</p>
           </div>
         )}

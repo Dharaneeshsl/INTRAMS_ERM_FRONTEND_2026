@@ -298,7 +298,7 @@ function GrantEventItems() {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-accent-orange via-accent-yellow to-yellow-400 overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-sky-500 via-indigo-600 to-slate-950 overflow-hidden">
         <Particles
           id="tsparticles"
           init={particlesInit}
@@ -306,7 +306,7 @@ function GrantEventItems() {
           className="absolute inset-0 z-0"
         />
         <div className="relative z-10 flex items-center gap-3 bg-white/95 backdrop-blur-lg rounded-2xl p-6">
-          <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+          <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
           <span className="text-lg text-gray-600">Loading event data...</span>
         </div>
       </div>
@@ -315,7 +315,7 @@ function GrantEventItems() {
 
   if (error) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-accent-orange via-accent-yellow to-yellow-400 overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-sky-500 via-indigo-600 to-slate-950 overflow-hidden">
         <Particles
           id="tsparticles"
           init={particlesInit}
@@ -336,7 +336,7 @@ function GrantEventItems() {
               </button>
               <button
                 onClick={fetchEventData}
-                className="px-4 py-2 bg-accent-orange text-white rounded-lg hover:bg-accent-yellow transition-colors"
+                className="px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors"
               >
                 Retry
               </button>
@@ -352,7 +352,7 @@ function GrantEventItems() {
   ).length || 0;
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start bg-gradient-to-br from-accent-orange via-accent-yellow to-yellow-400 overflow-hidden">
+    <div className="min-h-screen relative flex flex-col items-center justify-start bg-gradient-to-br from-sky-500 via-indigo-600 to-slate-950 overflow-hidden">
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -371,9 +371,9 @@ function GrantEventItems() {
                 <ArrowLeft className="w-6 h-6" />
               </button>
               <div className="flex items-center gap-3">
-                <Gift className="w-8 h-8 text-accent-orange" />
+                <Gift className="w-8 h-8 text-sky-400" />
                 <div>
-                  <h1 className="text-3xl font-bold text-accent-orange">Grant Items</h1>
+                  <h1 className="text-3xl font-bold text-sky-400">Grant Items</h1>
                   <p className="text-gray-600">{eventData?.eventDetails?.eventName}</p>
                 </div>
               </div>
@@ -460,7 +460,7 @@ function GrantEventItems() {
                 placeholder="Search items..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-orange focus:border-accent-orange"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30"
               />
             </div>
             {searchTerm && (
@@ -529,7 +529,7 @@ function GrantEventItems() {
                         <button
                           onClick={() => handleGrantClick(item, maxGrantQty)}
                           disabled={maxGrantQty <= 0}
-                          className="flex items-center gap-1 px-3 py-1 text-sm bg-accent-orange text-white rounded-lg hover:bg-accent-yellow transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                          className="flex items-center gap-1 px-3 py-1 text-sm bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                         >
                           <Plus className="w-3 h-3" />
                           Grant
@@ -568,7 +568,7 @@ function GrantEventItems() {
           <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-md">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center gap-3">
-                <Gift className="w-6 h-6 text-accent-orange" />
+                <Gift className="w-6 h-6 text-sky-400" />
                 <h2 className="text-xl font-semibold text-gray-800">Grant Items</h2>
               </div>
               <button onClick={closeGrantModal} className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
@@ -597,7 +597,7 @@ function GrantEventItems() {
                     max={maxGrantQuantityForModal}
                     value={grantQuantity}
                     onChange={(e) => setGrantQuantity(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-orange focus:border-accent-orange"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30"
                     placeholder="Enter quantity"
                   />
                 </div>
@@ -619,7 +619,7 @@ function GrantEventItems() {
                 </button>
                 <button
                   onClick={handleGrantSubmit}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-accent-orange text-white rounded-lg hover:bg-accent-yellow transition-colors disabled:opacity-50"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors disabled:opacity-50"
                   disabled={granting}
                 >
                   {granting ? (
@@ -663,7 +663,7 @@ function GrantEventItems() {
             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-3xl">
               <button
                 type="button"
-                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-accent-orange text-base font-medium text-white hover:bg-accent-yellow focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sky-500 text-base font-medium text-white hover:bg-sky-400 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
                 onClick={confirmModalData.onConfirm}
                 disabled={granting}
               >
@@ -687,7 +687,7 @@ function GrantEventItems() {
           <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-6xl max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div className="flex items-center gap-3">
-                <History className="w-6 h-6 text-accent-orange" />
+                <History className="w-6 h-6 text-sky-400" />
                 <div>
                   <h2 className="text-xl font-semibold text-gray-800">Grant History</h2>
                   <p className="text-sm text-gray-600">{grantHistory?.eventDetails?.eventName}</p>
@@ -704,7 +704,7 @@ function GrantEventItems() {
             <div className="flex-1 p-6 overflow-y-auto">
               {historyLoading && (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-accent-orange" />
+                  <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
                   <span className="ml-3 text-lg text-gray-600">Loading grant history...</span>
                 </div>
               )}

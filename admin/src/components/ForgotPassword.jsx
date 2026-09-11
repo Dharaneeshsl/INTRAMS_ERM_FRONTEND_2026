@@ -20,15 +20,15 @@ function ForgotPassword() {
 
   const particlesOptions = {
     background: {
-      color: { value: 'linear-gradient(135deg, #FF9800 0%, #FFD600 100%)' },
+      color: { value: '#020617' },
     },
     fpsLimit: 120,
     particles: {
-      color: { value: '#ffffff' },
-      links: { color: '#ffffff', distance: 150, enable: true, opacity: 0.2 },
-      move: { enable: true, speed: 1 },
+      color: { value: '#38bdf8' },
+      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.25 },
+      move: { enable: true, speed: 0.8 },
       number: { value: 60 },
-      opacity: { value: 0.3 },
+      opacity: { value: 0.35 },
     },
   };
 
@@ -52,44 +52,44 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-accent-orange via-accent-yellow to-yellow-400 overflow-hidden px-4">
+    <div className="min-h-screen relative flex items-center justify-center bg-slate-950 text-slate-100 overflow-hidden px-4 ocean-gradient-bg">
       <Particles id="forgot-pass-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
-      <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8">
+      <div className="relative z-10 w-full max-w-md bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-sky-500/20 p-8">
         <button
           onClick={() => navigate('/login')}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-sky-300 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Login
         </button>
 
         <div className="text-center mb-6">
-          <div className="w-14 h-14 bg-gradient-to-r from-accent-orange to-accent-yellow rounded-2xl mx-auto mb-3 flex items-center justify-center text-white shadow-lg">
+          <div className="w-14 h-14 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
             <KeyRound className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-bold tracking-wide">INTRAMS ERM Forms</h1>
-          <p className="text-gray-600 text-xs mt-1">Enter your registered email address to receive reset instructions</p>
+          <h1 className="text-2xl font-bold tracking-wide text-white font-heading">INTRAMS Admin Reset</h1>
+          <p className="text-sky-300/70 text-xs mt-1">Enter your registered email address to receive reset instructions</p>
         </div>
 
-        {message && <div className="mb-4 p-3 bg-green-50 text-green-700 text-sm rounded-xl border border-green-200">{message}</div>}
-        {error && <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-xl border border-red-200">{error}</div>}
+        {message && <div className="mb-4 p-3 bg-emerald-950/60 text-emerald-300 text-sm rounded-xl border border-emerald-500/30">{message}</div>}
+        {error && <div className="mb-4 p-3 bg-rose-950/60 text-rose-300 text-sm rounded-xl border border-rose-500/30">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+            <label className="block text-sm font-semibold text-slate-300 mb-1">Email Address</label>
             <input
               type="email"
-              placeholder="admin@example.com"
+              placeholder="admin@psgtech.ac.in"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl outline-none text-gray-900"
+              className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl outline-none text-white focus:ring-2 focus:ring-sky-500 placeholder-slate-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full inline-flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-accent-orange to-accent-yellow hover:from-orange-500 hover:to-yellow-500 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50"
+            className="w-full inline-flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition-all disabled:opacity-50"
           >
             <Send className="w-4 h-4" /> Send Reset Link
           </button>

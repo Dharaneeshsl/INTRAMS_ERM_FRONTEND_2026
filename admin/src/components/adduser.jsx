@@ -12,7 +12,7 @@ function Add() {
   const particlesOptions = {
     background: {
       color: {
-        value: "linear-gradient(135deg, #4c1d95 0%, #000000 100%)",
+        value: "#020617",
       },
     },
     fpsLimit: 120,
@@ -174,7 +174,7 @@ function Add() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-            <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4">
+            <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4">
               <h2 className="text-xl font-semibold text-white">
                 All Clubs {filteredAssociations.length > 0 && `(${filteredAssociations.length})`}
               </h2>
@@ -187,7 +187,7 @@ function Add() {
                   placeholder="Search by club name or username..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                 />
               </div>
               {loading && (
@@ -205,7 +205,7 @@ function Add() {
                   <p className="text-gray-600">No Clubs match your search</p>
                   <button
                     onClick={() => setSearchTerm("")}
-                    className="mt-2 text-accent-orange hover:text-accent-yellow underline"
+                    className="mt-2 text-sky-400 hover:text-sky-300 underline"
                   >
                     Clear search
                   </button>
@@ -230,14 +230,14 @@ function Add() {
                         <div className="flex gap-2 ml-4">
                           <button
                             onClick={() => handleEdit(association)}
-                            className="p-2 bg-accent-orange text-white hover:bg-accent-yellow rounded-lg transition-colors"
+                            className="p-2 bg-sky-500 text-white hover:bg-sky-400 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(association._id)}
-                            className="p-2 bg-red-500 text-white hover:bg-accent-orange rounded-lg transition-colors"
+                            className="p-2 bg-red-500 text-white hover:bg-sky-500 rounded-lg transition-colors"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -252,7 +252,7 @@ function Add() {
           </div>
 
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
-            <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4">
+            <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4">
               <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                 <Plus className="w-5 h-5" />
                 Create Club
@@ -265,7 +265,7 @@ function Add() {
                   <input
                     type="text"
                     placeholder="Enter username"
-                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                     value={formData.username}
                     onChange={(e) => setFormData({...formData, username: e.target.value})}
                   />
@@ -275,7 +275,7 @@ function Add() {
                   <input
                     type="password"
                     placeholder="Create password"
-                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
                   />
@@ -285,14 +285,14 @@ function Add() {
                   <input
                     type="text"
                     placeholder="Enter association name"
-                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                     value={formData.association_name}
                     onChange={(e) => setFormData({...formData, association_name: e.target.value})}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-accent-orange to-accent-yellow text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:from-orange-500 hover:to-yellow-500 focus:ring-4 focus:ring-accent-yellow disabled:opacity-50 disabled:cursor-not-allowed transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:from-orange-500 hover:to-yellow-500 focus:ring-4 focus:ring-sky-400 disabled:opacity-50 disabled:cursor-not-allowed transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Create Club
                 </button>
@@ -304,7 +304,7 @@ function Add() {
         {showEditModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 max-w-md w-full">
-              <div className="bg-gradient-to-r from-accent-orange to-accent-yellow px-6 py-4 rounded-t-3xl">
+              <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4 rounded-t-3xl">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                   <Edit className="w-5 h-5" />
                   Edit Club
@@ -316,7 +316,7 @@ function Add() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                     <input
                       type="text"
-                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
+                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
                       value={editFormData.username}
                       onChange={(e) => setEditFormData({...editFormData, username: e.target.value})}
                     />
@@ -325,7 +325,7 @@ function Add() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Association Name</label>
                     <input
                       type="text"
-                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
+                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
                       value={editFormData.association_name}
                       onChange={(e) => setEditFormData({...editFormData, association_name: e.target.value})}
                     />
@@ -335,7 +335,7 @@ function Add() {
                     <input
                       type="password"
                       placeholder="Enter new password"
-                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-orange focus:border-accent-orange transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                       value={editFormData.password}
                       onChange={(e) => setEditFormData({...editFormData, password: e.target.value})}
                     />
@@ -343,7 +343,7 @@ function Add() {
                   <div className="flex gap-3">
                     <button 
                       type="submit"
-                      className="flex-1 bg-gradient-to-r from-accent-orange to-accent-yellow text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:from-orange-500 hover:to-yellow-500 transition-all duration-200"
+                      className="flex-1 bg-gradient-to-r from-sky-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:from-orange-500 hover:to-yellow-500 transition-all duration-200"
                     >
                       Update
                     </button>
