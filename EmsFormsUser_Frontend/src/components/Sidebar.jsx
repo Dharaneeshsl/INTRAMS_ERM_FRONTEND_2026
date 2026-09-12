@@ -23,20 +23,21 @@ function Sidebar({ mobile = false, onClose }) {
     <aside
       className={`${
         mobile ? 'w-full h-full' : 'fixed left-0 top-0 bottom-0 w-64 h-screen'
-      } bg-white border-r-2 border-black text-black flex flex-col justify-between p-5 z-40 font-sans backdrop-blur-xl shadow-xl`}
+      } bg-black border-r border-zinc-800 text-white flex flex-col justify-between p-5 z-40 font-sans backdrop-blur-xl shadow-2xl`}
     >
       <div>
         {/* Header */}
-        <div className="pb-4 mb-4 border-b-2 border-black flex items-center justify-between">
+        <div className="pb-4 mb-4 border-b border-zinc-800 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-extrabold text-black uppercase tracking-tight leading-tight font-heading">
-              CONVENOR<br />PORTAL
+            <h2 className="text-xl font-extrabold text-white uppercase tracking-tight leading-tight font-heading">
+              CONVENOR<br />
+              <span className="text-sky-400">PORTAL</span>
             </h2>
-            {(user?.username || user?.club_name) && (
-              <div className="mt-3 px-2.5 py-1 bg-zinc-100 border border-black rounded-none inline-flex items-center gap-2 max-w-full">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 animate-pulse" />
-                <span className="text-[11px] font-mono font-bold text-black truncate uppercase tracking-wider">
-                  {user?.club_name || user?.username}
+            {user?.username && (
+              <div className="mt-3 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-none inline-flex items-center gap-2 max-w-full overflow-hidden">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0 animate-pulse" />
+                <span className="text-xs font-mono font-bold text-sky-400 truncate uppercase tracking-wider">
+                  {user.username}
                 </span>
               </div>
             )}
@@ -44,7 +45,7 @@ function Sidebar({ mobile = false, onClose }) {
           {mobile && (
             <button
               onClick={onClose}
-              className="p-2 rounded-none bg-zinc-100 text-black hover:bg-black hover:text-white border border-black transition-colors"
+              className="p-2 rounded-none bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -63,13 +64,13 @@ function Sidebar({ mobile = false, onClose }) {
                 className={({ isActive }) =>
                   `flex items-center gap-3 w-full px-4 py-3.5 border-2 text-xs font-extrabold tracking-wider transition-all uppercase rounded-none text-left ${
                     isActive
-                      ? 'bg-black text-white border-black shadow-md'
+                      ? 'bg-white text-black border-sky-400 shadow-md shadow-sky-500/20 ring-1 ring-sky-400'
                       : 'bg-white text-black border-black hover:bg-zinc-100'
                   }`
                 }
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{item.label}</span>
+                <Icon className="w-4 h-4 text-black flex-shrink-0" />
+                <span className="text-black font-extrabold">{item.label}</span>
               </NavLink>
             );
           })}
@@ -77,12 +78,12 @@ function Sidebar({ mobile = false, onClose }) {
       </div>
 
       {/* Footer Logout Button */}
-      <div className="pt-4 border-t-2 border-black">
+      <div className="pt-4 border-t border-zinc-800">
         <button
           onClick={handleLogout}
           className="flex items-center justify-center gap-2.5 w-full px-4 py-3.5 bg-white hover:bg-rose-600 hover:text-white text-black border-2 border-black text-xs font-extrabold tracking-wider uppercase transition-all text-center rounded-none shadow-sm"
         >
-          <LogOut className="w-4 h-4 flex-shrink-0" />
+          <LogOut className="w-4 h-4 text-rose-500 flex-shrink-0" />
           <span>LOGOUT</span>
         </button>
       </div>
@@ -91,4 +92,5 @@ function Sidebar({ mobile = false, onClose }) {
 }
 
 export default Sidebar;
+
 
