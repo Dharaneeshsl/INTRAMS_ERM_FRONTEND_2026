@@ -19,9 +19,24 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
+  async (error) => {
+    const originalRequest = error.config;
+    const refreshToken = localStorage.getItem('userRefreshToken');
+    if (error.response?.status === 401 && refreshToken && !originalRequest._retried && !originalRequest.url.includes('/refresh')) {
+      originalRequest._retried = true;
+      try {
+        const { data } = await axios.post(`${API_BASE_URL}/user/refresh`, { refreshToken });
+        localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userRefreshToken', data.refreshToken);
+        originalRequest.headers.Authorization = `Bearer ${data.token}`;
+        return api(originalRequest);
+      } catch (_) {
+        // Fall through to local logout.
+      }
+    }
+    if (error.response?.status === 401) {
       localStorage.removeItem('userToken');
+      localStorage.removeItem('userRefreshToken');
       localStorage.removeItem('userData');
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
@@ -33,6 +48,8 @@ api.interceptors.response.use(
 
 export const userAPI = {
   login: (credentials) => api.post('/user/login', credentials),
+  refresh: (refreshToken) => api.post('/user/refresh', { refreshToken }),
+  logout: () => api.post('/user/logout'),
   getProfile: () => api.get('/user/profile'),
   getEvents: () => api.get('/user/events'),
   getMyEvents: () => api.get('/user/events'),

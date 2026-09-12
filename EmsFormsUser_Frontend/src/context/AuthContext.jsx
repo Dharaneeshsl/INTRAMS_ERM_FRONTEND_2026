@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
       const data = response.data;
       if (data.token) {
         localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userRefreshToken', data.refreshToken);
         localStorage.setItem('userData', JSON.stringify(data.user || { username }));
         setUser(data.user || { username });
         return { success: true };
@@ -39,8 +40,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await userAPI.logout();
+    } catch (_) {
+      // Clearing local credentials is still required if the network is unavailable.
+    }
     localStorage.removeItem('userToken');
+    localStorage.removeItem('userRefreshToken');
     localStorage.removeItem('userData');
     setUser(null);
   };

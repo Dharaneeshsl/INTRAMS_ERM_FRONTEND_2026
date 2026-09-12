@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Login from './components/login';
-import ForgotPassword from './components/ForgotPassword';
-import EventCards from './components/info';
-import InfoDeep from './components/info-deep';
-import Add from './components/adduser';
-import Items from './components/items';
-import Stocks from './components/stocks';
-import Stats from './components/stats';
-import GrantItems from './components/grantItems';
-import GrantEventItems from './components/grantEventItems';
-import GrantLogs from './components/grantLogs';
-import EditAccess from './components/editaccess';
-import RolePdf from './components/rolePdf';
-import Procurements from './components/procurements';
+
+const Login = lazy(() => import('./components/login'));
+const ForgotPassword = lazy(() => import('./components/ForgotPassword'));
+const EventCards = lazy(() => import('./components/info'));
+const InfoDeep = lazy(() => import('./components/info-deep'));
+const Add = lazy(() => import('./components/adduser'));
+const Items = lazy(() => import('./components/items'));
+const Stocks = lazy(() => import('./components/stocks'));
+const Stats = lazy(() => import('./components/stats'));
+const GrantItems = lazy(() => import('./components/grantItems'));
+const GrantEventItems = lazy(() => import('./components/grantEventItems'));
+const GrantLogs = lazy(() => import('./components/grantLogs'));
+const EditAccess = lazy(() => import('./components/editaccess'));
+const RolePdf = lazy(() => import('./components/rolePdf'));
+const Procurements = lazy(() => import('./components/procurements'));
+
+function PageLoader() {
+  return (
+    <div className="flex justify-center items-center h-screen bg-slate-950 text-sky-400">
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-sky-400" />
+    </div>
+  );
+}
 
 function AppRoutes() {
   return (
-    <Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -123,6 +133,7 @@ function AppRoutes() {
 
       <Route path="*" element={<Navigate to="/cards" replace />} />
     </Routes>
+    </Suspense>
   );
 }
 

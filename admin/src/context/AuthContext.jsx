@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {
       if (data.token) {
         const userData = data.user || data.admin || { username, role: data.role || 'admin' };
         localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('role', userData.role || 'admin');
         setUser(userData);
@@ -45,6 +46,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    try {
+      await adminAPI.logout();
+    } catch (_) {
+      // Clear local credentials even if the API is unavailable.
+    }
     localStorage.clear();
     setUser(null);
   };

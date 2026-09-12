@@ -19,8 +19,22 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
+  async (error) => {
+    const originalRequest = error.config;
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (error.response?.status === 401 && refreshToken && !originalRequest._retried && !originalRequest.url.includes('/refresh')) {
+      originalRequest._retried = true;
+      try {
+        const { data } = await axios.post(`${API_BASE_URL}/admin/refresh`, { refreshToken });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        originalRequest.headers.Authorization = `Bearer ${data.token}`;
+        return api(originalRequest);
+      } catch (_) {
+        // Fall through to local logout.
+      }
+    }
+    if (error.response?.status === 401) {
       localStorage.clear();
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
@@ -32,6 +46,8 @@ api.interceptors.response.use(
 
 export const adminAPI = {
   login: (credentials) => api.post('/admin/login', credentials),
+  refresh: (refreshToken) => api.post('/admin/refresh', { refreshToken }),
+  logout: () => api.post('/admin/logout'),
   forgotPassword: (email) => api.post('/admin/forgot-password', { email }),
   resetPassword: (data) => api.post('/admin/reset-password', data),
 

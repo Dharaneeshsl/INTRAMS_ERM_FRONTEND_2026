@@ -30,6 +30,8 @@ Thumbs.db
 .env.*
 .env.local
 .env.*.local
+!EmsFormsUser_Frontend/.env.example
+!admin/.env.example
 
 # Temp / Cache
 .cache
