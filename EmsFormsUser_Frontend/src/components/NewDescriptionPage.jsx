@@ -17,7 +17,9 @@ function NewDescriptionPage({ formData, setFormData, errors = {} }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-semibold text-sky-200/90 mb-1.5">Event Day *</label>
+          <label className="block text-sm font-semibold text-sky-200/90 mb-1.5">
+            Event Day <span className="text-rose-400">*</span>
+          </label>
           <select
             value={formData.form?.day || ''}
             onChange={(e) => handleChange('day', e.target.value)}
@@ -33,7 +35,9 @@ function NewDescriptionPage({ formData, setFormData, errors = {} }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-sky-200/90 mb-1.5">Time Slot *</label>
+          <label className="block text-sm font-semibold text-sky-200/90 mb-1.5">
+            Time Slot <span className="text-rose-400">*</span>
+          </label>
           <input
             type="text"
             placeholder="e.g. 09:30 AM - 12:30 PM"
@@ -45,7 +49,9 @@ function NewDescriptionPage({ formData, setFormData, errors = {} }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-sky-200/90 mb-1.5">Duration *</label>
+          <label className="block text-sm font-semibold text-sky-200/90 mb-1.5">
+            Duration <span className="text-rose-400">*</span>
+          </label>
           <input
             type="text"
             placeholder="e.g. 3 Hours"

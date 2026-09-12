@@ -7,7 +7,8 @@ import ViewEvents from './components/ViewEvents';
 import EventDetails from './components/EventDetails';
 import CreateEventLayout from './components/CreateEventLayout';
 import UpdateEventController from './components/UpdateEventController';
-
+import EditRequestsPage from './components/EditRequestsPage';
+import LabConfirmationPage from './components/LabConfirmationPage';
 import NotFound from './components/NotFound';
 
 const ProtectedRoute = ({ children }) => {
@@ -65,9 +66,25 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/edit"
+        element={
+          <ProtectedRoute>
+            <EditRequestsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/lab-confirmation"
+        element={
+          <ProtectedRoute>
+            <LabConfirmationPage />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Legacy Route Redirects */}
       <Route path="/my-events" element={<Navigate to="/view-events" replace />} />
-      <Route path="/edit" element={<Navigate to="/view-events" replace />} />
       <Route path="/attendance" element={<Navigate to="/view-events" replace />} />
       <Route path="/items" element={<Navigate to="/create-event" replace />} />
       <Route path="/rounds" element={<Navigate to="/create-event" replace />} />

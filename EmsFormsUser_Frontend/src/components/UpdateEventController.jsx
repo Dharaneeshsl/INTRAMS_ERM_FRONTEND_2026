@@ -195,7 +195,9 @@ function UpdateEventController() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-zinc-300 mb-1">About Event *</label>
+                <label className="block text-sm font-semibold text-zinc-300 mb-1">
+                  About Event <span className="text-red-400">*</span>
+                </label>
                 <textarea
                   rows="4"
                   placeholder="Detailed description of the event concept and objectives..."
@@ -204,6 +206,40 @@ function UpdateEventController() {
                   className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl focus:ring-2 focus:ring-white outline-none text-white"
                 />
                 {errors.about && <p className="text-red-400 text-xs mt-1">{errors.about}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-zinc-300 mb-1">
+                  Number of Rounds <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 3"
+                  value={formData.form?.num_rounds || formData.rounds?.length || 1}
+                  onChange={(e) => {
+                    const num = Math.max(1, parseInt(e.target.value) || 1);
+                    setFormData((prev) => {
+                      const currentRounds = [...(prev.rounds || [])];
+                      while (currentRounds.length < num) {
+                        currentRounds.push({
+                          name: `Round ${currentRounds.length + 1}`,
+                          description: '',
+                          rules: [''],
+                          num_participants: 50,
+                          has_tie_breaker: false,
+                        });
+                      }
+                      const updatedRounds = currentRounds.slice(0, num);
+                      return {
+                        ...prev,
+                        form: { ...prev.form, num_rounds: num },
+                        rounds: updatedRounds,
+                      };
+                    });
+                  }}
+                  className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl focus:ring-2 focus:ring-white outline-none text-white"
+                />
               </div>
             </div>
             <div className="mt-6 flex justify-end">

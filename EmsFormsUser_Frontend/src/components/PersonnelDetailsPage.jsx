@@ -1,0 +1,332 @@
+import React from 'react';
+import { Users, UserCheck, ShieldCheck, Award } from 'lucide-react';
+
+const DEPARTMENTS = [
+  'Select Department',
+  'Apparel & Fashion Design',
+  'Applied Science',
+  'Automobile Engineering',
+  'Biomedical Engineering',
+  'Biotechnology',
+  'Civil Engineering',
+  'Computational Sciences',
+  'Computer Applications (MCA)',
+  'Computer Science & Engineering',
+  'Electrical & Electronics Engineering',
+  'Electronics & Communication Engineering',
+  'Fashion Technology',
+  'Information Technology',
+  'Instrumentation & Control Systems Engineering',
+  'Management Studies (MBA)',
+  'Mechanical Engineering',
+  'Metallurgical Engineering',
+  'Production Engineering',
+  'Robotics & Automation Engineering',
+  'Textile Technology'
+];
+
+const YEARS = ['Select Year', 'I Year', 'II Year', 'III Year', 'IV Year', 'M.Sc 5-yr'];
+
+function PersonnelDetailsPage({ formData, setFormData, errors = {} }) {
+  const updateSecretary = (index, field, value) => {
+    setFormData((prev) => {
+      const currentSecs = [...(prev.contacts?.secretaries || [
+        { name: '', roll_number: '', mobile: '', department: '', year: '' },
+        { name: '', roll_number: '', mobile: '', department: '', year: '' }
+      ])];
+      currentSecs[index] = { ...(currentSecs[index] || {}), [field]: value };
+      return {
+        ...prev,
+        contacts: {
+          ...(prev.contacts || {}),
+          secretaries: currentSecs,
+          secretary: currentSecs[0]
+        }
+      };
+    });
+  };
+
+  const updateConvenor = (index, field, value) => {
+    setFormData((prev) => {
+      const currentConvs = [...(prev.contacts?.convenors || [
+        { name: '', roll_number: '', mobile: '', department: '', year: '' },
+        { name: '', roll_number: '', mobile: '', department: '', year: '' }
+      ])];
+      currentConvs[index] = { ...(currentConvs[index] || {}), [field]: value };
+      return {
+        ...prev,
+        contacts: {
+          ...(prev.contacts || {}),
+          convenors: currentConvs
+        }
+      };
+    });
+  };
+
+  const updateVolunteer = (index, field, value) => {
+    setFormData((prev) => {
+      const currentVols = [...(prev.contacts?.volunteers || [
+        { name: '', roll_number: '', mobile: '', department: '', year: '' },
+        { name: '', roll_number: '', mobile: '', department: '', year: '' }
+      ])];
+      currentVols[index] = { ...(currentVols[index] || {}), [field]: value };
+      return {
+        ...prev,
+        contacts: {
+          ...(prev.contacts || {}),
+          volunteers: currentVols
+        }
+      };
+    });
+  };
+
+  const updateFacultyAdvisor = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      contacts: {
+        ...(prev.contacts || {}),
+        faculty_advisor: {
+          ...(prev.contacts?.faculty_advisor || {}),
+          [field]: value
+        }
+      }
+    }));
+  };
+
+  const updateJudge = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      contacts: {
+        ...(prev.contacts || {}),
+        judge: {
+          ...(prev.contacts?.judge || {}),
+          [field]: value
+        }
+      }
+    }));
+  };
+
+  const secs = formData.contacts?.secretaries || [
+    formData.contacts?.secretary || { name: '', roll_number: '', mobile: '', department: '', year: '' },
+    { name: '', roll_number: '', mobile: '', department: '', year: '' }
+  ];
+  const convs = formData.contacts?.convenors || [
+    { name: '', roll_number: '', mobile: '', department: '', year: '' },
+    { name: '', roll_number: '', mobile: '', department: '', year: '' }
+  ];
+  const vols = formData.contacts?.volunteers || [
+    { name: '', roll_number: '', mobile: '', department: '', year: '' },
+    { name: '', roll_number: '', mobile: '', department: '', year: '' }
+  ];
+  const faculty = formData.contacts?.faculty_advisor || { name: '', designation: '', department: '', mobile: '' };
+  const judge = formData.contacts?.judge || { name: '', designation: '', mobile: '' };
+
+  const renderStudentForm = (title, data, onUpdate, isRequired = true) => (
+    <div className="bg-white border border-slate-300 rounded-2xl p-5 shadow-xl space-y-4">
+      <h4 className="text-xs font-extrabold text-black uppercase tracking-wider border-b border-slate-200 pb-2">
+        {title} {isRequired && <span className="text-rose-600">*</span>}
+      </h4>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div>
+          <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+            Name {isRequired && <span className="text-rose-600">*</span>}
+          </label>
+          <input
+            type="text"
+            placeholder="e.g. John Doe"
+            value={data.name || ''}
+            onChange={(e) => onUpdate('name', e.target.value)}
+            className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+            Roll Number {isRequired && <span className="text-rose-600">*</span>}
+          </label>
+          <input
+            type="text"
+            placeholder="e.g. 21CS001"
+            value={data.roll_number || ''}
+            onChange={(e) => onUpdate('roll_number', e.target.value)}
+            className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+            Mobile No {isRequired && <span className="text-rose-600">*</span>}
+          </label>
+          <input
+            type="text"
+            placeholder="10 digits"
+            value={data.mobile || ''}
+            onChange={(e) => onUpdate('mobile', e.target.value)}
+            className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+            Department {isRequired && <span className="text-rose-600">*</span>}
+          </label>
+          <select
+            value={data.department || ''}
+            onChange={(e) => onUpdate('department', e.target.value)}
+            className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+          >
+            {DEPARTMENTS.map((dept, i) => (
+              <option key={i} value={dept === 'Select Department' ? '' : dept}>
+                {dept}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+            Year {isRequired && <span className="text-rose-600">*</span>}
+          </label>
+          <select
+            value={data.year || ''}
+            onChange={(e) => onUpdate('year', e.target.value)}
+            className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+          >
+            {YEARS.map((yr, i) => (
+              <option key={i} value={yr === 'Select Year' ? '' : yr}>
+                {yr}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6 text-slate-900 font-sans max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-300 shadow-xl text-center">
+        <h2 className="text-2xl font-extrabold text-black font-heading uppercase flex items-center justify-center gap-2">
+          <Users className="w-6 h-6 text-black" /> Personnel Details
+        </h2>
+        <p className="text-xs font-semibold text-slate-500 mt-1">
+          Fill in the complete information for event personnel
+        </p>
+      </div>
+
+      {/* Secretary Details */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-extrabold text-black uppercase tracking-wider">Secretary Details</h3>
+        {renderStudentForm('Secretary 1', secs[0] || {}, (f, v) => updateSecretary(0, f, v), true)}
+        {renderStudentForm('Secretary 2', secs[1] || {}, (f, v) => updateSecretary(1, f, v), false)}
+      </div>
+
+      {/* Convenor Details */}
+      <div className="space-y-4 pt-2">
+        <h3 className="text-sm font-extrabold text-black uppercase tracking-wider">Convenor Details</h3>
+        {renderStudentForm('Convenor 1', convs[0] || {}, (f, v) => updateConvenor(0, f, v), true)}
+        {renderStudentForm('Convenor 2', convs[1] || {}, (f, v) => updateConvenor(1, f, v), true)}
+      </div>
+
+      {/* Volunteer Details */}
+      <div className="space-y-4 pt-2">
+        <h3 className="text-sm font-extrabold text-black uppercase tracking-wider">Volunteer Details</h3>
+        {renderStudentForm('Volunteer 1', vols[0] || {}, (f, v) => updateVolunteer(0, f, v), true)}
+        {renderStudentForm('Volunteer 2', vols[1] || {}, (f, v) => updateVolunteer(1, f, v), false)}
+      </div>
+
+      {/* Faculty Advisor Details */}
+      <div className="space-y-4 pt-2">
+        <h3 className="text-sm font-extrabold text-black uppercase tracking-wider flex items-center gap-1.5">
+          Faculty Advisor Details <span className="text-rose-600">*</span>
+        </h3>
+        <div className="bg-white border border-slate-300 rounded-2xl p-5 shadow-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                Name <span className="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Faculty Name"
+                value={faculty.name || ''}
+                onChange={(e) => updateFacultyAdvisor('name', e.target.value)}
+                className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                Designation <span className="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Associate Professor"
+                value={faculty.designation || faculty.department || ''}
+                onChange={(e) => updateFacultyAdvisor('designation', e.target.value)}
+                className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                Contact Details <span className="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Mobile or Email"
+                value={faculty.mobile || ''}
+                onChange={(e) => updateFacultyAdvisor('mobile', e.target.value)}
+                className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Judge Details */}
+      <div className="space-y-4 pt-2">
+        <h3 className="text-sm font-extrabold text-black uppercase tracking-wider flex items-center gap-1.5">
+          Judge Details <span className="text-rose-600">*</span>
+        </h3>
+        <div className="bg-white border border-slate-300 rounded-2xl p-5 shadow-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                Name <span className="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Judge Name"
+                value={judge.name || ''}
+                onChange={(e) => updateJudge('name', e.target.value)}
+                className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                Designation <span className="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Senior Architect / Professor"
+                value={judge.designation || ''}
+                onChange={(e) => updateJudge('designation', e.target.value)}
+                className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
+                Contact Details <span className="text-rose-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Mobile or Email"
+                value={judge.mobile || ''}
+                onChange={(e) => updateJudge('mobile', e.target.value)}
+                className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-medium focus:ring-2 focus:ring-black outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default PersonnelDetailsPage;

@@ -58,6 +58,7 @@ export const userAPI = {
   updateEvent: (id, eventData) => api.put(`/user/events/${id}`, eventData),
   deleteEvent: (id) => api.delete(`/user/events/${id}`),
   requestEditAccess: (id, message) => api.post(`/user/events/${id}/request-edit`, { message }),
+  getEventPDF: (eventId) => api.get(`/user/events/${eventId}/pdf`, { responseType: 'blob' }),
   getItems: () => api.get('/user/items'),
   // Annexures API
   getAnnexures: (eventId) => api.get(`/user/events/${eventId}/annexures`),

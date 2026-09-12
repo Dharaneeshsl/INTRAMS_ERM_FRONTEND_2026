@@ -1,12 +1,21 @@
-import React, { useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Particles from 'react-tsparticles';
 import { loadSlim } from 'tsparticles-slim';
 import NavBar from './NavBar';
-import { PlusCircle, List, Compass } from 'lucide-react';
+import Sidebar from './Sidebar';
+import { userAPI } from '../api/api';
+import { useAuth } from '../context/AuthContext';
+import { Eye, FileText, RefreshCcw, PlusCircle, Edit, Lock, Loader2 } from 'lucide-react';
 import '../components_css/HomePage.css';
 
 function HomePage() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [downloadingId, setDownloadingId] = useState(null);
+  const [error, setError] = useState('');
+
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const particlesInit = useCallback(async (engine) => {
@@ -31,80 +40,159 @@ function HomePage() {
     },
     particles: {
       color: { value: '#38bdf8' },
-      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.25, width: 1 },
+      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.2, width: 1 },
       move: { direction: 'none', enable: true, outModes: { default: 'bounce' }, speed: 0.8 },
-      number: { density: { enable: true, area: 800 }, value: 70 },
-      opacity: { value: 0.35 },
+      number: { density: { enable: true, area: 800 }, value: 60 },
+      opacity: { value: 0.3 },
       shape: { type: 'circle' },
       size: { value: { min: 1, max: 3 } },
     },
     detectRetina: true,
   };
 
+  const fetchMyEvents = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await userAPI.getMyEvents();
+      const data = response.data?.events || response.data || [];
+      setEvents(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to load club events');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyEvents();
+  }, []);
+
+  const handleDownloadPDF = async (eventId, eventName) => {
+    setDownloadingId(eventId);
+    try {
+      const res = await userAPI.getEventPDF(eventId);
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${eventName || 'Event_Proposal'}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Failed to download PDF proposal.');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   return (
-    <div className="min-h-screen relative bg-[#020617] overflow-hidden flex flex-col ocean-gradient-bg">
+    <div className="min-h-screen relative bg-[#020617] overflow-hidden flex flex-row ocean-gradient-bg">
       <Particles id="home-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
       
-      <NavBar />
+      <Sidebar />
 
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center justify-center">
-        {/* Horizon Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-300 text-xs font-mono tracking-widest uppercase mb-6 shadow-xl shadow-cyan-500/10">
-          <Compass className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
-          <span>INTRAMS • Sailing Into The Unknown</span>
-        </div>
+      <div className="flex-1 flex flex-col min-w-0 z-10">
+        <NavBar />
 
-        <div className="text-center max-w-3xl mb-14">
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-5 font-heading drop-shadow-lg">
-            Navigate New <span className="horizon-glow">Possibilities</span>
-          </h1>
-          <p className="text-lg text-sky-200/80 leading-relaxed font-normal">
-            Chart the course for your association's events. Submit proposals, structure round challenges, and manage logistics for INTRAMS.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
-          <div
-            onClick={() => navigate('/create-event')}
-            className="group glass-card rounded-3xl p-8 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-14 h-14 bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-sky-500/25 group-hover:scale-110 transition-transform">
-                <PlusCircle className="w-8 h-8" />
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-3 font-heading">Chart New Proposal</h2>
-              <p className="text-sky-200/70 text-sm leading-relaxed">
-                Embark on creating an official event proposal covering hall logistics, slots, round mechanics, and item equipment.
-              </p>
-            </div>
-            <div className="mt-8 flex items-center text-sky-400 font-semibold text-sm group-hover:translate-x-2 transition-transform">
-              <span>Begin Proposal Wizard &rarr;</span>
-            </div>
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 overflow-y-auto">
+          {/* Top Banner Box */}
+          <div className="p-8 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-heading tracking-wide uppercase">
+              DASHBOARD
+            </h1>
+            <p className="text-sky-300/70 text-sm sm:text-base mt-2 font-medium">
+              Centralized Event Management & Control Center • {user?.username || 'Club Account'}
+            </p>
           </div>
 
-          <div
-            onClick={() => navigate('/view-events')}
-            className="group glass-card rounded-3xl p-8 cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-14 h-14 bg-gradient-to-tr from-cyan-600 to-teal-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-500/25 group-hover:scale-110 transition-transform">
-                <List className="w-8 h-8" />
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-3 font-heading">Explore Submitted Proposals</h2>
-              <p className="text-sky-200/70 text-sm leading-relaxed">
-                Review your association's active event proposals, monitor administrative edit approvals, and inspect full specs.
-              </p>
+          {/* YOUR EVENTS Card */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <h2 className="text-xl font-extrabold text-white font-heading tracking-wider uppercase">
+                YOUR EVENTS
+              </h2>
+              <button
+                onClick={fetchMyEvents}
+                disabled={loading}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-md disabled:opacity-50"
+              >
+                <RefreshCcw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+                <span>REFRESH</span>
+              </button>
             </div>
-            <div className="mt-8 flex items-center text-cyan-400 font-semibold text-sm group-hover:translate-x-2 transition-transform">
-              <span>View All Proposals &rarr;</span>
-            </div>
-          </div>
-        </div>
 
-        <footer className="mt-16 text-center text-slate-500 text-xs tracking-wider">
-          &copy; INTRAMS • Sailing Into The Unknown. All rights reserved.
-        </footer>
-      </main>
+            {error && (
+              <div className="p-4 rounded-2xl bg-rose-950/60 border border-rose-800 text-rose-300 text-sm text-center">
+                {error}
+              </div>
+            )}
+
+            {loading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
+              </div>
+            ) : events.length === 0 ? (
+              <div className="p-10 text-center border border-dashed border-slate-800 rounded-2xl bg-slate-950/50">
+                <p className="text-slate-400 font-semibold mb-4">No event proposals submitted yet for {user?.username}.</p>
+                <button
+                  onClick={() => navigate('/create-event')}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-sky-500/25 transition-all"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>Create First Proposal</span>
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {events.map((ev) => (
+                  <div
+                    key={ev._id}
+                    className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-sky-500/40 transition-all shadow-lg"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-lg font-bold text-white font-heading">
+                          {ev.name || 'Untitled Event'}
+                        </h3>
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-400 font-mono font-bold uppercase">
+                          {ev.status || 'submitted'}
+                        </span>
+                      </div>
+                      {ev.tagline && <p className="text-sky-300/70 text-xs">{ev.tagline}</p>}
+                    </div>
+
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        onClick={() => navigate(`/event/${ev._id}`, { state: ev })}
+                        className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 rounded-xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-sm flex items-center gap-1.5"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-sky-400" />
+                        <span>VIEW</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleDownloadPDF(ev._id, ev.name)}
+                        disabled={downloadingId === ev._id}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-md shadow-blue-600/25 flex items-center gap-1.5 disabled:opacity-50"
+                      >
+                        {downloadingId === ev._id ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <FileText className="w-3.5 h-3.5" />
+                        )}
+                        <span>PDF</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

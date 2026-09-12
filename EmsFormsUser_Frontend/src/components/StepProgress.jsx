@@ -1,13 +1,13 @@
 import React from 'react';
-import { Check, Compass } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 function StepProgress({ currentStep, totalSteps = 5, onStepClick }) {
   const steps = [
-    { number: 1, label: 'Guidelines' },
-    { number: 2, label: 'Basic Concept' },
-    { number: 3, label: 'Venue & Logistics' },
-    { number: 4, label: 'Rounds & Rules' },
-    { number: 5, label: 'Items & Finalize' },
+    { number: 1, label: 'Instructions' },
+    { number: 2, label: 'Event & Rounds' },
+    { number: 3, label: 'Personnel Details' },
+    { number: 4, label: 'Venue & Items' },
+    { number: 5, label: 'Review & Submit' },
   ];
 
   return (
@@ -28,7 +28,7 @@ function StepProgress({ currentStep, totalSteps = 5, onStepClick }) {
                   aria-label={`Step ${step.number}: ${step.label}`}
                   className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-300 shadow-lg ${
                     isCompleted
-                      ? 'bg-sky-500 text-white shadow-sky-500/20 cursor-pointer hover:bg-sky-400'
+                      ? 'bg-black text-white cursor-pointer hover:bg-slate-800 border border-slate-700'
                       : isCurrent
                       ? 'bg-gradient-to-tr from-sky-400 to-indigo-500 text-white ring-4 ring-sky-500/30 shadow-sky-500/40 scale-105'
                       : 'bg-slate-900 border border-slate-800 text-slate-500 cursor-not-allowed'
