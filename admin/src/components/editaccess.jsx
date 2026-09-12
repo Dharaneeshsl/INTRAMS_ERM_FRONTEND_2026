@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Particles from 'react-tsparticles';
 import { loadSlim } from 'tsparticles-slim';
 import { CheckCircle2, Eye, Loader2, RefreshCcw, ShieldAlert, XCircle } from 'lucide-react';
-import Layout from './Layout';
 import { adminAPI } from '../api';
 
 const particleGradient = {
@@ -139,8 +138,7 @@ const EditAccess = () => {
   };
 
   return (
-    <Layout>
-      <div className="relative min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden">
+    <div className="relative min-h-screen bg-slate-950 overflow-hidden">
         <Particles id="edit-access-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
         <div className="relative z-10 w-full max-w-5xl mx-auto px-4 pt-28 pb-16 sm:pt-24">
@@ -280,7 +278,6 @@ const EditAccess = () => {
           )}
         </div>
       </div>
-    </Layout>
   );
 };
 

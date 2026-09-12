@@ -33,6 +33,11 @@ function CreateEventLayout() {
     },
     rounds: [{ name: 'Round 1', description: '', rules: [''] }],
     items: [],
+    contacts: {
+      secretary: { name: '', roll_number: '', mobile: '' },
+      convenors: [{ name: '', roll_number: '', mobile: '' }],
+      faculty_advisor: { name: '', designation: '', department: '', mobile: '' }
+    }
   });
 
   const navigate = useNavigate();

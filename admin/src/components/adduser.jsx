@@ -136,16 +136,6 @@ function Add() {
         email: editFormData.email || `${editFormData.username}@psgtech.ac.in`,
         ...(editFormData.password ? { password: editFormData.password } : {})
       });
-      const updateData = {
-        username: editFormData.username,
-        clubName: editFormData.association_name
-      };
-      
-      if (editFormData.password.trim()) {
-        updateData.password = editFormData.password;
-      }
-
-      await adminAPI.updateAssociation(editingAssociation._id, updateData);
       setMessage("✅ Association updated successfully!");
       setShowEditModal(false);
       setEditingAssociation(null);
@@ -170,7 +160,7 @@ function Add() {
   };
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden">
+    <div className="min-h-screen bg-slate-950 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -178,13 +168,17 @@ function Add() {
         className="absolute inset-0 z-0"
       />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pt-24 sm:pt-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Clubs Management</h1>
-          <p className="text-white/80">Manage Clubs, create new ones, and update credentials</p>
+      <div className="relative z-10 max-w-7xl mx-auto space-y-8">
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+            Association <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">Management</span>
+          </h1>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Create and manage student clubs and associations for INTRAMS ERM.
+          </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
             <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4">
               <h2 className="text-xl font-semibold text-white">
@@ -237,7 +231,7 @@ function Add() {
                           <h3 className="font-semibold text-gray-800">
                             {association.clubName || association.association_name}
                           </h3>
-                          <p className="text-sm text-gray-600">@{association.username}</p>
+                          <p className="text-sm text-gray-600">@{association.username} • {association.email || `${association.username}@psgtech.ac.in`}</p>
                         </div>
                         <div className="flex gap-2 ml-4">
                           <button
@@ -249,7 +243,7 @@ function Add() {
                           </button>
                           <button
                             onClick={() => handleDelete(association._id)}
-                            className="p-2 bg-red-500 text-white hover:bg-sky-500 rounded-lg transition-colors"
+                            className="p-2 bg-red-500 text-white hover:bg-red-400 rounded-lg transition-colors"
                             title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -280,6 +274,16 @@ function Add() {
                     className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
                     value={formData.username}
                     onChange={(e) => setFormData({...formData, username: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    placeholder="Enter email address"
+                    className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900 placeholder-gray-500"
+                    value={formData.email || ""}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
                   />
                 </div>
                 <div>
@@ -331,6 +335,15 @@ function Add() {
                       className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
                       value={editFormData.username}
                       onChange={(e) => setEditFormData({...editFormData, username: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      className="w-full pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30 transition-all duration-200 bg-gray-50 focus:bg-white text-gray-900"
+                      value={editFormData.email || ""}
+                      onChange={(e) => setEditFormData({...editFormData, email: e.target.value})}
                     />
                   </div>
                   <div>

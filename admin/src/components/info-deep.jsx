@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { adminAPI } from "../api";
 import { FileText, Download, Eye, Trash2, Loader2, ArrowLeft } from "lucide-react";
 
@@ -24,9 +24,11 @@ const InfoDeep = () => {
     },
   };
 
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const event = location.state;
+  const [event, setEvent] = useState(location.state || null);
+  const [fetching, setFetching] = useState(!location.state);
 
   const [pdfUrl, setPdfUrl] = useState(null);
   const [showPdfViewer, setShowPdfViewer] = useState(false);
@@ -37,9 +39,36 @@ const InfoDeep = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
+  React.useEffect(() => {
+    if (!event && id) {
+      setFetching(true);
+      adminAPI.getEventById(id)
+        .then(res => {
+          const fetchedEvent = res.data?.data || res.data;
+          if (fetchedEvent) {
+            setEvent(fetchedEvent);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setFetching(false));
+    }
+  }, [id, event]);
+
+  if (fetching) {
+    return (
+      <div className="min-h-screen relative flex items-center justify-center bg-slate-950 overflow-hidden">
+        <Particles id="info-deep-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
+        <div className="relative z-10 p-6 text-center text-white">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-sky-400" />
+          <p>Loading event details...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!event) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center bg-slate-950 overflow-hidden">
         <Particles id="info-deep-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
         <div className="relative z-10 p-6 text-center bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20">
           <p className="text-gray-700 font-semibold mb-4">No event details loaded.</p>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { adminAPI } from '../api';
-import { LogOut, Code, BarChart3, Menu, X, Package, TrendingUp, FileText, Download, Loader2, Users, Gift, History, ShieldCheck } from 'lucide-react';
+import { LogOut, Code, BarChart3, Menu, X, Package, TrendingUp, FileText, Download, Loader2, Users, Gift, History, ShieldCheck, ShoppingCart } from 'lucide-react';
 
 function NavItem({ to, icon: Icon, label, mobile }) {
   return (
@@ -56,15 +56,16 @@ export default function Layout({ children }) {
   }
 
   const adminItems = [
-    { to: '/cards',       icon: BarChart3,   label: 'Dashboard'    },
-    { to: '/add',         icon: Code,        label: 'Add User'     },
-    { to: '/items',       icon: Package,     label: 'Items'        },
-    { to: '/stocks',      icon: Package,     label: 'Stocks'       },
-    { to: '/stats',       icon: TrendingUp,  label: 'Statistics'   },
-    { to: '/grant-items', icon: Gift,        label: 'Grant Items'  },
-    { to: '/grant-logs',  icon: History,     label: 'Past Grants'  },
-    { to: '/edit-access', icon: ShieldCheck, label: 'Edit Access'  },
-    { to: '/role-pdf',    icon: Users,       label: 'Role PDFs'    },
+    { to: '/cards',        icon: BarChart3,    label: 'Dashboard'    },
+    { to: '/add',          icon: Code,         label: 'Add User'     },
+    { to: '/items',        icon: Package,      label: 'Items'        },
+    { to: '/stocks',       icon: Package,      label: 'Stocks'       },
+    { to: '/procurements', icon: ShoppingCart, label: 'Procurements' },
+    { to: '/stats',        icon: TrendingUp,   label: 'Statistics'   },
+    { to: '/grant-items',  icon: Gift,         label: 'Grant Items'  },
+    { to: '/grant-logs',   icon: History,      label: 'Past Grants'  },
+    { to: '/edit-access',  icon: ShieldCheck,  label: 'Edit Access'  },
+    { to: '/role-pdf',     icon: Users,        label: 'Role PDFs'    },
   ];
 
   const memberItems = [
@@ -74,9 +75,10 @@ export default function Layout({ children }) {
   ];
 
   const procurementItems = [
-    { to: '/grant-items', icon: Gift,        label: 'Grant Items'  },
-    { to: '/grant-logs',  icon: History,     label: 'Past Grants'  },
-    { to: '/stocks',      icon: Package,     label: 'Stocks'       },
+    { to: '/grant-items',  icon: Gift,         label: 'Grant Items'  },
+    { to: '/grant-logs',   icon: History,      label: 'Past Grants'  },
+    { to: '/stocks',       icon: Package,      label: 'Stocks'       },
+    { to: '/procurements', icon: ShoppingCart, label: 'Procurements' },
   ];
 
   const navItems =

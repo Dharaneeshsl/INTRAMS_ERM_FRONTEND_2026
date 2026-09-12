@@ -32,16 +32,6 @@ export const AuthProvider = ({ children }) => {
       }
       return { success: false, error: data.message || 'Login failed' };
     } catch (err) {
-      if (
-        (username.toLowerCase() === 'democlub' || username.toLowerCase() === 'democlub@psgtech.ac.in') &&
-        password === 'password123'
-      ) {
-        const demoUser = { username: 'DemoClub', association_name: 'PSG Tech Students Union', email: 'democlub@psgtech.ac.in' };
-        localStorage.setItem('userToken', 'demo-user-token-2026');
-        localStorage.setItem('userData', JSON.stringify(demoUser));
-        setUser(demoUser);
-        return { success: true };
-      }
       return {
         success: false,
         error: err.response?.data?.message || err.message || 'Server connection error',

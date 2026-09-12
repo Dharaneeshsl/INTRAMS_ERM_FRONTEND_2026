@@ -102,6 +102,143 @@ function NewDescriptionPage({ formData, setFormData, errors = {} }) {
           />
         </div>
       </div>
+
+      {/* Contact Persons Section */}
+      <h3 className="text-xl font-bold text-white mt-10 mb-4 font-heading border-t border-slate-800 pt-6">Contact Persons</h3>
+
+      <div className="space-y-6">
+        {/* Secretary */}
+        <div className="p-4 bg-slate-900/60 rounded-2xl border border-slate-800">
+          <h4 className="text-md font-semibold text-sky-300 mb-3">Secretary Details</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Secretary Name"
+              value={formData.contacts?.secretary?.name || ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                contacts: {
+                  ...prev.contacts,
+                  secretary: { ...(prev.contacts?.secretary || {}), name: e.target.value }
+                }
+              }))}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <input
+              type="text"
+              placeholder="Roll Number"
+              value={formData.contacts?.secretary?.roll_number || ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                contacts: {
+                  ...prev.contacts,
+                  secretary: { ...(prev.contacts?.secretary || {}), roll_number: e.target.value }
+                }
+              }))}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <input
+              type="text"
+              placeholder="Mobile Number"
+              value={formData.contacts?.secretary?.mobile || ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                contacts: {
+                  ...prev.contacts,
+                  secretary: { ...(prev.contacts?.secretary || {}), mobile: e.target.value }
+                }
+              }))}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+          </div>
+        </div>
+
+        {/* Convenor */}
+        <div className="p-4 bg-slate-900/60 rounded-2xl border border-slate-800">
+          <h4 className="text-md font-semibold text-sky-300 mb-3">Convenor Details</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Convenor Name"
+              value={formData.contacts?.convenors?.[0]?.name || ''}
+              onChange={(e) => setFormData(prev => {
+                const convs = [...(prev.contacts?.convenors || [{ name: '', roll_number: '', mobile: '' }])];
+                convs[0] = { ...convs[0], name: e.target.value };
+                return { ...prev, contacts: { ...prev.contacts, convenors: convs } };
+              })}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <input
+              type="text"
+              placeholder="Roll Number"
+              value={formData.contacts?.convenors?.[0]?.roll_number || ''}
+              onChange={(e) => setFormData(prev => {
+                const convs = [...(prev.contacts?.convenors || [{ name: '', roll_number: '', mobile: '' }])];
+                convs[0] = { ...convs[0], roll_number: e.target.value };
+                return { ...prev, contacts: { ...prev.contacts, convenors: convs } };
+              })}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <input
+              type="text"
+              placeholder="Mobile Number"
+              value={formData.contacts?.convenors?.[0]?.mobile || ''}
+              onChange={(e) => setFormData(prev => {
+                const convs = [...(prev.contacts?.convenors || [{ name: '', roll_number: '', mobile: '' }])];
+                convs[0] = { ...convs[0], mobile: e.target.value };
+                return { ...prev, contacts: { ...prev.contacts, convenors: convs } };
+              })}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+          </div>
+        </div>
+
+        {/* Faculty Advisor */}
+        <div className="p-4 bg-slate-900/60 rounded-2xl border border-slate-800">
+          <h4 className="text-md font-semibold text-sky-300 mb-3">Faculty Advisor Details</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Faculty Advisor Name"
+              value={formData.contacts?.faculty_advisor?.name || ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                contacts: {
+                  ...prev.contacts,
+                  faculty_advisor: { ...(prev.contacts?.faculty_advisor || {}), name: e.target.value }
+                }
+              }))}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <input
+              type="text"
+              placeholder="Department / Designation"
+              value={formData.contacts?.faculty_advisor?.department || ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                contacts: {
+                  ...prev.contacts,
+                  faculty_advisor: { ...(prev.contacts?.faculty_advisor || {}), department: e.target.value }
+                }
+              }))}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            <input
+              type="text"
+              placeholder="Mobile Number"
+              value={formData.contacts?.faculty_advisor?.mobile || ''}
+              onChange={(e) => setFormData(prev => ({
+                ...prev,
+                contacts: {
+                  ...prev.contacts,
+                  faculty_advisor: { ...(prev.contacts?.faculty_advisor || {}), mobile: e.target.value }
+                }
+              }))}
+              className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-sky-500"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

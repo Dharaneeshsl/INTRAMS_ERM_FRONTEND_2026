@@ -53,9 +53,9 @@ function UpdateEventController() {
       const data = res.data?.data || res.data;
       if (data) {
         setFormData({
-          name: data.name || '',
+          name: data.name || data.event_name || '',
           tagline: data.tagline || '',
-          about: data.about || '',
+          about: data.about || data.description || '',
           form: data.form || {
             day: '',
             slot: '',
@@ -67,6 +67,11 @@ function UpdateEventController() {
           },
           rounds: data.rounds || [{ name: 'Round 1', description: '', rules: [''] }],
           items: data.items || [],
+          contacts: data.contacts || {
+            secretary: { name: '', roll_number: '', mobile: '' },
+            convenors: [{ name: '', roll_number: '', mobile: '' }],
+            faculty_advisor: { name: '', designation: '', department: '', mobile: '' }
+          }
         });
       }
     } catch (err) {

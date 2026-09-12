@@ -43,6 +43,7 @@ export const adminAPI = {
 
   // Events & Access
   getEvents: () => api.get('/admin/events'),
+  getEventById: (id) => api.get(`/admin/events/${id}`),
   updateEventStatus: (id, status, reason) => api.put(`/admin/events/${id}/status`, { status, reason }),
   getRequestedEvents: () => api.get('/admin/edit-requests'),
   giveEditAccess: (requestId, decision) => api.post(`/admin/edit-requests/${requestId}`, { decision }),
@@ -63,6 +64,7 @@ export const adminAPI = {
   grantItemsToEvent: (data) => api.post('/admin/grants', data),
   getEventGrantHistory: (eventId) => api.get(`/admin/events/${eventId}/grants`),
   getAllGrants: () => api.get('/admin/grants'),
+  getProcurements: () => api.get('/admin/procurements'),
   revertGrant: (grantId) => api.delete(`/admin/grants/${grantId}`),
   updateSuSource: (data) => api.put('/admin/grants/su-source', data),
 

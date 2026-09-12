@@ -1,12 +1,43 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import NavBar from './NavBar';
-import { ArrowLeft, Calendar, Clock, MapPin, Users, Layers, Package, Tag } from 'lucide-react';
+import AnnexureUploadModal from './AnnexureUploadModal';
+import { userAPI } from '../api/api';
+import { ArrowLeft, Calendar, Clock, MapPin, Users, Layers, Package, Tag, Paperclip, Loader2 } from 'lucide-react';
 
 function EventDetails() {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const event = location.state;
+  const [event, setEvent] = useState(location.state || null);
+  const [fetching, setFetching] = useState(!location.state);
+  const [showAnnexureModal, setShowAnnexureModal] = useState(false);
+
+  useEffect(() => {
+    if (!event && id) {
+      setFetching(true);
+      userAPI.getEventById(id)
+        .then(res => {
+          const data = res.data?.data || res.data;
+          if (data) {
+            setEvent(data);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setFetching(false));
+    }
+  }, [id, event]);
+
+  if (fetching) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 text-white">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
+          <p className="text-slate-300 font-medium">Loading proposal details...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -29,12 +60,20 @@ function EventDetails() {
       <NavBar />
 
       <main className="relative z-10 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 flex-1">
-        <button
-          onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-sky-200 rounded-xl text-sm font-medium mb-6 transition-all"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to List
-        </button>
+        <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-sky-200 rounded-xl text-sm font-medium transition-all"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to List
+          </button>
+          <button
+            onClick={() => setShowAnnexureModal(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-sky-500/20 transition-all"
+          >
+            <Paperclip className="w-4 h-4" /> Supporting Annexures
+          </button>
+        </div>
 
         <div className="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-sky-500/20">
           <div className="border-b border-slate-800 pb-6 mb-6">
@@ -123,6 +162,14 @@ function EventDetails() {
           )}
         </div>
       </main>
+
+      {showAnnexureModal && (
+        <AnnexureUploadModal
+          eventId={event._id || event.id}
+          eventName={event.name || event.event_name}
+          onClose={() => setShowAnnexureModal(false)}
+        />
+      )}
     </div>
   );
 }
