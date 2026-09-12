@@ -19,6 +19,12 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
+  const userRole = user?.role ?? localStorage.getItem('role') ?? 'member';
+  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    const defaultHome = userRole === 'procurement' ? '/grant-items' : '/cards';
+    return <Navigate to={defaultHome} replace />;
+  }
+
   return <Layout>{children}</Layout>;
 }
 

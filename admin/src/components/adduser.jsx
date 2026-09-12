@@ -72,9 +72,11 @@ function Add() {
     try {
       setLoading(true);
       const response = await adminAPI.getAssociations();
-      const mappedData = response.data.data.map(club => ({
+      const rawClubs = Array.isArray(response.data.data) ? response.data.data : (response.data.associations || []);
+      const mappedData = rawClubs.map(club => ({
         ...club,
-        association_name: club.clubName
+        association_name: club.club_name || club.clubName || club.name || club.username,
+        clubName: club.club_name || club.clubName || club.name || club.username
       }));
       setAssociations(mappedData);
       setError(null);
@@ -93,13 +95,16 @@ function Add() {
     }
 
     try {
+      const cleanUsername = formData.username.toLowerCase().trim();
       await adminAPI.createAssociation({
-        username: formData.username,
+        username: cleanUsername,
         password: formData.password,
-        clubName: formData.association_name
+        club_name: formData.association_name,
+        name: formData.association_name,
+        email: formData.email || `${cleanUsername}@psgtech.ac.in`
       });
       setMessage("✅ Association created successfully!");
-      setFormData({ username: "", password: "", association_name: "" });
+      setFormData({ username: "", password: "", association_name: "", email: "" });
       fetchAssociations();
     } catch (err) {
       setMessage(`❌ Error: ${err.response?.data?.message || err.message}`);
@@ -110,7 +115,8 @@ function Add() {
     setEditingAssociation(association);
     setEditFormData({
       username: association.username,
-      association_name: association.clubName || association.association_name,
+      association_name: association.club_name || association.clubName || association.association_name,
+      email: association.email || `${association.username}@psgtech.ac.in`,
       password: ""
     });
     setShowEditModal(true);
@@ -124,6 +130,12 @@ function Add() {
     }
 
     try {
+      await adminAPI.updateAssociation(editingAssociation._id, {
+        username: editFormData.username,
+        club_name: editFormData.association_name,
+        email: editFormData.email || `${editFormData.username}@psgtech.ac.in`,
+        ...(editFormData.password ? { password: editFormData.password } : {})
+      });
       const updateData = {
         username: editFormData.username,
         clubName: editFormData.association_name
