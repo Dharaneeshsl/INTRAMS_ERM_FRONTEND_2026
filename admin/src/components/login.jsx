@@ -70,11 +70,6 @@ function Login() {
     }
   };
 
-  const handleFillDemo = () => {
-    setUsername('admin');
-    setPassword('password123');
-  };
-
   return (
     <div className="min-h-screen relative flex items-center justify-center bg-slate-950 overflow-hidden px-4">
       <Particles id="admin-login-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
@@ -86,33 +81,6 @@ function Login() {
           </div>
           <h2 className="text-2xl font-bold text-white font-heading">INTRAMS Admin Login</h2>
           <p className="text-sky-300/70 text-sm mt-1">Login with administrative credentials</p>
-        </div>
-
-        {/* Demo Credentials Box */}
-        <div className="mb-6 p-4 rounded-xl bg-cyan-950/50 border border-cyan-500/30 text-xs text-cyan-200 flex flex-col gap-2 shadow-inner">
-          <div className="flex items-center justify-between font-semibold text-cyan-300">
-            <span className="flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-cyan-400" />
-              Demo Admin Credentials
-            </span>
-            <button
-              type="button"
-              onClick={handleFillDemo}
-              className="text-[11px] font-bold px-2 py-0.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 transition-colors border border-cyan-500/40"
-            >
-              Fill Demo Login
-            </button>
-          </div>
-          <div className="font-mono text-slate-300 space-y-1 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Username:</span>
-              <span className="text-sky-300 font-bold">admin</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Password:</span>
-              <span className="text-sky-300 font-bold">password123</span>
-            </div>
-          </div>
         </div>
 
         {error && (
