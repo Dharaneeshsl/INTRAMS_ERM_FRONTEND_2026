@@ -1,71 +1,334 @@
-# 🎨 INTRAMS ERM 2026 — FRONTEND APPLICATIONS
+# INTRAMS ERM 2026 — Frontend
 
-Monorepo containing the **User (Club) Portal** and **Admin Portal** for **INTRAMS ERM 2026**.
+Frontend application for the **INTRAMS Event Requirement Management (ERM) Portal 2026**, developed for the **Students' Union, PSG College of Technology**.
 
-Built with **React**, **Vite**, **Tailwind CSS / Glassmorphism UI**, **Lucide Icons**, and **React Router DOM**.
+The repository contains two frontend applications:
 
----
-
-## 💻 Portal Overview
-
-### 1. User Portal (`EmsFormsUser_Frontend`) — Port `5173` / `3000`
-- **Proposal Wizard**: Multi-step event proposal wizard (Basic Info, Logistics, Schedule & Venue, Contact Persons, Rounds & Rules, Item Requests).
-- **Contact Persons Form**: Dedicated inputs for **Secretary** (name, roll no, mobile), **Convenor** (name, roll no, mobile), and **Faculty Advisor** (name, dept, mobile).
-- **Edit Access Flow**: Pre-fills existing proposal data and contacts when editing approved edit requests.
-- **Supporting Annexures**: Built-in modal to view, upload, and delete document attachments per proposal.
-- **Deep Linking & Proposal Views**: Full fallback fetch using `useParams()` + `userAPI.getEventById(id)` for page refreshes and direct links.
-- **100% Pure JWT Authentication**: Managed state via `AuthContext` with Bearer header injection across all API requests.
-
-### 2. Admin Portal (`admin`) — Port `5174`
-- **Dashboard & Event Cards**: Monitor proposals across clubs, review statuses, and inspect deep details.
-- **Procurement Requisitions Viewer (`/procurements`)**: Dedicated view displaying automatically logged inventory shortage purchase requests.
-- **Association / Club Management (`/add`)**: Create and update clubs with complete payload validation, email inputs, and username search.
-- **Master Items & Stocks (`/items`, `/stocks`)**: Catalog management with auto-generated item codes and quantity updates.
-- **Item Granting & History (`/grant-items`, `/grant-logs`)**: Allocate items to events with automatic stock deduction and transaction logging.
-- **Role-Based Authorization**: Protected routes with strict role checks (`admin`, `member`, `procurement`).
-- **Performance & Code-Splitting**: Route-level lazy loading (`React.lazy` + `Suspense`) eliminating bundle warnings.
+- **User (Club) Portal** — Event proposal creation, editing and submission.
+- **Admin Portal** — Event monitoring, club, inventory, procurement and item management.
 
 ---
 
-## 🛠 Getting Started
+## Applications
 
-### Prerequisites
-- Node.js (v18+ recommended)
-- npm or yarn
+| Portal | Directory | Port | Purpose |
+|---|---|---:|---|
+| User Portal | `EmsFormsUser_Frontend` | `5173` | Event proposal and requirement management |
+| Admin Portal | `admin` | `5174` | Event, club, inventory and procurement management |
 
-### Installation & Local Development
+---
 
-#### 1. User Portal
-```bash
+## Tech Stack
+
+- React
+- Vite
+- Tailwind CSS
+- React Router DOM
+- Lucide React
+- JWT Authentication
+- REST API
+- Docker
+
+---
+
+## Main Features
+
+### User Portal
+
+- Multi-step event proposal wizard
+- Basic event information
+- Logistics and requirements
+- Schedule and venue details
+- Secretary, Convenor and Faculty Advisor details
+- Rounds and rules
+- Item requirements
+- Supporting annexure uploads
+- Proposal editing
+- Proposal submission
+- JWT-based authentication
+- Event details and deep linking
+
+### Admin Portal
+
+- Event dashboard and monitoring
+- Proposal status management
+- Club management
+- User search
+- Master item management
+- Stock management
+- Item granting
+- Grant history and logs
+- Procurement requisitions
+- Edit access management
+- Role-based authorization
+
+Supported roles:
+
+```text
+admin
+member
+procurement
+Project Structure
+INTRAMS_ERM_FRONTEND_2026/
+│
+├── EmsFormsUser_Frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── admin/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── README.md
+└── .gitignore
+Local Development
+Prerequisites
+
+Install:
+
+Node.js 18+
+npm
+Git
+
+Check versions:
+
+node --version
+npm --version
+git --version
+Clone Repository
+git clone https://github.com/Students-Union-PSGTech/INTRAMS_ERM_FRONTEND_2026.git
+cd INTRAMS_ERM_FRONTEND_2026
+Run User Portal
 cd EmsFormsUser_Frontend
 npm install
 npm run dev
-```
 
-#### 2. Admin Portal
-```bash
-cd admin
+Open:
+
+http://localhost:5173
+Run Admin Portal
+
+Open a second terminal:
+
+cd INTRAMS_ERM_FRONTEND_2026/admin
 npm install
 npm run dev
-```
 
----
+Open:
 
-## 📦 Production Builds
+http://localhost:5174
 
-```bash
-# User Portal Build
-cd EmsFormsUser_Frontend
+The actual port is controlled by the Vite configuration.
+
+Environment Variables
+
+Create a .env file in the required frontend application directory:
+
+VITE_API_BASE_URL=http://localhost:5000/api
+Variable	Description	Example
+VITE_API_BASE_URL	Backend API base URL	http://localhost:5000/api
+
+Restart the development server after changing .env.
+
+Important
+
+Do not commit:
+
+.env
+.env.local
+.env.production
+
+Frontend environment variables are exposed to the browser after the application is built. Never store backend secrets or database credentials in frontend environment files.
+
+Docker
+
+Docker can be used to run the frontend applications in containers instead of installing Node dependencies directly on the host machine.
+
+Docker Architecture
+                 Docker Compose
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+          ▼                       ▼
+   User Frontend             Admin Frontend
+      :5173                     :5174
+          │                       │
+          └───────────┬───────────┘
+                      │
+                      │ REST API
+                      ▼
+               Backend API
+                  :5000
+                      │
+                      ▼
+                  Database
+
+The frontend containers communicate with the backend through the configured API URL.
+
+Docker Prerequisites
+
+Install:
+
+Docker
+Docker Compose
+
+Verify:
+
+docker --version
+docker compose version
+Run with Docker Compose
+
+From the frontend repository root:
+
+docker compose up --build
+
+After the containers start:
+
+User Portal:
+http://localhost:5173
+
+Admin Portal:
+http://localhost:5174
+
+Backend:
+http://localhost:5000
+
+The backend must be running and accessible at the configured API URL.
+
+Stop Docker Containers
+docker compose down
+Run Docker in Background
+docker compose up --build -d
+
+View running containers:
+
+docker compose ps
+
+View logs:
+
+docker compose logs
+
+View logs for a specific service:
+
+docker compose logs -f user-frontend
+docker compose logs -f admin-frontend
+Rebuild After Changes
+
+If dependencies or Docker configuration are changed:
+
+docker compose down
+docker compose up --build
+Frontend–Backend Architecture
+┌────────────────────────────┐
+│       USER PORTAL          │
+│       React + Vite         │
+│          :5173             │
+└─────────────┬──────────────┘
+              │
+              │ REST API + JWT
+              │
+              ▼
+┌────────────────────────────┐
+│       BACKEND API          │
+│      Node + Express        │
+│          :5000             │
+└─────────────┬──────────────┘
+              │
+              ▼
+           Database
+
+
+┌────────────────────────────┐
+│       ADMIN PORTAL         │
+│       React + Vite         │
+│          :5174             │
+└─────────────┬──────────────┘
+              │
+              │ REST API + JWT
+              └──────────────► Backend
+
+The frontend applications do not directly access the database.
+
+All application data is accessed through the backend API.
+
+Authentication
+
+The applications use JWT-based authentication.
+
+Authenticated API requests use:
+
+Authorization: Bearer <JWT_TOKEN>
+
+The backend is responsible for:
+
+Authentication
+JWT validation
+Authorization
+Role verification
+Business logic
+Database operations
+API Communication
+React Component
+      │
+      ▼
+API / Service Layer
+      │
+      ▼
+HTTP Request
+      │
+      ▼
+Backend Endpoint
+      │
+      ▼
+Controller / Service
+      │
+      ▼
+Database
+
+Frontend and backend must maintain the same:
+
+Endpoint URLs
+HTTP methods
+Request fields
+Response fields
+Authentication requirements
+Error formats
+
+Do not change API contracts without coordinating with the backend team.
+
+Production Build
+
+For either application:
+
 npm run build
 
-# Admin Portal Build
-cd admin
-npm run build
-```
+Preview the production build:
 
----
+npm run preview
+Git Workflow
 
-## 🌐 Configurable Environment Variables
+Check changes:
 
-Set in `.env` or `vite.config.js`:
-- `VITE_API_BASE_URL`: Base backend API URL (e.g. `http://localhost:5000/api`)
+git status
+git diff
+
+Stage:
+
+git add .
+
+Commit:
+
+git commit -m "describe your change"
+
+Push:
+
+git push
+
+Never commit:
+
+node_modules/
+.env
+.env.local
+dist/
