@@ -9,10 +9,10 @@ function NavItem({ to, icon: Icon, label, mobile }) {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+        `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold tracking-wide transition-all border ${
           isActive
-            ? 'bg-white/30 text-white font-semibold'
-            : 'text-white/80 hover:bg-white/20 hover:text-white'
+            ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/25 border-sky-400/40 font-semibold'
+            : 'bg-slate-900/60 text-slate-300 border-slate-800 hover:bg-slate-800/80 hover:text-white hover:border-slate-700'
         }`
       }
     >
@@ -49,29 +49,31 @@ export default function Layout({ children }) {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-sky-500/30" />
+      <div className="flex justify-center items-center h-screen bg-slate-950 text-sky-400">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-sky-400" />
       </div>
     );
   }
 
   const adminItems = [
-    { to: '/cards',        icon: BarChart3,    label: 'Dashboard'    },
-    { to: '/add',          icon: Code,         label: 'Add User'     },
-    { to: '/items',        icon: Package,      label: 'Items'        },
-    { to: '/stocks',       icon: Package,      label: 'Stocks'       },
-    { to: '/procurements', icon: ShoppingCart, label: 'Procurements' },
-    { to: '/stats',        icon: TrendingUp,   label: 'Statistics'   },
-    { to: '/grant-items',  icon: Gift,         label: 'Grant Items'  },
-    { to: '/grant-logs',   icon: History,      label: 'Past Grants'  },
-    { to: '/edit-access',  icon: ShieldCheck,  label: 'Edit Access'  },
-    { to: '/role-pdf',     icon: Users,        label: 'Role PDFs'    },
+    { to: '/cards',            icon: BarChart3,    label: 'Dashboard'        },
+    { to: '/items',            icon: Package,      label: 'Items'            },
+    { to: '/stats',            icon: TrendingUp,   label: 'Statistics'       },
+    { to: '/lab-confirmation', icon: ShieldCheck,  label: 'Lab Confirmation' },
+    { to: '/stocks',           icon: Package,      label: 'Stocks'           },
+    { to: '/procurements',     icon: ShoppingCart, label: 'Procurements'     },
+    { to: '/grant-items',      icon: Gift,         label: 'Grant Items'      },
+    { to: '/grant-logs',       icon: History,      label: 'Past Grants'      },
+    { to: '/add',              icon: Code,         label: 'Add User'         },
+    { to: '/role-pdf',         icon: Users,        label: 'Role PDFs'        },
+    { to: '/edit-access',      icon: ShieldCheck,  label: 'Edit Access'      },
   ];
 
   const memberItems = [
-    { to: '/cards',       icon: BarChart3,   label: 'Dashboard'    },
-    { to: '/edit-access', icon: ShieldCheck, label: 'Edit Access'  },
-    { to: '/role-pdf',    icon: Users,       label: 'Role PDFs'    },
+    { to: '/cards',            icon: BarChart3,   label: 'Dashboard'        },
+    { to: '/lab-confirmation', icon: ShieldCheck, label: 'Lab Confirmation' },
+    { to: '/edit-access',      icon: ShieldCheck, label: 'Edit Access'      },
+    { to: '/role-pdf',         icon: Users,       label: 'Role PDFs'        },
   ];
 
   const procurementItems = [
@@ -134,15 +136,20 @@ export default function Layout({ children }) {
   };
 
   const SidebarContent = ({ mobile = false }) => (
-    <div className="flex flex-col h-full pt-4 bg-slate-950/95 border-r border-slate-800/80 text-slate-100">
-      <div className="flex flex-col flex-grow px-4 py-4 bg-slate-900/60 backdrop-blur-sm rounded-xl mx-2 border border-slate-800/60">
-        <div className="mb-4 px-3 py-1.5 rounded-lg bg-sky-950/80 border border-sky-500/30 text-center">
-          <span className="text-xs font-semibold text-sky-400 uppercase tracking-widest font-mono">
-            {userRole} • Horizon
-          </span>
+    <div className="flex flex-col h-full p-4 bg-slate-950/95 border-r border-slate-800 text-slate-100 backdrop-blur-xl">
+      <div className="flex flex-col flex-grow p-4 bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 shadow-2xl">
+        <div className="mb-6 pb-4 border-b border-slate-800 text-center">
+          <h2 className="text-sm font-extrabold text-white uppercase tracking-wider font-heading">
+            INTRAMS ADMIN PORTAL
+          </h2>
+          <div className="mt-2 inline-block px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-center">
+            <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest font-mono">
+              ROLE: {userRole}
+            </span>
+          </div>
         </div>
 
-        <nav className="space-y-1">
+        <nav className="space-y-2 flex-1">
           {navItems.map((item) => (
             <NavItem key={item.to} {...item} mobile={mobile} />
           ))}
@@ -151,12 +158,12 @@ export default function Layout({ children }) {
             <button
               onClick={handleEventSummary}
               disabled={summaryLoading}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 mt-3 w-full rounded-xl text-sm font-medium transition-all bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex items-center justify-center gap-2 px-4 py-3 mt-3 w-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
             >
               {summaryLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin text-sky-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-sky-400" />
               ) : (
-                <FileText className="w-5 h-5 text-sky-400" />
+                <FileText className="w-4 h-4 text-sky-400" />
               )}
               Event Summary
             </button>
@@ -164,18 +171,18 @@ export default function Layout({ children }) {
         </nav>
 
         {summaryError && (
-          <div className="mt-3 px-3 py-2 text-xs text-red-300 bg-red-950/40 border border-red-500/30 rounded-lg">
+          <div className="mt-3 px-3 py-2 text-xs text-rose-300 bg-rose-950/40 border border-rose-500/30 rounded-xl">
             {summaryError}
           </div>
         )}
 
-        <div className="mt-auto pt-4 border-t border-slate-800/60">
+        <div className="mt-auto pt-4 border-t border-slate-800">
           <button
             onClick={handleLogout}
-            className="flex items-center w-full px-4 py-2.5 bg-slate-900 text-slate-300 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-500/30 border border-slate-800 rounded-xl text-sm transition-all font-medium"
+            className="flex items-center justify-center gap-3 w-full px-4 py-3 bg-slate-950 hover:bg-rose-950/50 text-slate-300 hover:text-rose-300 border border-slate-800 hover:border-rose-500/40 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md"
           >
-            <LogOut className="w-5 h-5 mr-3 text-slate-400" />
-            Logout
+            <LogOut className="w-4 h-4 text-rose-400" />
+            <span>LOGOUT</span>
           </button>
         </div>
       </div>
@@ -183,7 +190,7 @@ export default function Layout({ children }) {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#020617] text-slate-100 ocean-gradient-bg">
+    <div className="flex min-h-screen bg-black text-slate-100 ocean-gradient-bg">
       {desktopSidebarOpen && (
         <div className="hidden lg:flex flex-col fixed inset-y-0 left-0 z-30 w-60 bg-slate-950 shadow-2xl border-r border-slate-800">
           <div className="flex items-center justify-between px-4 py-4 bg-slate-900/90 border-b border-cyan-500/20">

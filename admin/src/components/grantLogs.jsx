@@ -22,7 +22,7 @@ function GrantLogs() {
   const particlesOptions = {
     background: {
       color: {
-        value: "#020617",
+        value: "#000000",
       },
     },
     fpsLimit: 120,
@@ -149,60 +149,60 @@ function GrantLogs() {
   }
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden">
+    <div className="min-h-screen relative bg-[#000000] text-white overflow-hidden">
       <Particles id="tsparticles-logs" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-28 pb-16 sm:pt-24">
         <header className="mb-8 text-center text-white">
-          <h1 className="text-3xl sm:text-4xl font-bold drop-shadow-lg">Grant Logs</h1>
-          <p className="mt-3 text-base sm:text-lg text-white/80 max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-bold drop-shadow-lg font-heading">Grant Logs</h1>
+          <p className="mt-3 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             View and manage all item grants across events and associations.
           </p>
         </header>
 
         {grantLogs?.summary && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/20">
+            <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-orange-100 rounded-lg">
+                <div className="p-2 bg-sky-500/10 rounded-lg">
                   <Gift className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Total Grants</p>
-                  <p className="text-2xl font-bold text-gray-900">{grantLogs.summary.totalGrants ?? 0}</p>
+                  <p className="text-sm text-slate-400">Total Grants</p>
+                  <p className="text-2xl font-bold text-white">{grantLogs.summary.totalGrants ?? 0}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/20">
+            <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Package className="w-6 h-6 text-blue-600" />
+                <div className="p-2 bg-sky-500/10 rounded-lg">
+                  <Package className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Total Quantity</p>
-                  <p className="text-2xl font-bold text-gray-900">{grantLogs.summary.totalQuantity ?? 0}</p>
+                  <p className="text-sm text-slate-400">Total Quantity</p>
+                  <p className="text-2xl font-bold text-white">{grantLogs.summary.totalQuantity ?? 0}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/20">
+            <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <Calendar className="w-6 h-6 text-green-600" />
+                <div className="p-2 bg-sky-500/10 rounded-lg">
+                  <Calendar className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Events Covered</p>
-                  <p className="text-2xl font-bold text-gray-900">{grantLogs.summary.uniqueEvents ?? 0}</p>
+                  <p className="text-sm text-slate-400">Events Covered</p>
+                  <p className="text-2xl font-bold text-white">{grantLogs.summary.uniqueEvents ?? 0}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/20">
+            <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Users className="w-6 h-6 text-purple-600" />
+                <div className="p-2 bg-sky-500/10 rounded-lg">
+                  <Users className="w-6 h-6 text-sky-400" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Unique Items</p>
-                  <p className="text-2xl font-bold text-gray-900">{grantLogs.summary.uniqueItems ?? 0}</p>
+                  <p className="text-sm text-slate-400">Unique Items</p>
+                  <p className="text-2xl font-bold text-white">{grantLogs.summary.uniqueItems ?? 0}</p>
                 </div>
               </div>
             </div>
@@ -210,71 +210,71 @@ function GrantLogs() {
         )}
 
         {grantLogs?.summary?.grantsByAdmin && Object.keys(grantLogs.summary.grantsByAdmin).length > 0 && (
-          <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-white/20 p-6 mb-8">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Grants by Admin</h3>
+          <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-800 p-6 mb-8">
+            <h3 className="text-lg font-semibold text-white mb-4">Grants by Admin</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(grantLogs.summary.grantsByAdmin).map(([admin, count]) => (
-                <div key={admin} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div key={admin} className="bg-slate-950 border border-slate-800 rounded-lg p-4">
                   <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-gray-600" />
-                    <span className="font-medium text-gray-800">{admin}</span>
+                    <Users className="w-5 h-5 text-sky-400" />
+                    <span className="font-medium text-slate-200">{admin}</span>
                   </div>
-                  <p className="text-xl font-bold text-gray-900 mt-1">{count} grants</p>
+                  <p className="text-xl font-bold text-white mt-1">{count} grants</p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-lg border border-white/20 overflow-hidden">
-          <div className="bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-4 text-white flex items-center justify-between flex-wrap gap-3">
+        <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-800 overflow-hidden">
+          <div className="bg-slate-950 border-b border-slate-800 px-6 py-4 text-white flex items-center justify-between flex-wrap gap-3">
             <h2 className="text-xl font-semibold flex items-center gap-2">
-              <History className="w-5 h-5" /> All Grant Records
+              <History className="w-5 h-5 text-sky-400" /> All Grant Records
             </h2>
             <button
               onClick={fetchGrantLogs}
-              className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-medium transition-colors"
             >
-              <RotateCcw className="w-4 h-4" /> Refresh
+              <RotateCcw className="w-4 h-4 text-sky-400" /> Refresh
             </button>
           </div>
 
-          <div className="p-4 border-b border-gray-100">
+          <div className="p-4 border-b border-slate-800">
             <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search by item, event, association, or grantee..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 border-b border-gray-200">
+            <table className="w-full text-left text-slate-200">
+              <thead className="bg-slate-950 border-b border-slate-800 text-slate-300">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Date & Time</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Item Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Quantity</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Event</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Association / Club</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Granted To</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Granted By</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Action</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Date & Time</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Item Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Event</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Association / Club</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Granted To</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Granted By</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-slate-800/80">
                 {filteredGrants.length > 0 ? (
                   filteredGrants.map((grant) => {
                     const isReverting = revertingGrants.has(grant._id);
                     const associationDisplay = resolveAssociationName(grant);
 
                     return (
-                      <tr key={grant._id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
+                      <tr key={grant._id} className="hover:bg-slate-800/50 transition-colors">
+                        <td className="px-4 py-3 text-sm text-slate-400 whitespace-nowrap">
                           {new Date(grant.createdAt).toLocaleString('en-IN', {
                             year: 'numeric',
                             month: 'short',
@@ -283,32 +283,32 @@ function GrantLogs() {
                             minute: '2-digit'
                           })}
                         </td>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                        <td className="px-4 py-3 text-sm font-medium text-white">
                           {grant.item_name || '—'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700 font-semibold">
+                        <td className="px-4 py-3 text-sm text-sky-400 font-semibold">
                           {grant.quantity ?? grant.provided_quantity ?? '—'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
+                        <td className="px-4 py-3 text-sm text-slate-300">
                           {grant.event_name || grant.event_id || '—'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 text-sky-400 border border-orange-100 rounded-full text-xs font-medium">
-                            <Users className="w-3 h-3" />
+                        <td className="px-4 py-3 text-sm text-slate-300">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-950/60 text-sky-300 border border-sky-500/30 rounded-full text-xs font-medium">
+                            <Users className="w-3 h-3 text-sky-400" />
                             {associationDisplay}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
+                        <td className="px-4 py-3 text-sm text-slate-300">
                           {grant.granted_to || '—'}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
+                        <td className="px-4 py-3 text-sm text-slate-300">
                           {grant.granted_by || '—'}
                         </td>
                         <td className="px-4 py-3 text-sm">
                           <button
                             onClick={() => handleRevert(grant._id)}
                             disabled={isReverting}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-950/60 text-rose-300 border border-rose-500/30 rounded-lg hover:bg-rose-900/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
                           >
                             {isReverting ? (
                               <Loader2 className="w-3 h-3 animate-spin" />

@@ -26,7 +26,7 @@ function Login() {
 
   const particlesOptions = {
     background: {
-      color: { value: '#020617' },
+      color: { value: '#000000' },
     },
     fpsLimit: 120,
     interactivity: {
@@ -71,54 +71,54 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-slate-950 overflow-hidden px-4">
+    <div className="min-h-screen relative flex items-center justify-center bg-black overflow-hidden px-4">
       <Particles id="admin-login-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
-      <div className="relative z-10 w-full max-w-md bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-sky-500/20 p-8">
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-tr from-sky-500 to-indigo-600 text-white rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg shadow-sky-500/20">
-            <ShieldCheck className="w-8 h-8 text-white" />
+      <div className="relative z-10 w-full max-w-sm bg-zinc-950/90 backdrop-blur-xl rounded-xl shadow-lg border border-zinc-800 p-6">
+        <div className="text-center mb-5">
+          <div className="w-12 h-12 bg-white text-black rounded-lg mx-auto mb-3 flex items-center justify-center shadow-md">
+            <ShieldCheck className="w-6 h-6 text-black" />
           </div>
-          <h2 className="text-2xl font-bold text-white font-heading">INTRAMS Admin Login</h2>
-          <p className="text-sky-300/70 text-sm mt-1">Login with administrative credentials</p>
+          <h2 className="text-lg font-bold text-white tracking-tight">INTRAMS Admin Login</h2>
+          <p className="text-zinc-400 text-xs mt-1">Login with administrative credentials</p>
         </div>
 
         {error && (
-          <div className="mb-6 bg-rose-950/60 border border-rose-800 text-rose-300 rounded-xl p-4 flex items-center gap-3 text-sm">
-            <AlertCircle className="w-5 h-5 flex-shrink-0 text-rose-400" />
+          <div className="mb-4 bg-rose-950/60 border border-rose-800 text-rose-300 rounded-lg p-3 flex items-center gap-2 text-xs">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-zinc-300 mb-1">
               Username <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
               <input
                 type="text"
                 placeholder="Enter admin username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-slate-950/80 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all outline-none text-white placeholder-slate-500"
+                className="w-full pl-9 pr-3 py-2.5 bg-zinc-900 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-white text-xs placeholder-zinc-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-zinc-300 mb-1">
               Password <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
               <input
                 type="password"
                 placeholder="Enter admin password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-slate-950/80 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all outline-none text-white placeholder-slate-500"
+                className="w-full pl-9 pr-3 py-2.5 bg-zinc-900 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-white text-xs placeholder-zinc-500"
               />
             </div>
           </div>
@@ -126,7 +126,7 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-sky-500/20 transition-all duration-200 transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+            className="w-full bg-white hover:bg-zinc-200 text-black font-semibold py-2.5 px-4 rounded-lg text-xs tracking-wider uppercase transition-all disabled:opacity-50"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>

@@ -14,7 +14,7 @@ function Logs() {
 
   const particlesOptions = {
     background: {
-      color: { value: '#020617' },
+      color: { value: '#000000' },
     },
     fpsLimit: 120,
     particles: {
@@ -46,7 +46,7 @@ function Logs() {
   };
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden flex flex-col pt-24 px-4 sm:px-6">
+    <div className="min-h-screen relative bg-[#000000] text-white overflow-hidden flex flex-col pt-24 px-4 sm:px-6">
       <Particles id="logs-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 max-w-5xl w-full mx-auto">

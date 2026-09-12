@@ -298,16 +298,16 @@ function GrantEventItems() {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-sky-500 via-indigo-600 to-slate-950 overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center bg-[#000000] text-white overflow-hidden">
         <Particles
           id="tsparticles"
           init={particlesInit}
           options={particlesOptions}
           className="absolute inset-0 z-0"
         />
-        <div className="relative z-10 flex items-center gap-3 bg-white/95 backdrop-blur-lg rounded-2xl p-6">
+        <div className="relative z-10 flex items-center gap-3 bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-2xl p-6 shadow-2xl">
           <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
-          <span className="text-lg text-gray-600">Loading event data...</span>
+          <span className="text-lg text-slate-300">Loading event data...</span>
         </div>
       </div>
     );
@@ -315,33 +315,23 @@ function GrantEventItems() {
 
   if (error) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-sky-500 via-indigo-600 to-slate-950 overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center bg-[#000000] text-white overflow-hidden">
         <Particles
           id="tsparticles"
           init={particlesInit}
           options={particlesOptions}
           className="absolute inset-0 z-0"
         />
-        <div className="relative z-10 max-w-md mx-auto">
-          <div className="bg-white/95 backdrop-blur-lg rounded-2xl p-6 text-center">
-            <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">Error</h2>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => navigate('/grant-items')}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-              >
-                Go Back
-              </button>
-              <button
-                onClick={fetchEventData}
-                className="px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors"
-              >
-                Retry
-              </button>
-            </div>
-          </div>
+        <div className="relative z-10 max-w-md w-full bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-3xl p-6 shadow-2xl text-center">
+          <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white mb-2">Failed to Load Event</h2>
+          <p className="text-slate-400 text-sm mb-6">{error}</p>
+          <button
+            onClick={fetchEventData}
+            className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-colors shadow-md"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -352,7 +342,7 @@ function GrantEventItems() {
   ).length || 0;
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start bg-gradient-to-br from-sky-500 via-indigo-600 to-slate-950 overflow-hidden">
+    <div className="min-h-screen relative flex flex-col items-center justify-start bg-[#000000] text-white overflow-hidden pb-12">
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -360,21 +350,21 @@ function GrantEventItems() {
         className="absolute inset-0 z-0"
       />
       
-      <div className="relative z-10 w-full max-w-7xl px-4 sm:px-6 pt-8">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-6 lg:p-8">
+      <div className="relative z-10 w-full max-w-7xl px-4 sm:px-6 pt-24">
+        <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800 p-6 lg:p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/grant-items')}
-                className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                className="p-2 text-slate-400 hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
               <div className="flex items-center gap-3">
                 <Gift className="w-8 h-8 text-sky-400" />
                 <div>
-                  <h1 className="text-3xl font-bold text-sky-400">Grant Items</h1>
-                  <p className="text-gray-600">{eventData?.eventDetails?.eventName}</p>
+                  <h1 className="text-3xl font-bold text-sky-400 font-heading">Grant Items</h1>
+                  <p className="text-slate-400">{eventData?.eventDetails?.eventName}</p>
                 </div>
               </div>
             </div>

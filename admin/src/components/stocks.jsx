@@ -18,7 +18,7 @@ function Stocks() {
 
   const particlesOptions = {
     background: {
-      color: { value: '#020617' },
+      color: { value: '#000000' },
     },
     fpsLimit: 120,
     particles: {
@@ -63,7 +63,7 @@ function Stocks() {
   );
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden flex flex-col pt-24 px-4 sm:px-6">
+    <div className="min-h-screen relative bg-[#000000] text-white overflow-hidden flex flex-col pt-24 px-4 sm:px-6">
       <Particles id="stocks-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 max-w-5xl w-full mx-auto">
@@ -71,18 +71,18 @@ function Stocks() {
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
             <Package className="w-8 h-8 text-sky-400" /> Stock Inventory
           </h1>
-          <p className="text-white/80">Manage available quantities for requested equipment items</p>
+          <p className="text-slate-400">Manage available quantities for requested equipment items</p>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl border border-white/20">
+        <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-slate-800">
           <div className="mb-6 relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               placeholder="Search stock items..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl outline-none text-gray-900"
+              className="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl outline-none text-white focus:ring-2 focus:ring-sky-500 placeholder-slate-500"
             />
           </div>
 
@@ -92,18 +92,18 @@ function Stocks() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-gray-800">
-                <thead className="bg-gray-100 font-semibold border-b border-gray-200">
+              <table className="w-full text-left text-sm text-slate-200">
+                <thead className="bg-slate-950 text-slate-300 font-semibold border-b border-slate-800">
                   <tr>
                     <th className="p-3">Item Name</th>
                     <th className="p-3">Available Quantity</th>
                     <th className="p-3">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-slate-800/80">
                   {filtered.map((stock) => (
-                    <tr key={stock._id} className="hover:bg-gray-50">
-                      <td className="p-3 font-medium">{stock.item_name}</td>
+                    <tr key={stock._id} className="hover:bg-slate-800/50 transition-colors">
+                      <td className="p-3 font-medium text-white">{stock.item_name}</td>
                       <td className="p-3 font-bold text-sky-400">{stock.available_quantity ?? stock.quantity ?? 0}</td>
                       <td className="p-3">
                         <button
@@ -126,25 +126,25 @@ function Stocks() {
       </div>
 
       {editingStock && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Edit Stock: {editingStock.item_name}</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl">
+            <h3 className="text-lg font-bold text-white mb-4">Edit Stock: {editingStock.item_name}</h3>
             <form onSubmit={handleUpdate} className="space-y-4">
               <input
                 type="number"
                 min="0"
                 value={newQty}
                 onChange={(e) => setNewQty(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-xl outline-none text-gray-900"
+                className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl outline-none text-white focus:ring-2 focus:ring-sky-500"
               />
               <div className="flex gap-2">
-                <button type="submit" className="flex-1 py-2.5 bg-sky-500 text-white rounded-xl font-semibold">
+                <button type="submit" className="flex-1 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-colors">
                   Save
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditingStock(null)}
-                  className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-xl font-semibold"
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold transition-colors"
                 >
                   Cancel
                 </button>

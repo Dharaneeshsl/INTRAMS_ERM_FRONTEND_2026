@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 function Instructions({ onNext }) {
@@ -7,39 +7,39 @@ function Instructions({ onNext }) {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 text-slate-900 font-sans">
+    <div className="max-w-3xl mx-auto space-y-6 text-slate-100 font-sans">
       {/* Header Box */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-300 text-center shadow-xl">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-black font-heading uppercase">
+      <div className="bg-slate-900/90 backdrop-blur-xl p-6 rounded-3xl border border-slate-800 text-center shadow-2xl">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading uppercase tracking-wider">
           Instructions to be Read
         </h1>
-        <p className="text-xs font-semibold text-slate-500 mt-1">Before Filling the Form</p>
+        <p className="text-xs font-semibold text-sky-400 mt-1">Before Filling the Form</p>
       </div>
 
       {/* IMPORTANT Box */}
-      <div className="bg-black text-white p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4">
-        <h2 className="text-sm font-extrabold tracking-wider uppercase text-slate-100 border-b border-slate-700 pb-2">
-          IMPORTANT
+      <div className="bg-slate-950 text-white p-6 rounded-3xl border border-sky-500/30 shadow-2xl space-y-4">
+        <h2 className="text-sm font-extrabold tracking-wider uppercase text-sky-400 border-b border-slate-800 pb-2 flex items-center gap-2 font-heading">
+          <ShieldCheck className="w-4 h-4 text-sky-400" /> IMPORTANT GUIDELINES
         </h2>
-        <ol className="list-decimal list-inside space-y-3 text-xs leading-relaxed font-medium">
+        <ol className="list-decimal list-inside space-y-3 text-xs leading-relaxed font-medium text-slate-200">
           <li>
-            If <strong className="text-sky-300">TWO DIFFERENT events</strong> are to be conducted, then fill the above form for each event separately and TACTICALLY.
+            If <strong className="text-sky-300 font-bold">TWO DIFFERENT events</strong> are to be conducted, then fill the above form for each event separately and TACTICALLY.
           </li>
           <li>
-            If the same event continues on both days (i.e. Preliminary round on the first day and final round on the second day), then fill the needed requirements in the <strong className="text-sky-300">SAME FORM</strong>.
+            If the same event continues on both days (i.e. Preliminary round on the first day and final round on the second day), then fill the needed requirements in the <strong className="text-sky-300 font-bold">SAME FORM</strong>.
           </li>
         </ol>
       </div>
 
       {/* INSTRUCTIONS Box */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-300 shadow-xl space-y-4">
-        <h2 className="text-sm font-extrabold tracking-wider uppercase text-black border-b border-slate-200 pb-2">
-          INSTRUCTIONS
+      <div className="bg-slate-900/90 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl space-y-4">
+        <h2 className="text-sm font-extrabold tracking-wider uppercase text-white border-b border-slate-800 pb-2 font-heading">
+          GENERAL INSTRUCTIONS
         </h2>
-        <ol className="list-decimal list-inside space-y-2.5 text-xs text-slate-800 leading-relaxed font-medium">
-          <li>Not all the events and workshops submitted will be approved.</li>
-          <li>Maximum of two events, one workshop, and one paper presentation can be proposed.</li>
-          <li>Events and workshops should be innovative or focus on the trending/new technologies relating to the respective stream.</li>
+        <ol className="list-decimal list-inside space-y-3 text-xs text-slate-300 leading-relaxed font-medium">
+          <li>Not all the events submitted will be approved.</li>
+          <li>Maximum of two events can be proposed.</li>
+          <li>Events should be innovative or focus on the trending/new technologies relating to the respective stream.</li>
           <li>Judges must be present throughout the duration of the event.</li>
           <li>Refreshment, prizes, memento, or any other form of prizes should be given by clubs/associations for the event winners.</li>
           <li>Memento for the external chief guest will be provided by the Students Union if mentioned in the forms submitted.</li>
@@ -57,28 +57,28 @@ function Instructions({ onNext }) {
       </div>
 
       {/* Terms Agreement & Controls */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-300 shadow-xl space-y-4">
+      <div className="bg-slate-900/90 backdrop-blur-xl p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-4">
         <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="w-4 h-4 rounded border-slate-400 text-black focus:ring-black"
+            className="w-4 h-4 rounded border-slate-700 bg-slate-950 text-sky-500 focus:ring-sky-500"
           />
-          <span className="text-xs font-bold text-slate-900">I agree to the terms and conditions</span>
+          <span className="text-xs font-bold text-slate-200">I agree to the terms and conditions</span>
         </label>
 
         <div className="flex items-center gap-3 pt-2">
           <button
             onClick={() => navigate('/home')}
-            className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs uppercase tracking-wider rounded-xl border border-slate-300 transition-all flex items-center gap-1.5"
+            className="px-6 py-2.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-extrabold text-xs uppercase tracking-wider rounded-xl border border-slate-800 transition-all flex items-center gap-1.5"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> BACK
           </button>
           <button
             onClick={onNext}
             disabled={!agreed}
-            className="px-8 py-2.5 bg-black hover:bg-slate-900 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-sky-500/25 flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <span>PROCEED</span>
             <ArrowRight className="w-3.5 h-3.5" />

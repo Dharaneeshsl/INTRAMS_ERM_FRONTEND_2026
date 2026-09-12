@@ -11,6 +11,7 @@ const Add = lazy(() => import('./components/adduser'));
 const Items = lazy(() => import('./components/items'));
 const Stocks = lazy(() => import('./components/stocks'));
 const Stats = lazy(() => import('./components/stats'));
+const LabConfirmation = lazy(() => import('./components/labConfirmation'));
 const GrantItems = lazy(() => import('./components/grantItems'));
 const GrantEventItems = lazy(() => import('./components/grantEventItems'));
 const GrantLogs = lazy(() => import('./components/grantLogs'));
@@ -79,6 +80,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['admin']}>
             <Stats />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/lab-confirmation"
+        element={
+          <ProtectedRoute allowedRoles={['admin', 'member']}>
+            <LabConfirmation />
           </ProtectedRoute>
         }
       />

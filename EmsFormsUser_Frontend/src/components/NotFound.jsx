@@ -13,7 +13,7 @@ function NotFound() {
 
   const particlesOptions = {
     background: {
-      color: { value: '#020617' },
+      color: { value: '#000000' },
     },
     fpsLimit: 120,
     particles: {

@@ -64,7 +64,7 @@ function CreateEventLayout() {
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: '#020617' } },
+    background: { color: { value: '#000000' } },
     fpsLimit: 120,
     interactivity: {
       events: { onClick: { enable: true, mode: 'push' }, onHover: { enable: true, mode: 'repulse' }, resize: true },
@@ -116,15 +116,13 @@ function CreateEventLayout() {
   };
 
   return (
-    <div className="min-h-screen relative bg-[#020617] overflow-hidden flex flex-row ocean-gradient-bg text-slate-100">
+    <div className="h-screen w-screen relative bg-black overflow-hidden flex flex-row font-sans text-white">
       <Particles id="create-event-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
       <Sidebar />
 
-      <div className="flex-1 flex flex-col min-w-0 z-10">
-        <NavBar />
-
-        <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 overflow-y-auto">
+      <div className="flex-1 ml-64 h-screen overflow-y-auto flex flex-col min-w-0 z-10 p-4 sm:p-6 space-y-4 max-w-5xl w-full mx-auto">
+        <main className="w-full space-y-4">
           <StepProgress currentStep={currentStep} totalSteps={5} onStepClick={(step) => setCurrentStep(step)} />
 
           {/* STEP 1: Instructions */}
@@ -133,53 +131,51 @@ function CreateEventLayout() {
           {/* STEP 2: Basic Event & Round Details */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-300 shadow-xl text-slate-900 space-y-4">
-                <h2 className="text-2xl font-extrabold text-black font-heading uppercase border-b border-slate-200 pb-3">
-                  Basic Information
-                </h2>
+              <div className="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 text-slate-100">
+                <h2 className="text-2xl font-bold text-white mb-4 font-heading">Basic Information</h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Event Name <span className="text-rose-600">*</span>
+                    <label className="block text-xs font-bold text-sky-200/90 uppercase tracking-wider mb-1">
+                      Event Name <span className="text-rose-400">*</span>
                     </label>
                     <input
                       type="text"
                       placeholder="e.g., Tech Symposium 2026"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-medium outline-none focus:ring-2 focus:ring-black"
+                      className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-medium outline-none focus:ring-2 focus:ring-sky-500 placeholder-slate-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Tagline <span className="text-rose-600">*</span>
+                    <label className="block text-xs font-bold text-sky-200/90 uppercase tracking-wider mb-1">
+                      Tagline <span className="text-rose-400">*</span>
                     </label>
                     <input
                       type="text"
                       placeholder="e.g., Innovate, Create, Inspire."
                       value={formData.tagline}
                       onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-medium outline-none focus:ring-2 focus:ring-black"
+                      className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-medium outline-none focus:ring-2 focus:ring-sky-500 placeholder-slate-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      About <span className="text-rose-600">*</span>
+                    <label className="block text-xs font-bold text-sky-200/90 uppercase tracking-wider mb-1">
+                      About <span className="text-rose-400">*</span>
                     </label>
                     <textarea
                       rows={4}
                       placeholder="e.g., A comprehensive technical event showcasing innovation and creativity in technology..."
                       value={formData.about}
                       onChange={(e) => setFormData({ ...formData, about: e.target.value })}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-medium outline-none focus:ring-2 focus:ring-black"
+                      className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-medium outline-none focus:ring-2 focus:ring-sky-500 placeholder-slate-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Number of Rounds <span className="text-rose-600">*</span>
+                    <label className="block text-xs font-bold text-sky-200/90 uppercase tracking-wider mb-1">
+                      Number of Rounds <span className="text-rose-400">*</span>
                     </label>
                     <input
                       type="number"
@@ -207,7 +203,7 @@ function CreateEventLayout() {
                           };
                         });
                       }}
-                      className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 text-sm font-medium outline-none focus:ring-2 focus:ring-black"
+                      className="w-full p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-medium outline-none focus:ring-2 focus:ring-sky-500"
                     />
                   </div>
                 </div>

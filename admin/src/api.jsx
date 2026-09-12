@@ -61,6 +61,7 @@ export const adminAPI = {
   getEvents: () => api.get('/admin/events'),
   getEventById: (id) => api.get(`/admin/events/${id}`),
   updateEventStatus: (id, status, reason) => api.put(`/admin/events/${id}/status`, { status, reason }),
+  updateLabStatus: (id, data) => api.put(`/admin/events/${id}/lab-status`, data),
   getRequestedEvents: () => api.get('/admin/edit-requests'),
   giveEditAccess: (requestId, decision) => api.post(`/admin/edit-requests/${requestId}`, { decision }),
   deleteEvent: (id) => api.delete(`/admin/events/${id}`),

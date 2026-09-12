@@ -22,7 +22,7 @@ function LabConfirmationPage() {
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: '#020617' } },
+    background: { color: { value: '#000000' } },
     fpsLimit: 120,
     interactivity: {
       events: { onClick: { enable: true, mode: 'push' }, onHover: { enable: true, mode: 'repulse' }, resize: true },
@@ -47,7 +47,20 @@ function LabConfirmationPage() {
       const res = await userAPI.getMyEvents();
       const eventList = res.data?.events || res.data || [];
       const validEvents = Array.isArray(eventList) ? eventList : [];
-      setEvents(validEvents);
+      const labEvents = validEvents.filter(ev => {
+        const halls = ev.form?.preferred_halls || ev.preferred_halls || '';
+        if (!halls || typeof halls !== 'string') return false;
+        const trimmed = halls.trim().toLowerCase();
+        return (
+          trimmed !== '' &&
+          trimmed !== 'none' &&
+          trimmed !== 'n/a' &&
+          trimmed !== 'no' &&
+          trimmed !== 'false' &&
+          trimmed !== 'nil'
+        );
+      });
+      setEvents(labEvents);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch lab confirmation forms');
     } finally {
@@ -80,145 +93,158 @@ function LabConfirmationPage() {
   };
 
   return (
-    <div className="min-h-screen relative bg-[#020617] overflow-hidden flex flex-row ocean-gradient-bg text-slate-100">
+    <div className="h-screen w-screen relative bg-black overflow-hidden flex flex-row font-sans text-white">
       <Particles id="lab-conf-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
       <Sidebar />
 
-      <div className="flex-1 flex flex-col min-w-0 z-10">
-        <NavBar />
+      <div className="flex-1 ml-64 h-screen overflow-y-auto flex flex-col min-w-0 z-10 p-4 sm:p-6 space-y-4 max-w-4xl w-full mx-auto">
+        {/* Header Box */}
+        <div className="p-4 bg-zinc-950 border border-zinc-800 text-white rounded-lg shadow-sm">
+          <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight uppercase">
+            LAB CONFIRMATION FORMS
+          </h1>
+          <p className="text-zinc-400 text-xs mt-0.5">
+            Manage and view all lab confirmation requests
+          </p>
+        </div>
 
-        <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 overflow-y-auto">
-          {/* Header Box */}
-          <div className="p-8 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-heading tracking-wide uppercase">
-              LAB CONFIRMATION FORMS
-            </h1>
-            <p className="text-sky-300/70 text-sm sm:text-base mt-2 font-medium">
-              Manage and view all lab confirmation requests
-            </p>
+        {/* YOUR LAB CONFIRMATIONS */}
+        <div className="p-4 sm:p-5 bg-zinc-950 border border-zinc-800 text-white rounded-lg shadow-sm space-y-3">
+          <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+            <h2 className="text-xs font-semibold text-white tracking-wider uppercase">
+              YOUR LAB CONFIRMATIONS ({events.length})
+            </h2>
+            <button
+              onClick={fetchLabConfirmations}
+              disabled={loading}
+              className="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 rounded text-xs font-medium uppercase transition-all disabled:opacity-50"
+            >
+              <span>REFRESH</span>
+            </button>
           </div>
 
-          {/* YOUR LAB CONFIRMATIONS */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-2xl backdrop-blur-xl space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <h2 className="text-xl font-extrabold text-white font-heading tracking-wider uppercase">
-                YOUR LAB CONFIRMATIONS
-              </h2>
-              <button
-                onClick={fetchLabConfirmations}
-                disabled={loading}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-slate-200 rounded-xl text-xs font-extrabold tracking-wider uppercase transition-all shadow-md disabled:opacity-50"
-              >
-                <RefreshCcw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-                <span>REFRESH</span>
-              </button>
+          {error && (
+            <div className="p-2.5 bg-rose-950/60 border border-rose-800 text-rose-300 text-xs text-center font-medium">
+              {error}
             </div>
+          )}
 
-            {error && (
-              <div className="p-4 rounded-2xl bg-rose-950/60 border border-rose-800 text-rose-300 text-sm text-center">
-                {error}
-              </div>
-            )}
+          {loading ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="w-5 h-5 animate-spin text-sky-400" />
+            </div>
+          ) : events.length === 0 ? (
+            <div className="p-8 text-center border border-dashed border-zinc-800 rounded-none bg-zinc-900/40">
+              <p className="text-zinc-400 text-xs font-medium" style={{ color: '#a1a1aa' }}>No lab confirmation requests submitted yet.</p>
+              <p className="text-zinc-500 text-[11px] mt-1" style={{ color: '#71717a' }}>Only event proposals that request lab or hall allocations will appear here.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {events.map((ev) => {
+                const formSpecs = ev.form || {};
+                const convenors = ev.contacts?.convenors || [];
 
-            {loading ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
-              </div>
-            ) : events.length === 0 ? (
-              <div className="p-8 text-center border border-dashed border-slate-800 rounded-2xl bg-slate-950/50">
-                <p className="text-slate-400 text-sm font-semibold">No lab confirmations registered yet.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {events.map((ev) => {
-                  const formSpecs = ev.form || {};
-                  const convenors = ev.contacts?.convenors || [];
-
-                  return (
-                    <div
-                      key={ev._id}
-                      className="p-6 rounded-2xl bg-white text-slate-950 border border-slate-300 shadow-xl flex flex-col justify-between space-y-4"
-                    >
-                      <div className="space-y-3">
-                        <span className="text-[9px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono font-bold uppercase tracking-widest border border-slate-300">
+                return (
+                  <div
+                    key={ev._id}
+                    className="p-5 bg-zinc-900 border border-zinc-800 flex flex-col justify-between space-y-4 rounded-none shadow-md"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] px-2 py-0.5 bg-zinc-800 text-zinc-200 font-mono font-bold uppercase tracking-widest border border-zinc-700" style={{ color: '#e4e4e7' }}>
                           LABCONFIRM
                         </span>
+                        <span className={`text-[10px] px-2 py-0.5 border font-mono font-bold uppercase tracking-wider ${
+                          (formSpecs.lab_status === 'confirmed' || formSpecs.lab_status === 'approved')
+                            ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+                            : formSpecs.lab_status === 'rejected'
+                            ? 'bg-rose-950 text-rose-400 border-rose-800'
+                            : 'bg-amber-950 text-amber-400 border-amber-800'
+                        }`}>
+                          {formSpecs.lab_status ? formSpecs.lab_status.toUpperCase() : 'PENDING'}
+                        </span>
+                      </div>
 
-                        <div>
-                          <h3 className="text-lg font-bold text-slate-900 font-heading leading-tight">
-                            {ev.name || 'Untitled Event'}
-                          </h3>
-                          <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                            {user?.username ? `${user.username.toUpperCase()} • Students Union` : 'Students Union'}
-                          </p>
-                        </div>
+                      <div>
+                        <h3 className="text-base font-bold text-white leading-tight uppercase tracking-tight" style={{ color: '#ffffff' }}>
+                          {ev.name || ev.event_name || 'Untitled Event'}
+                        </h3>
+                        <p className="text-xs text-zinc-400 font-medium mt-1" style={{ color: '#a1a1aa' }}>
+                          {user?.username ? `${user.username.toUpperCase()} • Students Union` : 'Students Union'}
+                        </p>
+                      </div>
 
-                        <div className="text-xs text-slate-700 space-y-1.5 pt-2 border-t border-slate-200">
-                          <div className="flex justify-between">
-                            <span className="font-semibold text-slate-500">Lab / Hall:</span>
-                            <span className="font-mono font-bold text-slate-900">
-                              {formSpecs.preferred_halls || 'AI Lab - 123'}
+                      <div className="text-xs text-zinc-300 space-y-2 pt-3 border-t border-zinc-800">
+                        {formSpecs.preferred_halls && (
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-zinc-400" style={{ color: '#a1a1aa' }}>Lab / Hall:</span>
+                            <span className="font-mono font-bold text-white bg-zinc-800 px-2 py-0.5 border border-zinc-700 text-xs" style={{ color: '#ffffff' }}>
+                              {formSpecs.preferred_halls}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="font-semibold text-slate-500">Date:</span>
-                            <span className="font-mono text-slate-800">
-                              {formSpecs.day || '16-03-2026'}
+                        )}
+                        {formSpecs.day && (
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-zinc-400" style={{ color: '#a1a1aa' }}>Day / Date:</span>
+                            <span className="font-mono text-white" style={{ color: '#ffffff' }}>
+                              {formSpecs.day}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="font-semibold text-slate-500">Session:</span>
-                            <span className="font-mono text-slate-800">
-                              {formSpecs.slot || 'DAY 2 - SESSION 1'}
+                        )}
+                        {formSpecs.slot && (
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-zinc-400" style={{ color: '#a1a1aa' }}>Session / Slot:</span>
+                            <span className="font-mono text-white" style={{ color: '#ffffff' }}>
+                              {formSpecs.slot}
                             </span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="font-semibold text-slate-500">Duration:</span>
-                            <span className="font-mono text-slate-800">
-                              {formSpecs.duration || '1 hour'}
+                        )}
+                        {formSpecs.duration && (
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-zinc-400" style={{ color: '#a1a1aa' }}>Duration:</span>
+                            <span className="font-mono text-white" style={{ color: '#ffffff' }}>
+                              {formSpecs.duration}
                             </span>
-                          </div>
-                        </div>
-
-                        {convenors.length > 0 && (
-                          <div className="pt-2 border-t border-slate-200">
-                            <p className="text-[11px] font-semibold text-slate-500 mb-1">Convenors:</p>
-                            <div className="flex flex-wrap gap-1.5">
-                              {convenors.map((c, i) => (
-                                <span
-                                  key={i}
-                                  className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium border border-slate-300"
-                                >
-                                  {c.name || 'Sample'}
-                                </span>
-                              ))}
-                            </div>
                           </div>
                         )}
                       </div>
 
-                      <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
-                        <button
-                          onClick={() => handleDownloadPDF(ev._id, ev.name)}
-                          disabled={downloadingId === ev._id}
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold uppercase transition-all shadow flex items-center gap-1.5 disabled:opacity-50"
-                        >
-                          {downloadingId === ev._id ? (
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          ) : (
-                            <Download className="w-3.5 h-3.5" />
-                          )}
-                          <span>PDF Form</span>
-                        </button>
-                      </div>
+                      {convenors.length > 0 && (
+                        <div className="pt-2 border-t border-zinc-800">
+                          <p className="text-[10px] font-semibold text-zinc-400 mb-1" style={{ color: '#a1a1aa' }}>Convenors:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {convenors.map((c, i) => (
+                              <span
+                                key={i}
+                                className="text-[10px] px-2 py-0.5 bg-zinc-950 text-zinc-300 font-medium border border-zinc-800"
+                                style={{ color: '#d4d4d8' }}
+                              >
+                                {c.name} {c.mobile ? `(${c.mobile})` : ''}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </main>
+
+                    <div className="pt-3 border-t border-zinc-800 flex justify-end">
+                      <button
+                        onClick={() => handleDownloadPDF(ev._id, ev.name || ev.event_name)}
+                        disabled={downloadingId === ev._id}
+                        className="px-4 py-2 bg-white hover:bg-zinc-200 text-black rounded-none text-xs font-bold tracking-wider uppercase transition-all flex items-center gap-1.5 disabled:opacity-50"
+                        style={{ color: '#000000', backgroundColor: '#ffffff' }}
+                      >
+                        <Download className="w-3.5 h-3.5" style={{ color: '#000000' }} />
+                        <span>{downloadingId === ev._id ? 'LOADING...' : 'PDF FORM'}</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ function GrantItems() {
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: "#020617" } },
+    background: { color: { value: "#000000" } },
     fpsLimit: 120,
     particles: {
       color: { value: "#38bdf8" },
@@ -86,25 +86,25 @@ function GrantItems() {
   });
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-violet-900 via-purple-900 to-black overflow-hidden flex flex-col pt-24 px-4 sm:px-6">
+    <div className="min-h-screen relative bg-[#000000] text-white overflow-hidden flex flex-col pt-24 px-4 sm:px-6">
       <Particles id="grant-items-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8">
+        <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800 p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-4">
             <Gift className="w-8 h-8 text-sky-400" />
-            <h1 className="text-3xl font-bold text-sky-400">Grant Items to Events</h1>
+            <h1 className="text-3xl font-bold text-sky-400 font-heading">Grant Items to Events</h1>
           </div>
-          <p className="text-gray-600 mb-6">Select a club association to view their events and grant items.</p>
+          <p className="text-slate-400 mb-6">Select a club association to view their events and grant items.</p>
 
           <div className="mb-8 relative max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               placeholder="Search association..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl outline-none text-gray-900"
+              className="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl outline-none text-white focus:ring-2 focus:ring-sky-500 placeholder-slate-500"
             />
           </div>
 
@@ -118,15 +118,15 @@ function GrantItems() {
                 <div
                   key={assoc._id}
                   onClick={() => handleAssociationClick(assoc)}
-                  className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+                  className="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-md hover:border-sky-500/50 transition-all cursor-pointer group"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <Users className="w-6 h-6 text-sky-400" />
-                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-sky-400 transition-colors">
+                    <h3 className="text-lg font-bold text-white group-hover:text-sky-400 transition-colors">
                       {assoc.association_name}
                     </h3>
                   </div>
-                  <p className="text-xs text-gray-500 flex items-center justify-between mt-4">
+                  <p className="text-xs text-slate-400 flex items-center justify-between mt-4">
                     <span>View Events &rarr;</span>
                     <ChevronRight className="w-4 h-4 text-sky-400" />
                   </p>
@@ -138,13 +138,13 @@ function GrantItems() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-2xl w-full max-h-[80vh] flex flex-col">
-            <div className="flex justify-between items-center pb-4 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl">
+            <div className="flex justify-between items-center pb-4 border-b border-slate-800">
+              <h2 className="text-xl font-bold text-white">
                 {selectedAssociation?.association_name} Events
               </h2>
-              <button onClick={() => setShowModal(false)} className="p-2 text-gray-400 hover:text-gray-600">
+              <button onClick={() => setShowModal(false)} className="p-2 text-slate-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -155,17 +155,17 @@ function GrantItems() {
                   <Loader2 className="w-6 h-6 animate-spin text-sky-400" />
                 </div>
               ) : events.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">No events found for this association.</p>
+                <p className="text-center text-slate-400 py-8">No events found for this association.</p>
               ) : (
                 events.map((ev) => (
-                  <div key={ev.mongoId || ev._id} className="p-4 bg-gray-50 rounded-2xl border border-gray-200 flex justify-between items-center">
+                  <div key={ev.mongoId || ev._id} className="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex justify-between items-center">
                     <div>
-                      <h4 className="font-bold text-gray-900">{ev.eventName || ev.name}</h4>
-                      <p className="text-xs text-gray-500">ID: {ev.eventId || ev.event_id}</p>
+                      <h4 className="font-bold text-white">{ev.eventName || ev.name}</h4>
+                      <p className="text-xs text-slate-400">ID: {ev.eventId || ev.event_id}</p>
                     </div>
                     <button
                       onClick={() => navigate(`/grant-event-items/${ev.mongoId || ev._id}`)}
-                      className="px-4 py-2 bg-sky-500 text-white rounded-xl font-semibold text-xs hover:bg-sky-400 transition-colors"
+                      className="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold text-xs transition-colors shadow-md"
                     >
                       Grant Items
                     </button>

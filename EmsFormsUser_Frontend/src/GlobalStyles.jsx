@@ -7,11 +7,11 @@ const GlobalStyles = () => {
       
       :root {
         color-scheme: dark;
-        --bg-abyss: #020617;
-        --ocean-slate: #0f172a;
-        --ocean-blue: #0284c7;
-        --horizon-sky: #38bdf8;
-        --bioluminescence: #818cf8;
+        --bg-abyss: #000000;
+        --ui-panel: #0b0b0b;
+        --ui-border: #2a2a2a;
+        --ui-white: #ffffff;
+        --ui-muted: #a3a3a3;
       }
 
       * {
@@ -25,50 +25,48 @@ const GlobalStyles = () => {
 
       body {
         background-color: var(--bg-abyss);
-        color: #f8fafc;
+        color: var(--ui-white);
         margin: 0;
         padding: 0;
         -webkit-font-smoothing: antialiased;
       }
       
       .ocean-gradient-bg {
-        background: radial-gradient(circle at 50% -20%, #0369a1 0%, #020617 75%);
+        background: var(--bg-abyss);
       }
 
       .horizon-glow {
-        background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #06b6d4 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: var(--ui-white);
       }
 
       .glass-card {
-        background: rgba(15, 23, 42, 0.75);
+        background: var(--ui-panel);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(56, 189, 248, 0.15);
+        border: 1px solid var(--ui-border);
       }
 
       .glass-card:hover {
-        border-color: rgba(56, 189, 248, 0.4);
-        box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.2);
+        border-color: #666666;
+        box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.16);
       }
 
       .btn-horizon-primary {
-        background: linear-gradient(90deg, #0284c7 0%, #4f46e5 100%);
-        color: #ffffff;
+        background: var(--ui-white);
+        color: var(--bg-abyss);
         font-weight: 700;
         border-radius: 0.75rem;
-        box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
+        box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.2);
         transition: all 0.2s ease-in-out;
       }
       .btn-horizon-primary:hover {
-        background: linear-gradient(90deg, #38bdf8 0%, #6366f1 100%);
+        background: #d4d4d4;
         transform: translateY(-1px);
       }
 
       .input-horizon {
-        background-color: rgba(2, 6, 23, 0.8);
-        border: 1px solid rgba(51, 65, 85, 0.8);
+        background-color: var(--bg-abyss);
+        border: 1px solid var(--ui-border);
         border-radius: 0.75rem;
         color: #ffffff;
         padding: 0.75rem 1rem;
@@ -76,8 +74,8 @@ const GlobalStyles = () => {
         transition: all 0.2s ease-in-out;
       }
       .input-horizon:focus {
-        border-color: #38bdf8;
-        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        border-color: var(--ui-white);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
       }
 
       /* Custom Scrollbar for Horizon Aesthetic */
@@ -86,15 +84,15 @@ const GlobalStyles = () => {
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #020617;
+        background: #000000;
       }
       ::-webkit-scrollbar-thumb {
-        background: #1e293b;
+        background: #333333;
         border-radius: 4px;
-        border: 1px solid rgba(56, 189, 248, 0.2);
+        border: 1px solid var(--ui-border);
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #0284c7;
+        background: #666666;
       }
     `}</style>
   );

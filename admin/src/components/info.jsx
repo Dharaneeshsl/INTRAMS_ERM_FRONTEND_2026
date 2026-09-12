@@ -14,7 +14,7 @@ const EventCards = () => {
   const particlesOptions = {
     background: {
       color: {
-        value: "#020617",
+        value: "#000000",
       },
     },
     fpsLimit: 120,
@@ -87,9 +87,9 @@ const EventCards = () => {
 
     return {
       id: event?._id,
-      title: event?.name || event?.event_name || event?.workshop?.name || event?.presentation?.event_description?.substring(0, 50) || "Untitled Event",
+      title: event?.name || event?.event_name || "Untitled Event",
       tagline: event?.tagline || "",
-      about: event?.about || event?.workshop?.description || event?.presentation?.event_description || "",
+      about: event?.about || "",
       association,
       dayInfo,
       convenors: convenorNames,
@@ -106,13 +106,13 @@ const EventCards = () => {
       <div className="relative z-10 w-full max-w-5xl">
         <div className="flex flex-col gap-4 mb-6">
           <div className="relative w-full">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="search"
               placeholder="Search Events or Club Associations..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white/95 backdrop-blur-lg rounded-2xl border border-white/20 outline-none focus:ring-2 focus:ring-sky-500 text-gray-900"
+              className="w-full pl-11 pr-4 py-3 bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-800 outline-none focus:ring-2 focus:ring-sky-500 text-white placeholder-slate-500 shadow-xl"
             />
           </div>
         </div>

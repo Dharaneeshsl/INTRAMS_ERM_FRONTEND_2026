@@ -27,7 +27,7 @@ function UpdateEventController() {
   }, []);
 
   const particlesOptions = {
-    background: { color: { value: '#020617' } },
+    background: { color: { value: '#000000' } },
     fpsLimit: 120,
     particles: {
       color: { value: '#38bdf8' },
