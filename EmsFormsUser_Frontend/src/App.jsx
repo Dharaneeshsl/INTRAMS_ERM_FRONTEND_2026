@@ -84,6 +84,9 @@ function AppRoutes() {
       />
 
       {/* Legacy Route Redirects */}
+      <Route path="/edit-access" element={<Navigate to="/edit" replace />} />
+      <Route path="/edit-requests" element={<Navigate to="/edit" replace />} />
+      <Route path="/lab-confirmations" element={<Navigate to="/lab-confirmation" replace />} />
       <Route path="/my-events" element={<Navigate to="/view-events" replace />} />
       <Route path="/attendance" element={<Navigate to="/view-events" replace />} />
       <Route path="/items" element={<Navigate to="/create-event" replace />} />
