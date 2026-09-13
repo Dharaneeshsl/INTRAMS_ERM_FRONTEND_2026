@@ -72,7 +72,7 @@ function Login() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center bg-black overflow-hidden px-4">
-      <Particles id="tsparticles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
+      <Particles id="tsparticles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-sm bg-zinc-950/90 backdrop-blur-xl rounded-xl shadow-lg border border-zinc-800 p-6">
         <div className="text-center mb-5">

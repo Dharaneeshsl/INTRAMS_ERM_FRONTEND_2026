@@ -10,9 +10,55 @@ function StepProgress({ currentStep, totalSteps = 5, onStepClick }) {
     { number: 5, label: 'Review & Submit' },
   ];
 
+  const currentLabel = steps[currentStep - 1]?.label || '';
+
   return (
-    <div className="w-full py-4 mb-8">
-      <div className="flex items-center justify-between max-w-4xl mx-auto px-2 sm:px-4">
+    <div className="w-full py-3 mb-6">
+      {/* Mobile-only Progress Indicator (< 640px) */}
+      <div className="sm:hidden bg-slate-900/90 border border-slate-800 p-4 rounded-2xl space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-sky-400">
+            STEP {currentStep} OF {totalSteps}
+          </span>
+          <span className="text-xs font-bold text-white uppercase tracking-wider font-heading">
+            {currentLabel}
+          </span>
+        </div>
+        <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800 flex">
+          <div
+            className="bg-gradient-to-r from-sky-400 to-indigo-500 h-full transition-all duration-300 rounded-full"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          />
+        </div>
+        <div className="flex justify-between items-center pt-1">
+          {steps.map((step) => {
+            const isCompleted = currentStep > step.number;
+            const isCurrent = currentStep === step.number;
+            const isClickable = onStepClick && (isCompleted || step.number < currentStep);
+
+            return (
+              <button
+                key={step.number}
+                type="button"
+                disabled={!isClickable}
+                onClick={() => isClickable && onStepClick(step.number)}
+                className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                  isCompleted
+                    ? 'bg-slate-800 text-sky-400 border border-slate-700'
+                    : isCurrent
+                    ? 'bg-sky-500 text-white font-extrabold shadow-md shadow-sky-500/40'
+                    : 'bg-slate-950 text-slate-600 border border-slate-900'
+                }`}
+              >
+                {isCompleted ? <Check className="w-3.5 h-3.5" /> : step.number}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Tablet & Desktop Step Flow (≥ 640px) */}
+      <div className="hidden sm:flex items-center justify-between max-w-4xl mx-auto px-2 sm:px-4">
         {steps.map((step, idx) => {
           const isCompleted = currentStep > step.number;
           const isCurrent = currentStep === step.number;

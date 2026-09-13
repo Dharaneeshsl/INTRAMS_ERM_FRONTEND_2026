@@ -31,11 +31,11 @@ function ReviewSubmit({ formData, onSubmit, isSubmitting, isEdit = false }) {
           </span>
         </label>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex flex-col sm:flex-row justify-end">
           <button
             onClick={handleSubmit}
             disabled={!agreed || isSubmitting}
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm uppercase tracking-wider"
           >
             {isSubmitting ? (
               <>
