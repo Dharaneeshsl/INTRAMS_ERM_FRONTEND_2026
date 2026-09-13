@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Warehouse, Download, Package, BarChart3 } from 'lucide-react';
+import { Warehouse, Download, Package, BarChart3, Plus } from 'lucide-react';
 import { adminAPI } from '../api';
 import { getApiErrorMessage } from '../utils/apiError';
 import { useToast } from '../context/ToastContext';
@@ -8,6 +8,8 @@ import Input from './ui/Input';
 import Modal from './ui/Modal';
 import EmptyState from './ui/EmptyState';
 import { TableSkeleton } from './ui/LoadingState';
+
+const emptyItemForm = { item_name: '', price_per_unit: '', available_quantity: '', is_returnable: true };
 
 export default function Inventory() {
   const { showToast } = useToast();
@@ -18,13 +20,19 @@ export default function Inventory() {
   const [qty, setQty] = useState('');
   const [saving, setSaving] = useState(false);
 
+  // Master Item Creation Modal State
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [itemForm, setItemForm] = useState(emptyItemForm);
+  const [creatingItem, setCreatingItem] = useState(false);
+
   const fetchStocks = async () => {
     try {
       setLoading(true);
-      const res = await adminAPI.getStocks();
-      setStocks(res.data?.data || res.data || []);
+      const res = await adminAPI.getItems();
+      const itemsList = Array.isArray(res.data?.data) ? res.data.data : Array.isArray(res.data) ? res.data : [];
+      setStocks(itemsList);
     } catch (err) {
-      showToast(getApiErrorMessage(err, 'Unable to load inventory.'), 'error');
+      showToast(getApiErrorMessage(err, 'Unable to load master inventory items.'), 'error');
     } finally {
       setLoading(false);
     }
@@ -34,7 +42,7 @@ export default function Inventory() {
     fetchStocks();
   }, []);
 
-  const save = async () => {
+  const saveStock = async () => {
     if (!editing || qty === '') return;
     try {
       setSaving(true);
@@ -49,7 +57,32 @@ export default function Inventory() {
     }
   };
 
-  // KPI Calculations
+  const createMasterItem = async () => {
+    if (!itemForm.item_name || itemForm.price_per_unit === '') {
+      showToast('Item name and price per unit are required.', 'warning');
+      return;
+    }
+    try {
+      setCreatingItem(true);
+      const payload = {
+        item_name: itemForm.item_name,
+        price_per_unit: parseFloat(itemForm.price_per_unit),
+        available_quantity: itemForm.available_quantity === '' ? 0 : parseInt(itemForm.available_quantity, 10),
+        is_returnable: itemForm.is_returnable,
+      };
+      await adminAPI.createItem(payload);
+      showToast(`Master item "${itemForm.item_name}" added to inventory successfully.`, 'success');
+      setCreateModalOpen(false);
+      setItemForm(emptyItemForm);
+      await fetchStocks();
+    } catch (err) {
+      showToast(getApiErrorMessage(err, 'Unable to create master item.'), 'error');
+    } finally {
+      setCreatingItem(false);
+    }
+  };
+
+  // KPI Calculations from dynamic database records
   const totalItemsCount = stocks.reduce((acc, item) => {
     const available = item.available_quantity ?? item.quantity ?? 0;
     return acc + (Number(available) || 0);
@@ -63,7 +96,7 @@ export default function Inventory() {
 
   const uniqueItemsCount = stocks.length;
 
-  // Download Excel / CSV Function
+  // CSV Export from real database records
   const handleDownloadExcel = () => {
     if (stocks.length === 0) return;
 
@@ -91,7 +124,7 @@ export default function Inventory() {
 
   return (
     <div className="space-y-8 pb-10">
-      {/* Header & Download Excel Action */}
+      {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading uppercase tracking-wide">
@@ -102,14 +135,23 @@ export default function Inventory() {
           </p>
         </div>
 
-        <button
-          onClick={handleDownloadExcel}
-          disabled={stocks.length === 0}
-          className="self-start sm:self-auto bg-white hover:bg-zinc-200 text-black font-extrabold px-6 py-3.5 rounded-none text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 border border-black disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Download className="w-4 h-4 text-black" />
-          DOWNLOAD EXCEL
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setCreateModalOpen(true)}
+            className="bg-black text-white hover:bg-zinc-800 font-extrabold px-5 py-3.5 rounded-none text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 border border-white/20"
+          >
+            <Plus className="w-4 h-4 text-sky-400" />
+            ADD MASTER ITEM
+          </button>
+          <button
+            onClick={handleDownloadExcel}
+            disabled={stocks.length === 0}
+            className="bg-white hover:bg-zinc-200 text-black font-extrabold px-6 py-3.5 rounded-none text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 border border-black disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download className="w-4 h-4 text-black" />
+            DOWNLOAD EXCEL
+          </button>
+        </div>
       </div>
 
       {/* KPI Summary Cards */}
@@ -168,7 +210,7 @@ export default function Inventory() {
           </h2>
           <div className="w-full sm:w-64">
             <Input
-              placeholder="Search items..."
+              placeholder="Search master items..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-white text-black border-black focus:ring-black"
@@ -179,7 +221,7 @@ export default function Inventory() {
         {loading ? (
           <TableSkeleton />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={Warehouse} title="No inventory items found" message="Item stock records will appear once created." />
+          <EmptyState icon={Warehouse} title="No master inventory items found" message="Master items added by Admin will appear here automatically." />
         ) : (
           <div className="overflow-x-auto border border-black">
             <table className="w-full text-left text-xs border-collapse">
@@ -242,7 +284,7 @@ export default function Inventory() {
             <Button variant="secondary" onClick={() => setEditing(null)}>
               Cancel
             </Button>
-            <Button loading={saving} onClick={save}>
+            <Button loading={saving} onClick={saveStock}>
               Save Stock
             </Button>
           </>
@@ -253,7 +295,56 @@ export default function Inventory() {
           Update the available SU inventory count for future event allocations.
         </p>
       </Modal>
+
+      {/* Add Master Item Modal */}
+      <Modal
+        open={createModalOpen}
+        title="Add Master Item"
+        onClose={() => setCreateModalOpen(false)}
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setCreateModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button loading={creatingItem} onClick={createMasterItem}>
+              Add Item
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <Input
+            label="Item Name"
+            value={itemForm.item_name}
+            onChange={(e) => setItemForm({ ...itemForm, item_name: e.target.value })}
+            placeholder="e.g. A4 Sheets, Pen(BLUE)"
+          />
+          <Input
+            label="Price Per Unit (INR)"
+            type="number"
+            value={itemForm.price_per_unit}
+            onChange={(e) => setItemForm({ ...itemForm, price_per_unit: e.target.value })}
+            placeholder="e.g. 2.50"
+          />
+          <Input
+            label="Initial Stock Quantity"
+            type="number"
+            value={itemForm.available_quantity}
+            onChange={(e) => setItemForm({ ...itemForm, available_quantity: e.target.value })}
+            placeholder="e.g. 500"
+          />
+          <label className="flex items-center gap-2 text-[13px] text-slate-300">
+            <input
+              type="checkbox"
+              checked={itemForm.is_returnable}
+              onChange={(e) => setItemForm({ ...itemForm, is_returnable: e.target.checked })}
+            />
+            Returnable item
+          </label>
+        </div>
+      </Modal>
     </div>
   );
 }
+
 
