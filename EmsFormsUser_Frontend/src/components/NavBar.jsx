@@ -1,27 +1,21 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, LogIn, PlusCircle, FileText, Menu, X, Edit3, ShieldCheck } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen = false }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const isActivePath = (path) => {
-    return location.pathname === path;
-  };
-
   return (
-    <header className="bg-black/95 backdrop-blur-xl border-b border-slate-800 text-slate-100 sticky top-0 z-30 shadow-2xl w-full max-w-full">
-      {/* Top Header Row */}
+    <header className="bg-black/95 backdrop-blur-xl border-b border-slate-800 text-slate-100 sticky top-0 z-30 shadow-2xl w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
-        <div className="flex items-center justify-between h-14 sm:h-20 gap-2">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
           {/* Left side: Hamburger Toggle & Logo */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {showSidebarToggle && (
@@ -63,44 +57,6 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
                   <span className="sm:hidden">Create</span>
                 </button>
 
-                {/* Desktop Quick Nav Buttons */}
-                <button
-                  onClick={() => navigate('/view-events')}
-                  className={`hidden lg:flex items-center gap-2 px-3 py-2 border rounded-xl text-xs font-bold transition-colors ${
-                    isActivePath('/view-events')
-                      ? 'bg-sky-500/20 border-sky-500 text-sky-300'
-                      : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-sky-300'
-                  }`}
-                  title="My Proposals"
-                >
-                  <FileText className="w-4 h-4 text-sky-400" />
-                  <span>Proposals</span>
-                </button>
-                <button
-                  onClick={() => navigate('/edit')}
-                  className={`hidden lg:flex items-center gap-2 px-3 py-2 border rounded-xl text-xs font-bold transition-colors ${
-                    isActivePath('/edit')
-                      ? 'bg-amber-500/20 border-amber-500 text-amber-300'
-                      : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-amber-300'
-                  }`}
-                  title="Edit Access Requests"
-                >
-                  <Edit3 className="w-4 h-4 text-amber-400" />
-                  <span>Edit Access</span>
-                </button>
-                <button
-                  onClick={() => navigate('/lab-confirmation')}
-                  className={`hidden lg:flex items-center gap-2 px-3 py-2 border rounded-xl text-xs font-bold transition-colors ${
-                    isActivePath('/lab-confirmation')
-                      ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300'
-                      : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-emerald-300'
-                  }`}
-                  title="Lab Confirmation Forms"
-                >
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Lab Forms</span>
-                </button>
-
                 <button
                   onClick={handleLogout}
                   className="p-1.5 sm:p-2.5 text-slate-400 hover:text-white hover:bg-slate-900 rounded-xl transition-colors flex-shrink-0"
@@ -121,47 +77,6 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
           </div>
         </div>
       </div>
-
-      {/* Mobile Sub-Header Navigation Strip (Visible on mobile/tablet screens < lg) */}
-      {user && (
-        <div className="lg:hidden border-t border-slate-800/80 bg-slate-950/90 px-3 py-2 shadow-inner">
-          <div className="flex items-center justify-start gap-2 overflow-x-auto scrollbar-none py-0.5 w-full">
-            <button
-              onClick={() => navigate('/view-events')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-xl text-xs font-bold whitespace-nowrap flex-shrink-0 transition-colors ${
-                isActivePath('/view-events')
-                  ? 'bg-sky-500/20 border-sky-400 text-sky-200'
-                  : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-sky-300'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5 text-sky-400" />
-              <span>Proposals</span>
-            </button>
-            <button
-              onClick={() => navigate('/edit')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-xl text-xs font-bold whitespace-nowrap flex-shrink-0 transition-colors ${
-                isActivePath('/edit')
-                  ? 'bg-amber-500/20 border-amber-400 text-amber-200'
-                  : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-amber-300'
-              }`}
-            >
-              <Edit3 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Edit Access</span>
-            </button>
-            <button
-              onClick={() => navigate('/lab-confirmation')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-xl text-xs font-bold whitespace-nowrap flex-shrink-0 transition-colors ${
-                isActivePath('/lab-confirmation')
-                  ? 'bg-emerald-500/20 border-emerald-400 text-emerald-200'
-                  : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-emerald-300'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Lab Forms</span>
-            </button>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
