@@ -5,7 +5,7 @@ import { loadSlim } from 'tsparticles-slim';
 import UserLayout from './UserLayout';
 import { userAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
-import { Loader2 } from 'lucide-react';
+import { Loader2, FileText, Edit3, ShieldCheck, PlusCircle } from 'lucide-react';
 
 function HomePage() {
   const [events, setEvents] = useState([]);
@@ -99,6 +99,45 @@ function HomePage() {
           <p className="text-zinc-400 text-xs font-medium mt-1">
             Centralized Event Management & Control Center
           </p>
+        </div>
+
+        {/* Quick Access Cards */}
+        <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3.5 w-full">
+          <div
+            onClick={() => navigate('/view-events')}
+            className="p-4 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-sky-500/50 text-white rounded-none cursor-pointer transition-all space-y-2 group shadow-sm"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-sky-400 uppercase">PROPOSALS</span>
+              <FileText className="w-4 h-4 text-sky-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white">My Proposals</h3>
+            <p className="text-[11px] text-zinc-400">View & download submitted event proposals</p>
+          </div>
+
+          <div
+            onClick={() => navigate('/edit')}
+            className="p-4 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-amber-500/50 text-white rounded-none cursor-pointer transition-all space-y-2 group shadow-sm"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-amber-400 uppercase">PERMISSIONS</span>
+              <Edit3 className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white">Edit Access</h3>
+            <p className="text-[11px] text-zinc-400">Request or track edit access for events</p>
+          </div>
+
+          <div
+            onClick={() => navigate('/lab-confirmation')}
+            className="p-4 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 text-white rounded-none cursor-pointer transition-all space-y-2 group shadow-sm"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase">LAB & HALLS</span>
+              <ShieldCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white">Lab Forms</h3>
+            <p className="text-[11px] text-zinc-400">Manage lab booking & confirmation forms</p>
+          </div>
         </div>
 
         {/* YOUR EVENTS Card */}
