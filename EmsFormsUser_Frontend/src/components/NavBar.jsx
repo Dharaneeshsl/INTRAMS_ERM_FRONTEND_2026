@@ -1,16 +1,19 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, LogIn, PlusCircle, FileText, Menu, X, Edit3, ShieldCheck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen = false }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <header className="bg-black/95 backdrop-blur-xl border-b border-slate-800 text-slate-100 sticky top-0 z-30 shadow-2xl w-full max-w-full overflow-hidden">
@@ -44,7 +47,7 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
             </div>
           </div>
 
-          {/* Right side: Primary Actions */}
+          {/* Right side: Action Buttons */}
           <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
             {user ? (
               <>
@@ -55,6 +58,38 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
                   <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span className="hidden sm:inline">Create Proposal</span>
                   <span className="sm:hidden">Create</span>
+                </button>
+
+                {/* Desktop Header Quick Links (Visible on lg: screens) */}
+                <button
+                  onClick={() => navigate('/view-events')}
+                  className={`hidden lg:flex items-center gap-2 px-3 py-2 border rounded-xl text-xs font-bold transition-colors ${
+                    isActive('/view-events') ? 'bg-sky-500/20 border-sky-500 text-sky-300' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-sky-300'
+                  }`}
+                  title="My Proposals"
+                >
+                  <FileText className="w-4 h-4 text-sky-400" />
+                  <span>Proposals</span>
+                </button>
+                <button
+                  onClick={() => navigate('/edit')}
+                  className={`hidden lg:flex items-center gap-2 px-3 py-2 border rounded-xl text-xs font-bold transition-colors ${
+                    isActive('/edit') ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-amber-300'
+                  }`}
+                  title="Edit Access Requests"
+                >
+                  <Edit3 className="w-4 h-4 text-amber-400" />
+                  <span>Edit Access</span>
+                </button>
+                <button
+                  onClick={() => navigate('/lab-confirmation')}
+                  className={`hidden lg:flex items-center gap-2 px-3 py-2 border rounded-xl text-xs font-bold transition-colors ${
+                    isActive('/lab-confirmation') ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-emerald-300'
+                  }`}
+                  title="Lab Confirmation Forms"
+                >
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span>Lab Forms</span>
                 </button>
 
                 <button
