@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { FileText } from 'lucide-react';
 import { adminAPI } from '../api';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -8,6 +8,7 @@ import PageHeader from './ui/PageHeader';
 import Button from './ui/Button';
 import Card from './ui/Card';
 import Input from './ui/Input';
+import Modal from './ui/Modal';
 
 const ROLES = [
   { id: 'secretary', label: 'Secretary' },
@@ -20,15 +21,30 @@ export default function Reports() {
   const [busy, setBusy] = useState('');
   const [eventId, setEventId] = useState('');
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewFilename, setPreviewFilename] = useState('');
+
   const run = async (key, request, filename, preview = false) => {
     try {
       setBusy(key);
       const res = await request();
-      await handlePdfBlob(res, { filename, preview });
+      const url = await handlePdfBlob(res, { filename, preview });
+      return url;
     } catch (err) {
       showToast(getApiErrorMessage(err, 'Unable to generate this document.'), 'error');
+      return null;
     } finally {
       setBusy('');
+    }
+  };
+
+  const openPreview = async (key, request, filename) => {
+    const url = await run(key, request, filename, true);
+    if (url) {
+      setPreviewUrl(url);
+      setPreviewFilename(filename);
+      setPreviewOpen(true);
     }
   };
 
@@ -44,13 +60,21 @@ export default function Reports() {
             {ROLES.map((role) => (
               <div key={role.id} className="flex items-center justify-between gap-2">
                 <span className="text-[14px] text-white">{role.label}</span>
-                <Button
-                  variant="secondary"
-                  loading={busy === role.id}
-                  onClick={() => run(role.id, () => adminAPI.getRoleWisePDF(role.id), `Role_${role.id}.pdf`)}
-                >
-                  Generate PDF
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    loading={busy === `${role.id}-preview`}
+                    onClick={() => openPreview(`${role.id}-preview`, () => adminAPI.getRoleWisePDF(role.id), `Role_${role.id}.pdf`)}
+                  >
+                    Preview
+                  </Button>
+                  <Button
+                    loading={busy === role.id}
+                    onClick={() => run(role.id, () => adminAPI.getRoleWisePDF(role.id), `Role_${role.id}.pdf`)}
+                  >
+                    Download
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -65,6 +89,14 @@ export default function Reports() {
               className="w-full"
               variant="secondary"
               disabled={!eventId}
+              loading={busy === 'event-preview'}
+              onClick={() => openPreview('event-preview', () => adminAPI.getEventPDF(eventId), `Event_${eventId}.pdf`)}
+            >
+              Preview
+            </Button>
+            <Button
+              className="w-full"
+              disabled={!eventId}
               loading={busy === 'event'}
               onClick={() => run('event', () => adminAPI.getEventPDF(eventId), `Event_${eventId}.pdf`)}
             >
@@ -72,7 +104,6 @@ export default function Reports() {
             </Button>
             <Button
               className="w-full"
-              variant="secondary"
               disabled={!eventId}
               loading={busy === 'items'}
               onClick={() => run('items', () => adminAPI.getEventItemsPDF(eventId), `Items_${eventId}.pdf`)}
@@ -81,7 +112,6 @@ export default function Reports() {
             </Button>
             <Button
               className="w-full"
-              variant="secondary"
               disabled={!eventId}
               loading={busy === 'alloc'}
               onClick={() => run('alloc', () => adminAPI.getProcurementPDF(eventId), `Allocation_${eventId}.pdf`)}
@@ -100,7 +130,7 @@ export default function Reports() {
             <Button
               variant="secondary"
               loading={busy === 'summary-view'}
-              onClick={() => run('summary-view', () => adminAPI.getEventsSummaryPDF(), 'INTRAMS_Events_Summary.pdf', true)}
+              onClick={() => openPreview('summary-view', () => adminAPI.getEventsSummaryPDF(), 'INTRAMS_Events_Summary.pdf')}
             >
               Preview
             </Button>
@@ -113,6 +143,17 @@ export default function Reports() {
           </div>
         </Card>
       </div>
+
+      <Modal open={previewOpen} onClose={() => setPreviewOpen(false)} title={previewFilename} wide>
+        {previewUrl ? (
+          <div className="h-[70vh]">
+            <iframe title="PDF Preview" src={previewUrl} className="w-full h-full border" />
+          </div>
+        ) : (
+          <div>Loading preview…</div>
+        )}
+        <div />
+      </Modal>
     </div>
   );
 }
