@@ -4,6 +4,7 @@ import { adminAPI } from '../api';
 import { getApiErrorMessage } from '../utils/apiError';
 import { useToast } from '../context/ToastContext';
 import Input from './ui/Input';
+import Card from './ui/Card';
 import EmptyState from './ui/EmptyState';
 import { TableSkeleton } from './ui/LoadingState';
 import PageHeader from './ui/PageHeader';

@@ -1,4 +1,4 @@
-﻿import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -54,9 +54,11 @@ function AppRoutes() {
         <Route path="/associations/:id" element={<Guard roles={['admin', 'member']}><AssociationDetail /></Guard>} />
         <Route path="/add" element={<Navigate to="/associations" replace />} />
 
-        <Route path="/items" element={<Guard roles={['admin']}><Items /></Guard>} />
-        <Route path="/inventory" element={<Guard roles={['admin', 'procurement']}><Inventory /></Guard>} />
+        <Route path="/items" element={<Guard roles={['admin', 'member', 'procurement']}><Items /></Guard>} />
+        <Route path="/inventory" element={<Guard roles={['admin', 'member', 'procurement']}><Inventory /></Guard>} />
         <Route path="/stocks" element={<Navigate to="/inventory" replace />} />
+        <Route path="/stats" element={<Navigate to="/inventory" replace />} />
+        <Route path="/statistics" element={<Navigate to="/inventory" replace />} />
 
         <Route path="/grant-allocation" element={<Guard roles={['admin', 'procurement']}><GrantItems /></Guard>} />
         <Route path="/grant-allocation/:id" element={<Guard roles={['admin', 'procurement']}><GrantEventItems /></Guard>} />

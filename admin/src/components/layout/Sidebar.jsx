@@ -13,6 +13,7 @@ import {
   FlaskConical,
   LogOut,
   FileText,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../ui/Button';
@@ -26,10 +27,11 @@ function Section({ title, children }) {
   );
 }
 
-function Item({ to, icon: Icon, label }) {
+function Item({ to, icon: Icon, label, onClick }) {
   return (
     <NavLink
       to={to}
+      onClick={onClick}
       className={({ isActive }) =>
         `flex items-center gap-3 rounded-none border px-3 py-2 text-[12px] font-bold uppercase tracking-wider transition-all ${
           isActive
@@ -44,12 +46,13 @@ function Item({ to, icon: Icon, label }) {
   );
 }
 
-export default function Sidebar() {
+export default function Sidebar({ onItemClick, onClose, isMobile = false }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const role = user?.role || localStorage.getItem('role') || 'admin';
 
   const handleLogout = async () => {
+    if (onItemClick) onItemClick();
     await logout();
     navigate('/login');
   };
@@ -59,28 +62,39 @@ export default function Sidebar() {
 
   return (
     <div className="flex h-full flex-col bg-[#050505] border-r border-[#252525] text-[#FFFFFF]">
-      <div className="border-b border-[#252525] px-5 py-5 bg-[#000000]">
-        <div className="font-heading text-[18px] font-bold tracking-[0.16em] text-[#FFFFFF]">INTRAMS</div>
-        <div className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#00AEEF]">ADMIN PORTAL</div>
+      <div className="border-b border-[#252525] px-5 py-4 bg-[#000000] flex items-center justify-between">
+        <div>
+          <div className="font-heading text-[18px] font-bold tracking-[0.16em] text-[#FFFFFF]">INTRAMS</div>
+          <div className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.25em] text-[#00AEEF]">ADMIN PORTAL</div>
+        </div>
+        {isMobile && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 text-[#A0A0A0] hover:text-[#FFFFFF] hover:bg-[#1A1A1A] border border-[#252525] transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-        <Item to="/dashboard" icon={LayoutDashboard} label="DASHBOARD" />
+        <Item to="/dashboard" icon={LayoutDashboard} label="DASHBOARD" onClick={onItemClick} />
 
         <Section title="OPERATIONS">
-          <Item to="/associations" icon={Users} label="ASSOCIATIONS" />
-          <Item to="/events" icon={Calendar} label="EVENTS" />
-          <Item to="/items" icon={Package} label="ITEMS" />
-          <Item to="/inventory" icon={Warehouse} label="INVENTORY" />
-          <Item to="/grant-allocation" icon={Gift} label="GRANT ALLOCATION" />
-          <Item to="/grant-history" icon={History} label="GRANT HISTORY" />
-          <Item to="/procurement" icon={ShoppingCart} label="PROCUREMENT" />
+          <Item to="/associations" icon={Users} label="ASSOCIATIONS" onClick={onItemClick} />
+          <Item to="/events" icon={Calendar} label="EVENTS" onClick={onItemClick} />
+          <Item to="/items" icon={Package} label="ITEMS" onClick={onItemClick} />
+          <Item to="/inventory" icon={Warehouse} label="INVENTORY" onClick={onItemClick} />
+          <Item to="/grant-allocation" icon={Gift} label="GRANT ALLOCATION" onClick={onItemClick} />
+          <Item to="/grant-history" icon={History} label="GRANT HISTORY" onClick={onItemClick} />
+          <Item to="/procurement" icon={ShoppingCart} label="PROCUREMENT" onClick={onItemClick} />
         </Section>
 
         <Section title="ADMINISTRATION">
-          <Item to="/edit-access" icon={ShieldCheck} label="EDIT ACCESS" />
-          <Item to="/lab-confirmation" icon={FlaskConical} label="LAB CONFIRMATION" />
-          <Item to="/role-reports" icon={FileText} label="ROLE PDF" />
+          <Item to="/edit-access" icon={ShieldCheck} label="EDIT ACCESS" onClick={onItemClick} />
+          <Item to="/lab-confirmation" icon={FlaskConical} label="LAB CONFIRMATION" onClick={onItemClick} />
+          <Item to="/role-reports" icon={FileText} label="ROLE PDF" onClick={onItemClick} />
         </Section>
       </nav>
 
@@ -107,5 +121,3 @@ export default function Sidebar() {
     </div>
   );
 }
-
-
