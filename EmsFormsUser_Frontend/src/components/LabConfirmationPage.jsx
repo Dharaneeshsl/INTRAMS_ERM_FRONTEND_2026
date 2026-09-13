@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Particles from 'react-tsparticles';
 import { loadSlim } from 'tsparticles-slim';
-import NavBar from './NavBar';
-import Sidebar from './Sidebar';
+import UserLayout from './UserLayout';
 import { userAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { RefreshCcw, Loader2, FileCheck, Building2, Calendar, Clock, UserCheck, Download } from 'lucide-react';
@@ -93,12 +92,9 @@ function LabConfirmationPage() {
   };
 
   return (
-    <div className="h-screen w-screen relative bg-black overflow-hidden flex flex-row font-sans text-white">
-      <Particles id="lab-conf-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
-
-      <Sidebar />
-
-      <div className="flex-1 ml-64 h-screen overflow-y-auto flex flex-col min-w-0 z-10 p-4 sm:p-6 space-y-4 max-w-4xl w-full mx-auto">
+    <UserLayout showSidebar={true}>
+      <div className="relative min-h-full font-sans text-white space-y-4 max-w-4xl w-full mx-auto">
+        <Particles id="lab-conf-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
         {/* Header Box */}
         <div className="p-4 bg-zinc-950 border border-zinc-800 text-white rounded-lg shadow-sm">
           <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight uppercase">
@@ -246,7 +242,7 @@ function LabConfirmationPage() {
           )}
         </div>
       </div>
-    </div>
+    </UserLayout>
   );
 }
 

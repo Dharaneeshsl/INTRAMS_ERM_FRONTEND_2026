@@ -2,8 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Particles from 'react-tsparticles';
 import { loadSlim } from 'tsparticles-slim';
-import NavBar from './NavBar';
-import Sidebar from './Sidebar';
+import UserLayout from './UserLayout';
 import StepProgress from './StepProgress';
 import Instructions from './Instructions';
 import NewDescriptionPage from './NewDescriptionPage';
@@ -116,13 +115,10 @@ function CreateEventLayout() {
   };
 
   return (
-    <div className="h-screen w-screen relative bg-black overflow-hidden flex flex-row font-sans text-white">
-      <Particles id="create-event-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
-
-      <Sidebar />
-
-      <div className="flex-1 ml-64 h-screen overflow-y-auto flex flex-col min-w-0 z-10 p-4 sm:p-6 space-y-4 max-w-5xl w-full mx-auto">
-        <main className="w-full space-y-4">
+    <UserLayout showSidebar={true}>
+      <div className="relative min-h-full font-sans text-white space-y-4 max-w-5xl w-full mx-auto">
+        <Particles id="create-event-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
+        <div className="relative z-10 w-full space-y-4">
           <StepProgress currentStep={currentStep} totalSteps={5} onStepClick={(step) => setCurrentStep(step)} />
 
           {/* STEP 1: Instructions */}
@@ -250,9 +246,9 @@ function CreateEventLayout() {
               </button>
             </div>
           )}
-        </main>
+        </div>
       </div>
-    </div>
+    </UserLayout>
   );
 }
 

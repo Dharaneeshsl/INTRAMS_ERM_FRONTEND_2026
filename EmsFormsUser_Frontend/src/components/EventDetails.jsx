@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import NavBar from './NavBar';
+import UserLayout from './UserLayout';
 import AnnexureUploadModal from './AnnexureUploadModal';
 import { userAPI } from '../api/api';
 import { ArrowLeft, Calendar, Clock, MapPin, Users, Layers, Package, Tag, Paperclip, Loader2 } from 'lucide-react';
@@ -56,10 +56,8 @@ function EventDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 overflow-hidden flex flex-col ocean-gradient-bg text-slate-100">
-      <NavBar />
-
-      <main className="relative z-10 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 flex-1">
+    <UserLayout showSidebar={true}>
+      <div className="max-w-5xl w-full mx-auto space-y-6">
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -161,16 +159,16 @@ function EventDetails() {
             </div>
           )}
         </div>
-      </main>
 
-      {showAnnexureModal && (
-        <AnnexureUploadModal
-          eventId={event._id || event.id}
-          eventName={event.name || event.event_name}
-          onClose={() => setShowAnnexureModal(false)}
-        />
-      )}
-    </div>
+        {showAnnexureModal && (
+          <AnnexureUploadModal
+            eventId={event._id || event.id}
+            eventName={event.name || event.event_name}
+            onClose={() => setShowAnnexureModal(false)}
+          />
+        )}
+      </div>
+    </UserLayout>
   );
 }
 

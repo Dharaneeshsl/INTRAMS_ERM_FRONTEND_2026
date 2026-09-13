@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim';
-import NavBar from './NavBar';
+import UserLayout from './UserLayout';
 import EmptyState from './EmptyState';
 import LoadingSkeleton from './LoadingSkeleton';
 import { userAPI } from '../api/api';
@@ -100,11 +98,8 @@ function ViewEvents() {
   });
 
   return (
-    <div className="min-h-screen relative bg-slate-950 text-slate-100 overflow-hidden flex flex-col ocean-gradient-bg">
-      <Particles id="view-events-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
-      <NavBar />
-
-      <main className="relative z-10 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex-1">
+    <UserLayout showSidebar={true}>
+      <div className="max-w-6xl w-full mx-auto space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-extrabold text-white font-heading">My Event Proposals</h1>
@@ -245,8 +240,8 @@ function ViewEvents() {
             </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </UserLayout>
   );
 }
 
