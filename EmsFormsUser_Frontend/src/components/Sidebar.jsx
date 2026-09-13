@@ -8,6 +8,7 @@ function Sidebar({ mobile = false, onClose }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    if (onClose) onClose();
     logout();
     navigate('/login');
   };
@@ -20,11 +21,7 @@ function Sidebar({ mobile = false, onClose }) {
   ];
 
   return (
-    <aside
-      className={`${
-        mobile ? 'w-full h-full' : 'fixed left-0 top-0 bottom-0 w-64 h-screen'
-      } bg-black border-r border-zinc-800 text-white flex flex-col justify-between p-5 z-40 font-sans backdrop-blur-xl shadow-2xl`}
-    >
+    <aside className="w-full h-full bg-black border-r border-zinc-800 text-white flex flex-col justify-between p-5 font-sans backdrop-blur-xl shadow-2xl overflow-y-auto">
       <div>
         {/* Header */}
         <div className="pb-4 mb-4 border-b border-zinc-800 flex items-center justify-between">
@@ -44,8 +41,10 @@ function Sidebar({ mobile = false, onClose }) {
           </div>
           {mobile && (
             <button
+              type="button"
               onClick={onClose}
               className="p-2 rounded-none bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 transition-colors"
+              aria-label="Close menu"
             >
               <X className="w-5 h-5" />
             </button>
@@ -78,8 +77,9 @@ function Sidebar({ mobile = false, onClose }) {
       </div>
 
       {/* Footer Logout Button */}
-      <div className="pt-4 border-t border-zinc-800">
+      <div className="pt-4 mt-6 border-t border-zinc-800">
         <button
+          type="button"
           onClick={handleLogout}
           className="flex items-center justify-center gap-2.5 w-full px-4 py-3.5 bg-white hover:bg-rose-600 hover:text-white text-black border-2 border-black text-xs font-extrabold tracking-wider uppercase transition-all text-center rounded-none shadow-sm"
         >
@@ -92,5 +92,3 @@ function Sidebar({ mobile = false, onClose }) {
 }
 
 export default Sidebar;
-
-

@@ -6,29 +6,29 @@ export default function UserLayout({ children, showSidebar = true }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-black text-slate-100 ocean-gradient-bg">
-      {/* Desktop Sidebar */}
+    <div className="min-h-screen bg-black text-slate-100 ocean-gradient-bg flex flex-col lg:flex-row relative">
+      {/* Desktop Fixed Left Sidebar */}
       {showSidebar && (
-        <div className="hidden lg:block w-64 flex-shrink-0">
+        <aside className="hidden lg:block fixed left-0 top-0 bottom-0 z-40 w-64 border-r border-zinc-800 bg-black">
           <Sidebar />
-        </div>
+        </aside>
       )}
 
-      {/* Mobile Slide-Over Menu */}
+      {/* Mobile Slide-Over Sidebar Drawer */}
       {showSidebar && mobileMenuOpen && (
         <>
           <div
             className="lg:hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="lg:hidden fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw]">
+          <div className="lg:hidden fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-black shadow-2xl">
             <Sidebar mobile onClose={() => setMobileMenuOpen(false)} />
           </div>
         </>
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className={`flex-1 flex flex-col min-w-0 w-full min-h-screen ${showSidebar ? 'lg:pl-64' : ''}`}>
         <NavBar
           showSidebarToggle={showSidebar}
           onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
