@@ -3,6 +3,7 @@ import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { useToast } from '../../context/ToastContext';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 export default function PdfPreviewModal({ open, url, filename, onClose }) {
   const { showToast } = useToast();
@@ -35,6 +36,54 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
       showToast('Unable to download preview.', 'error');
     } catch (err) {
       showToast(getApiErrorMessage(err, 'Failed to download.'), 'error');
+    }
+  };
+
+  const flattenAndDownload = async () => {
+    if (!url) {
+      showToast('No PDF to flatten.', 'error');
+      return;
+    }
+    try {
+      const res = await fetch(url);
+      const arrayBuffer = await res.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const helv = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+      const pageIndex = Math.max(0, page - 1);
+      if (pageIndex >= pdfDoc.getPageCount()) {
+        showToast('Page out of range for flattening.', 'error');
+        return;
+      }
+
+      const pdfPage = pdfDoc.getPage(pageIndex);
+      const { width, height } = pdfPage.getSize();
+
+      notes.forEach((n) => {
+        const x = (n.x / 100) * width;
+        const y = height - (n.y / 100) * height;
+        pdfPage.drawRectangle({ x: x - 12, y: y - 10, width: helv.widthOfTextAtSize(n.text, 10) + 8, height: 14, color: rgb(1, 1, 0.6) });
+        pdfPage.drawText(n.text, {
+          x: x - 10,
+          y: y - 8,
+          size: 10,
+          font: helv,
+          color: rgb(0, 0, 0),
+        });
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = u;
+      a.download = filename || 'report-annotated.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(u), 2000);
+    } catch (err) {
+      showToast(getApiErrorMessage(err, 'Failed to flatten PDF.'), 'error');
     }
   };
 
@@ -74,6 +123,7 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
           <Button variant="secondary" onClick={zoomIn}>+</Button>
           <Button variant="secondary" onClick={rotate}>Rotate</Button>
           <Button onClick={download}>Download</Button>
+          <Button variant="secondary" onClick={flattenAndDownload}>Flatten & Download</Button>
         </div>
       </div>
 
