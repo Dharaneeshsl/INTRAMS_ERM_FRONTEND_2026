@@ -116,8 +116,7 @@ function CreateEventLayout() {
 
   return (
     <UserLayout showSidebar={true}>
-      <div className="relative min-h-full font-sans text-white space-y-4 max-w-5xl w-full mx-auto">
-        <Particles id="create-event-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
+      <div className="relative z-10 min-h-full font-sans text-white space-y-4 max-w-4xl w-full mx-auto">
         <div className="relative z-10 w-full space-y-4">
           <StepProgress currentStep={currentStep} totalSteps={5} onStepClick={(step) => setCurrentStep(step)} />
 

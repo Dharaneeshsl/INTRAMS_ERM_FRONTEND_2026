@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim';
-import NavBar from './NavBar';
+import UserLayout from './UserLayout';
 import NewDescriptionPage from './NewDescriptionPage';
 import RoundsPage from './RoundsPage';
 import ItemsPage from './ItemsPage';
@@ -21,25 +19,6 @@ function UpdateEventController() {
   const [loading, setLoading] = useState(!location.state);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-
-  const particlesInit = useCallback(async (engine) => {
-    await loadSlim(engine);
-  }, []);
-
-  const particlesOptions = {
-    background: { color: { value: '#000000' } },
-    fpsLimit: 120,
-    particles: {
-      color: { value: '#38bdf8' },
-      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.25, width: 1 },
-      move: { enable: true, speed: 0.8 },
-      number: { density: { enable: true, area: 800 }, value: 70 },
-      opacity: { value: 0.35 },
-      shape: { type: 'circle' },
-      size: { value: { min: 1, max: 3 } },
-    },
-    detectRetina: true,
-  };
 
   useEffect(() => {
     if (!formData && id) {
@@ -111,9 +90,11 @@ function UpdateEventController() {
 
   if (loading || !formData) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-white" />
-      </div>
+      <UserLayout showSidebar={true}>
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
+        </div>
+      </UserLayout>
     );
   }
 
@@ -126,11 +107,8 @@ function UpdateEventController() {
   ];
 
   return (
-    <div className="min-h-screen relative bg-black text-white overflow-hidden flex flex-col">
-      <Particles id="update-event-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
-      <NavBar />
-
-      <main className="relative z-10 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 flex-1">
+    <UserLayout showSidebar={true}>
+      <div className="max-w-5xl w-full mx-auto space-y-6">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -316,7 +294,6 @@ function UpdateEventController() {
           </div>
         )}
 
-        {/* Tab 5: Review & Submit */}
         {activeTab === 'review' && (
           <div>
             <ReviewSubmit formData={formData} onSubmit={handleUpdate} isSubmitting={isSubmitting} isEdit={true} />
@@ -330,8 +307,8 @@ function UpdateEventController() {
             </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </UserLayout>
   );
 }
 
