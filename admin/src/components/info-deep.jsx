@@ -178,6 +178,28 @@ export default function EventDetail() {
               <p className="text-[13px] text-[#E5E5E5] mt-1 font-bold">SECRETARY: <span className="text-[#A0A0A0]">{contacts.secretary.name}</span></p>
             )}
           </Card>
+
+          {Array.isArray(event.annexures) && event.annexures.length > 0 && (
+            <Card className="p-5">
+              <h3 className="font-heading font-bold text-sm uppercase tracking-wider text-[#FFFFFF] mb-3">
+                SUPPORTING ANNEXURES ({event.annexures.length})
+              </h3>
+              <div className="space-y-2">
+                {event.annexures.map((ann, idx) => (
+                  <a
+                    key={ann._id || idx}
+                    href={ann.file_url || `#`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block p-2.5 bg-[#000000] border border-[#252525] hover:border-[#00AEEF] rounded text-xs font-medium text-[#E5E5E5] hover:text-white transition-colors truncate"
+                  >
+                    📎 {ann.original_name || ann.file_name || `Annexure ${idx + 1}`}
+                  </a>
+                ))}
+              </div>
+            </Card>
+          )}
+
           <Card className="p-5 space-y-2">
             <h3 className="font-heading font-bold text-sm uppercase tracking-wider text-[#FFFFFF] mb-3">ADMINISTRATIVE ACTIONS</h3>
             <Button className="w-full" variant="success" loading={statusLoading} disabled={event.status === 'approved'} onClick={() => handleStatus('approved')}>

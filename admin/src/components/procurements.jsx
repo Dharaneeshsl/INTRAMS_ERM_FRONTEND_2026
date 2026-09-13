@@ -56,6 +56,16 @@ export default function Procurements() {
     }
   };
 
+  const handleStatusUpdate = async (procId, status) => {
+    try {
+      await adminAPI.updateProcurementStatus(procId, status);
+      showToast(`Procurement status updated to ${status}.`, 'success');
+      fetchProcurements();
+    } catch (err) {
+      showToast(getApiErrorMessage(err, 'Failed to update procurement status.'), 'error');
+    }
+  };
+
   const filtered = procurements.filter((p) => {
     const term = searchTerm.toLowerCase();
     return (
@@ -96,8 +106,18 @@ export default function Procurements() {
                   <p className="font-heading font-bold text-[#FFFFFF] text-base">{proc.submission_id?.event_name || 'EVENT'}</p>
                   <p className="text-[12px] text-[#00AEEF] font-bold mt-0.5">{proc.requested_by?.club_name || 'ASSOCIATION'}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge status={proc.status || 'pending'} />
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge status={proc.status || 'requested'} />
+                  {proc.status === 'requested' && (
+                    <Button variant="secondary" onClick={() => handleStatusUpdate(proc._id, 'approved')}>
+                      APPROVE
+                    </Button>
+                  )}
+                  {proc.status === 'approved' && (
+                    <Button variant="secondary" onClick={() => handleStatusUpdate(proc._id, 'supplied')}>
+                      MARK SUPPLIED
+                    </Button>
+                  )}
                   {eventId && (
                     <>
                       <Button variant="secondary" loading={pdfLoading === eventId} onClick={() => pdf(eventId, true)}>
@@ -110,6 +130,7 @@ export default function Procurements() {
                   )}
                 </div>
               </div>
+
               <div className="mt-4 divide-y divide-[#252525] bg-[#000000] border border-[#252525] p-3">
                 {reqItems.length === 0 && <p className="text-[13px] text-[#A0A0A0]">Shortage logged during allocation.</p>}
                 {reqItems.map((item) => (

@@ -103,7 +103,8 @@ export default function EditAccess() {
                       <Td className="text-[#FFFFFF] font-bold">{req.submission_id?.event_name || req.submission_id?.name || 'Event'}</Td>
                       <Td>{req.requested_by?.club_name || req.requested_by?.username || '—'}</Td>
                       <Td className="max-w-xs truncate">{req.message || req.reason || '—'}</Td>
-                      <Td>{req.createdAt ? new Date(req.createdAt).toLocaleString('en-IN') : '—'}</Td>
+                      <Td>{(req.created_at || req.createdAt) ? new Date(req.created_at || req.createdAt).toLocaleString('en-IN') : '—'}</Td>
+
                       <Td>
                         <Badge status={status} />
                       </Td>

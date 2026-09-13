@@ -190,7 +190,7 @@ function RoundsPage({ formData, setFormData, errors = {} }) {
                 />
               </div>
 
-              <div className="flex items-center sm:pt-6">
+              <div className="space-y-3 sm:pt-2">
                 <label className="flex items-center gap-3 cursor-pointer p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl w-full">
                   <input
                     type="checkbox"
@@ -200,7 +200,23 @@ function RoundsPage({ formData, setFormData, errors = {} }) {
                   />
                   <span className="text-xs font-bold text-slate-200">This round has a Tie-Breaker</span>
                 </label>
+
+                {round.has_tie_breaker && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-sky-200/90 uppercase mb-1">
+                      Tie-Breaker Criteria <span className="text-rose-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Sudden death round / Highest score in Q3"
+                      value={round.tie_breaker || ''}
+                      onChange={(e) => updateRound(rIdx, 'tie_breaker', e.target.value)}
+                      className="w-full p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-white font-medium focus:ring-2 focus:ring-sky-500 outline-none placeholder-slate-500"
+                    />
+                  </div>
+                )}
               </div>
+
             </div>
           </div>
         ))}

@@ -82,8 +82,10 @@ export const adminAPI = {
   getEventGrantHistory: (eventId) => api.get(`/admin/events/${eventId}/grants`),
   getAllGrants: () => api.get('/admin/grants'),
   getProcurements: () => api.get('/admin/procurements'),
+  updateProcurementStatus: (id, status) => api.put(`/admin/procurements/${id}/status`, { status }),
   revertGrant: (grantId) => api.delete(`/admin/grants/${grantId}`),
   updateSuSource: (data) => api.put('/admin/grants/su-source', data),
+
 
   // PDFs & Statistics
   getEventPDF: (eventId) => api.get(`/admin/pdf/event/${eventId}`, { responseType: 'blob' }),
