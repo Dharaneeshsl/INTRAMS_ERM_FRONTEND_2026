@@ -47,7 +47,7 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
           </button>
         </div>
         <div className="px-6 py-5 text-[#E5E5E5]">{children}</div>
-        {footer && <div className="px-6 py-4 border-t border-[#252525] bg-[#000000] flex justify-end gap-2">{footer}</div>}
+        {footer && <div className="px-5 py-4 border-t border-[#252525] bg-[#000000] flex flex-col sm:flex-row sm:justify-end gap-2">{footer}</div>}
       </div>
     </div>
   );
