@@ -93,8 +93,10 @@ export const adminAPI = {
   getRoleWisePDF: (role) => api.get(`/admin/pdf/role/${role}`, { responseType: 'blob' }),
 
   getStats: () => api.get('/admin/stats'),
+  getRoleMembers: (role) => api.get(`/admin/personnel/${role}`),
   getLogs: () => api.get('/admin/logs'),
   checkHealth: () => api.get('/health'),
 };
+
 
 export default api;

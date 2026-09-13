@@ -90,19 +90,39 @@ export default function RolePdf() {
   const exportCsv = async () => {
     try {
       setBusy('export');
-      let data = [];
-      if (typeof adminAPI.getRoleMembers === 'function') {
-        const res = await adminAPI.getRoleMembers(selected);
-        data = res?.data ?? res;
+      let flattenRows = [];
+      const res = await adminAPI.getRoleMembers(selected);
+      const rawData = res?.data?.data || res?.data || {};
+
+      if (Array.isArray(rawData)) {
+        flattenRows = rawData;
+      } else if (typeof rawData === 'object' && rawData !== null) {
+        Object.entries(rawData).forEach(([clubName, members]) => {
+          if (Array.isArray(members)) {
+            members.forEach(m => {
+              flattenRows.push({
+                Club: clubName,
+                Name: m.name || '',
+                RollNumber: m.rollNo || m.roll_number || '',
+                Year: m.year || '',
+                Department: m.department || '',
+                Phone: m.phone || m.mobile || '',
+                Event: m.eventName || ''
+              });
+            });
+          }
+        });
       }
-      if (!Array.isArray(data) || data.length === 0) {
-        const assocRes = await adminAPI.getAssociations();
-        data = assocRes.data?.data || [];
+
+      if (flattenRows.length === 0) {
+        showToast('No personnel records found to export.', 'info');
+        return;
       }
-      const keys = Object.keys(data[0] || { club_name: '', username: '', email: '' });
+
+      const keys = Object.keys(flattenRows[0]);
       const escape = (s) => `"${String(s ?? '').replace(/"/g, '""')}"`;
-      const rows = [keys.join(',')].concat(data.map((r) => keys.map((k) => escape(r[k])).join(','))).join('\n');
-      const blob = new Blob([rows], { type: 'text/csv' });
+      const csvContent = [keys.join(',')].concat(flattenRows.map((r) => keys.map((k) => escape(r[k])).join(','))).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -117,6 +137,7 @@ export default function RolePdf() {
       setBusy('');
     }
   };
+
 
   return (
     <div>

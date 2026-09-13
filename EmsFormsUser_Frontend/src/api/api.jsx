@@ -57,7 +57,8 @@ export const userAPI = {
   createEvent: (eventData) => api.post('/user/events', eventData),
   updateEvent: (id, eventData) => api.put(`/user/events/${id}`, eventData),
   deleteEvent: (id) => api.delete(`/user/events/${id}`),
-  requestEditAccess: (id, message) => api.post(`/user/events/${id}/request-edit`, { message }),
+  requestEditAccess: (id, message, requestType = 'event_edit') => api.post(`/user/events/${id}/request-edit`, { message, request_type: requestType }),
+  getMyEditRequests: () => api.get('/user/edit-requests'),
   getEventPDF: (eventId) => api.get(`/user/events/${eventId}/pdf`, { responseType: 'blob' }),
   getItems: () => api.get('/user/items'),
   // Annexures API

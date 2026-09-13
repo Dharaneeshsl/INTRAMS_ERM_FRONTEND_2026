@@ -36,6 +36,7 @@ html, body, #root {
   min-height: 100%;
   background: var(--bg) !important;
   color: var(--text) !important;
+  overflow-x: hidden;
 }
 
 body {
@@ -57,9 +58,12 @@ button {
   cursor: pointer;
   border-radius: 0px !important;
 }
-img, svg {
+img, svg, video {
   display: block;
+  max-width: 100%;
+  height: auto;
 }
+
 ::selection {
   background: rgba(0, 174, 239, 0.3);
   color: #FFFFFF;

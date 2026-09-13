@@ -47,16 +47,33 @@ function EditRequestsPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await userAPI.getMyEvents();
-      const eventList = res.data?.events || res.data || [];
+      const [eventsRes, reqsRes] = await Promise.all([
+        userAPI.getMyEvents(),
+        userAPI.getMyEditRequests().catch(() => ({ data: { data: [] } }))
+      ]);
+
+      const eventList = eventsRes.data?.events || eventsRes.data || [];
       const validEvents = Array.isArray(eventList) ? eventList : [];
       setEvents(validEvents);
 
-      // Extract edit requested events
-      const reqList = validEvents.filter(
-        (e) => e.edit_req_status || e.status === 'edit_requested' || e.status === 'draft' || e.editReason
-      );
-      setEditRequests(reqList);
+      const serverReqs = reqsRes.data?.data || reqsRes.data || [];
+      const validServerReqs = Array.isArray(serverReqs) ? serverReqs : [];
+
+      if (validServerReqs.length > 0) {
+        setEditRequests(validServerReqs);
+      } else {
+        // Fallback filter from events if no edit request records exist yet
+        const fallbackList = validEvents.filter(
+          (e) => e.edit_req_status || e.status === 'edit_requested' || e.status === 'draft' || e.editReason
+        ).map(ev => ({
+          _id: ev._id,
+          submission_id: ev,
+          message: ev.editReason || ev.about || 'Edit access requested',
+          status: ev.edit_req_status || (ev.status === 'draft' ? 'approved' : 'pending'),
+          request_type: 'event_edit'
+        }));
+        setEditRequests(fallbackList);
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch edit requests');
     } finally {
@@ -83,7 +100,8 @@ function EditRequestsPage() {
     setSuccessMsg('');
     setError('');
     try {
-      await userAPI.requestEditAccess(selectedEventId, reason);
+      const reqType = selectedType === 'Lab' ? 'lab_edit' : 'event_edit';
+      await userAPI.requestEditAccess(selectedEventId, reason, reqType);
       setSuccessMsg('✅ Edit access request submitted successfully!');
       setReason('');
       setSelectedEventId('');
@@ -133,20 +151,24 @@ function EditRequestsPage() {
             </div>
           ) : (
             <div className="space-y-2.5">
-              {editRequests.map((ev) => {
-                const status = ev.edit_req_status || (ev.status === 'draft' ? 'approved' : ev.status);
+              {editRequests.map((reqItem) => {
+                const ev = reqItem.submission_id && typeof reqItem.submission_id === 'object' ? reqItem.submission_id : reqItem;
+                const status = reqItem.status || ev.edit_req_status || (ev.status === 'draft' ? 'approved' : 'pending');
                 const isApproved = status === 'approved' || ev.status === 'draft';
-                const isPending = status === 'requested' || ev.status === 'edit_requested' || status === 'pending';
+                const isPending = status === 'pending' || status === 'requested' || ev.status === 'edit_requested';
+                const isLabReq = reqItem.request_type === 'lab_edit';
 
                 return (
                   <div
-                    key={ev._id}
+                    key={reqItem._id || ev._id}
                     className="p-3 bg-zinc-900/80 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-sky-950 border border-sky-500/30 text-sky-400 font-mono font-semibold uppercase">
-                          EVENT
+                        <span className={`text-[10px] px-2 py-0.5 rounded font-mono font-semibold uppercase border ${
+                          isLabReq ? 'bg-purple-950 border-purple-500/30 text-purple-400' : 'bg-sky-950 border-sky-500/30 text-sky-400'
+                        }`}>
+                          {isLabReq ? 'LAB FORM' : 'EVENT'}
                         </span>
                         {isApproved ? (
                           <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-emerald-950 border border-emerald-500/30 text-emerald-400 font-bold uppercase">
@@ -163,11 +185,11 @@ function EditRequestsPage() {
                         )}
                       </div>
 
-                      <h3 className="text-xs font-semibold text-white">{ev.name || 'Untitled Event'}</h3>
+                      <h3 className="text-xs font-semibold text-white">{ev.event_name || ev.name || 'Untitled Event'}</h3>
 
                       <div className="text-[11px] text-zinc-400">
                         <span className="font-semibold text-zinc-300 uppercase">REASON: </span>
-                        <span>{ev.editReason || ev.about || 'Date / logistics update'}</span>
+                        <span>{reqItem.message || ev.editReason || ev.about || 'Date / logistics update'}</span>
                       </div>
                     </div>
 
@@ -196,7 +218,9 @@ function EditRequestsPage() {
           )}
         </div>
 
+
         {/* SUBMIT NEW EDIT REQUEST */}
+
         <div className="p-4 sm:p-5 bg-zinc-950 border border-zinc-800 text-white rounded-lg shadow-sm space-y-3">
           <h2 className="text-xs font-semibold text-white tracking-wider uppercase border-b border-zinc-800 pb-2.5">
             SUBMIT NEW EDIT REQUEST

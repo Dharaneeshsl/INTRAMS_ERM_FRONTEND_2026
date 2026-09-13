@@ -20,7 +20,14 @@ html, body, #root {
   box-sizing: border-box;
   background: var(--ui-black) !important;
   color: var(--ui-white) !important;
+  overflow-x: hidden;
 }
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
 
 body {
   font-family: 'Outfit', 'Inter', system-ui, sans-serif;

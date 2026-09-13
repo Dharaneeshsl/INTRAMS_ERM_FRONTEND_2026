@@ -238,7 +238,7 @@ function PersonnelDetailsPage({ formData, setFormData, errors = {} }) {
           Faculty Advisor Details <span className="text-rose-400">*</span>
         </h3>
         <div className="glass-card border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-2xl">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label className="block text-[11px] font-bold text-sky-200/90 uppercase mb-1">
                 Name <span className="text-rose-400">*</span>
@@ -258,10 +258,26 @@ function PersonnelDetailsPage({ formData, setFormData, errors = {} }) {
               <input
                 type="text"
                 placeholder="e.g. Associate Professor"
-                value={faculty.designation || faculty.department || ''}
+                value={faculty.designation || ''}
                 onChange={(e) => updateFacultyAdvisor('designation', e.target.value)}
                 className="w-full p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-white font-medium focus:ring-2 focus:ring-sky-500 outline-none placeholder-slate-500"
               />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-sky-200/90 uppercase mb-1">
+                Department <span className="text-rose-400">*</span>
+              </label>
+              <select
+                value={faculty.department || ''}
+                onChange={(e) => updateFacultyAdvisor('department', e.target.value)}
+                className="w-full p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-white font-medium focus:ring-2 focus:ring-sky-500 outline-none"
+              >
+                {DEPARTMENTS.map((dept, i) => (
+                  <option key={i} value={dept === 'Select Department' ? '' : dept} className="bg-slate-900 text-white">
+                    {dept}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-[11px] font-bold text-sky-200/90 uppercase mb-1">
@@ -278,6 +294,7 @@ function PersonnelDetailsPage({ formData, setFormData, errors = {} }) {
           </div>
         </div>
       </div>
+
 
       {/* Judge Details */}
       <div className="space-y-4 pt-2">
