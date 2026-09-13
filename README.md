@@ -1,136 +1,89 @@
 # INTRAMS ERM 2026 — Frontend
 
-Frontend application for the **INTRAMS Event Requirement Management (ERM) Portal 2026**, developed for the **Students' Union, PSG College of Technology**.
+The official frontend application for **INTRAMS ERM 2026**, developed for the **Students' Union, PSG College of Technology**.
 
-The repository contains two frontend applications:
+The system provides dedicated interfaces for **Convenors and Administrators** to manage events, ERM submissions, item requirements, inventory, allocations, approvals, and document generation.
 
-- **User (Club) Portal** — Event proposal creation, editing and submission.
-- **Admin Portal** — Event monitoring, club, inventory, procurement and item management.
+## Overview
 
----
+INTRAMS ERM is designed to digitize the process of collecting event requirements from associations/clubs and managing the allocation of available Students' Union resources.
 
-## Applications
-
-| Portal | Directory | Port | Purpose |
-|---|---|---:|---|
-| User Portal | `EmsFormsUser_Frontend` | `5173` | Event proposal and requirement management |
-| Admin Portal | `admin` | `5174` | Event, club, inventory and procurement management |
-
----
+The frontend communicates with the centralized Express.js backend through REST APIs.
 
 ## Tech Stack
 
-- React
-- Vite
-- Tailwind CSS
-- React Router DOM
-- Lucide React
-- JWT Authentication
-- REST API
-- Docker
+- **React** — UI development
+- **Vite** — Development and build tooling
+- **JavaScript** — Application logic
+- **Tailwind CSS** — Styling
+- **React Router** — Client-side routing
+- **Axios** — API communication
+- **Lucide React** — Icons
+- **Recharts** — Dashboard visualizations
+- **Leaflet** — Map-based features
 
----
+## Portals
 
-## Main Features
+### Convenor Portal
 
-### User Portal
+The Convenor Portal allows association/club representatives to:
 
-- Multi-step event proposal wizard
-- Basic event information
-- Logistics and requirements
-- Schedule and venue details
-- Secretary, Convenor and Faculty Advisor details
-- Rounds and rules
-- Item requirements
-- Supporting annexure uploads
-- Proposal editing
-- Proposal submission
-- JWT-based authentication
-- Event details and deep linking
+- Login securely
+- Manage events
+- Submit ERM forms
+- Request required items
+- View submission status
+- View event information
+- Request editing access
+- Track submitted requirements
 
 ### Admin Portal
 
-- Event dashboard and monitoring
-- Proposal status management
-- Club management
-- User search
-- Master item management
-- Stock management
-- Item granting
-- Grant history and logs
-- Procurement requisitions
-- Edit access management
-- Role-based authorization
+The Admin Portal provides administrative control over the complete ERM workflow:
 
-Supported roles:
+- Dashboard and statistics
+- Association / Club management
+- Event management
+- Master item management
+- Inventory / stock management
+- Item allocation
+- Grant history
+- Procurement management
+- Edit access approval
+- Lab confirmation
+- Role-based PDF generation
+- Event PDF generation
+- Procurement PDF generation
+
+**Winner Export is intentionally excluded from the Admin Portal.**
+
+## Project Structure
 
 ```text
-admin
-member
-procurement
-Project Structure
 INTRAMS_ERM_FRONTEND_2026/
 │
 ├── EmsFormsUser_Frontend/
 │   ├── src/
 │   ├── public/
-│   └── package.json
+│   ├── package.json
+│   └── ...
 │
 ├── admin/
 │   ├── src/
 │   ├── public/
-│   └── package.json
+│   ├── package.json
+│   └── ...
 │
-├── README.md
-└── .gitignore
-Local Development
-Prerequisites
+└── README.md
+Environment Configuration
 
-Install:
+The frontend uses environment variables for backend configuration.
 
-Node.js 18+
-npm
-Git
-
-Check versions:
-
-node --version
-npm --version
-git --version
-Clone Repository
-git clone https://github.com/Students-Union-PSGTech/INTRAMS_ERM_FRONTEND_2026.git
-cd INTRAMS_ERM_FRONTEND_2026
-Run User Portal
-cd EmsFormsUser_Frontend
-npm install
-npm run dev
-
-Open:
-
-http://localhost:5173
-Run Admin Portal
-
-Open a second terminal:
-
-cd INTRAMS_ERM_FRONTEND_2026/admin
-npm install
-npm run dev
-
-Open:
-
-http://localhost:5174
-
-The actual port is controlled by the Vite configuration.
-
-Environment Variables
-
-Create a .env file in the required frontend application directory:
+Example:
 
 VITE_API_BASE_URL=http://localhost:5000/api
-Variable	Description	Example
-VITE_API_BASE_URL	Backend API base URL	http://localhost:5000/api
 
-Restart the development server after changing .env.
+For production, configure the production backend URL through the deployment platform.
 
 Important
 
@@ -140,195 +93,77 @@ Do not commit:
 .env.local
 .env.production
 
-Frontend environment variables are exposed to the browser after the application is built. Never store backend secrets or database credentials in frontend environment files.
+Only commit the example configuration:
 
-Docker
-
-Docker can be used to run the frontend applications in containers instead of installing Node dependencies directly on the host machine.
-
-Docker Architecture
-                 Docker Compose
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-          ▼                       ▼
-   User Frontend             Admin Frontend
-      :5173                     :5174
-          │                       │
-          └───────────┬───────────┘
-                      │
-                      │ REST API
-                      ▼
-               Backend API
-                  :5000
-                      │
-                      ▼
-                  Database
-
-The frontend containers communicate with the backend through the configured API URL.
-
-Docker Prerequisites
-
-Install:
-
-Docker
-Docker Compose
-
-Verify:
-
-docker --version
-docker compose version
-Run with Docker Compose
-
-From the frontend repository root:
-
-docker compose up --build
-
-After the containers start:
-
-User Portal:
-http://localhost:5173
-
-Admin Portal:
-http://localhost:5174
-
-Backend:
-http://localhost:5000
-
-The backend must be running and accessible at the configured API URL.
-
-Stop Docker Containers
-docker compose down
-Run Docker in Background
-docker compose up --build -d
-
-View running containers:
-
-docker compose ps
-
-View logs:
-
-docker compose logs
-
-View logs for a specific service:
-
-docker compose logs -f user-frontend
-docker compose logs -f admin-frontend
-Rebuild After Changes
-
-If dependencies or Docker configuration are changed:
-
-docker compose down
-docker compose up --build
-Frontend–Backend Architecture
-┌────────────────────────────┐
-│       USER PORTAL          │
-│       React + Vite         │
-│          :5173             │
-└─────────────┬──────────────┘
-              │
-              │ REST API + JWT
-              │
-              ▼
-┌────────────────────────────┐
-│       BACKEND API          │
-│      Node + Express        │
-│          :5000             │
-└─────────────┬──────────────┘
-              │
-              ▼
-           Database
-
-
-┌────────────────────────────┐
-│       ADMIN PORTAL         │
-│       React + Vite         │
-│          :5174             │
-└─────────────┬──────────────┘
-              │
-              │ REST API + JWT
-              └──────────────► Backend
-
-The frontend applications do not directly access the database.
-
-All application data is accessed through the backend API.
-
-Authentication
-
-The applications use JWT-based authentication.
-
-Authenticated API requests use:
-
-Authorization: Bearer <JWT_TOKEN>
-
-The backend is responsible for:
-
-Authentication
-JWT validation
-Authorization
-Role verification
-Business logic
-Database operations
-API Communication
-React Component
-      │
-      ▼
-API / Service Layer
-      │
-      ▼
-HTTP Request
-      │
-      ▼
-Backend Endpoint
-      │
-      ▼
-Controller / Service
-      │
-      ▼
-Database
-
-Frontend and backend must maintain the same:
-
-Endpoint URLs
-HTTP methods
-Request fields
-Response fields
-Authentication requirements
-Error formats
-
-Do not change API contracts without coordinating with the backend team.
-
+.env.example
+Installation
+Convenor Portal
+cd EmsFormsUser_Frontend
+npm install
+npm run dev
+Admin Portal
+cd admin
+npm install
+npm run dev
 Production Build
 
-For either application:
+Convenor Portal:
 
+cd EmsFormsUser_Frontend
 npm run build
 
-Preview the production build:
+Admin Portal:
 
-npm run preview
-Git Workflow
+cd admin
+npm run build
 
-Check changes:
+A successful build should complete without compilation errors.
 
+Backend Integration
+
+Both portals communicate with the same centralized backend.
+
+Production API:
+
+https://intrams-erm-backend-2026.onrender.com/api
+
+The API URL can be changed through VITE_API_BASE_URL.
+
+Deployment
+
+The frontend is designed for deployment using Vercel.
+
+The repository is connected to the production deployment, allowing new changes pushed to the configured main branch to trigger a new deployment.
+
+Development Workflow
+
+Pull the latest changes:
+
+git pull --rebase origin main
+
+Install dependencies:
+
+npm install
+
+Run locally:
+
+npm run dev
+
+Before pushing changes:
+
+npm run build
 git status
-git diff
-
-Stage:
-
 git add .
+git commit -m "your commit message"
+git push origin main
+Security
 
-Commit:
+The frontend follows protected-route and authentication mechanisms provided by the backend.
 
-git commit -m "describe your change"
+Sensitive credentials and environment variables must never be stored directly in the source code or committed to GitHub.
 
-Push:
+Production Backend
 
-git push
+The frontend currently communicates with:
 
-Never commit:
-
-node_modules/
-.env
-.env.local
-dist/
+https://intrams-erm-backend-2026.onrender.com
