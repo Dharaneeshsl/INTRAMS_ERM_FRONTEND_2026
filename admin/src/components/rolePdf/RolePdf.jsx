@@ -56,6 +56,38 @@ export default function RolePdf() {
     showToast('Excel export is not available. Backend endpoint required.', 'info');
   };
 
+  const exportCsv = async () => {
+    if (typeof adminAPI.getRoleMembers !== 'function') {
+      showToast('CSV export requires a backend members endpoint (adminAPI.getRoleMembers).', 'info');
+      return;
+    }
+    try {
+      setBusy('export');
+      const res = await adminAPI.getRoleMembers(selected);
+      const data = res?.data ?? res; // accept either {data} or raw
+      if (!Array.isArray(data)) {
+        showToast('Unexpected members response format.', 'error');
+        return;
+      }
+      const keys = Object.keys(data[0] || {});
+      const escape = (s) => `"${String(s ?? '').replace(/"/g, '""')}"`;
+      const rows = [keys.join(',')].concat(data.map((r) => keys.map((k) => escape(r[k])).join(','))).join('\n');
+      const blob = new Blob([rows], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Role_${selected}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      showToast(getApiErrorMessage(err, 'CSV export failed.'), 'error');
+    } finally {
+      setBusy('');
+    }
+  };
+
   return (
     <div>
       <PageHeader title="Role Reports" subtitle="Generate role-wise personnel PDFs" />
@@ -68,6 +100,7 @@ export default function RolePdf() {
             <Button variant="secondary" loading={busy === 'preview'} onClick={previewPdf}>Preview</Button>
             <Button loading={busy === 'download'} onClick={downloadPdf}>Download</Button>
             <Button variant="ghost" onClick={exportExcel} disabled>Export Excel</Button>
+            <Button variant="ghost" onClick={exportCsv}>Export CSV</Button>
           </div>
         </div>
 
