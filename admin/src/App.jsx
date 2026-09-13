@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+﻿import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -19,6 +19,7 @@ const GrantEventItems = lazy(() => import('./components/grantEventItems'));
 const GrantLogs = lazy(() => import('./components/grantLogs'));
 const EditAccess = lazy(() => import('./components/editaccess'));
 const Procurements = lazy(() => import('./components/procurements'));
+const RolePdf = lazy(() => import('./components/rolePdf/RolePdf'));
 
 function PageLoader() {
   return <div className="min-h-screen bg-[var(--bg)]" />;
@@ -66,6 +67,8 @@ function AppRoutes() {
 
         <Route path="/procurement" element={<Guard roles={['admin', 'procurement']}><Procurements /></Guard>} />
         <Route path="/procurements" element={<Navigate to="/procurement" replace />} />
+
+        <Route path="/role-reports" element={<Guard roles={['admin']}><RolePdf /></Guard>} />
 
         <Route path="/edit-access" element={<Guard roles={['admin', 'member']}><EditAccess /></Guard>} />
         <Route path="/lab-confirmation" element={<Guard roles={['admin', 'member']}><LabConfirmation /></Guard>} />
