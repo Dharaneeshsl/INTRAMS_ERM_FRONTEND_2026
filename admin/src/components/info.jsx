@@ -1,146 +1,183 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import { useNavigate } from "react-router-dom";
-import { adminAPI } from "../api";
-import { HoverEffect } from "../ui/card-hover-effect";
-import { Search, Loader2 } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Building2,
+  Calendar,
+  Package,
+  Gift,
+  ShoppingCart,
+  ShieldCheck,
+  Warehouse,
+  FileWarning,
+} from 'lucide-react';
+import { adminAPI } from '../api';
+import { getApiErrorMessage } from '../utils/apiError';
+import PageHeader from './ui/PageHeader';
+import StatCard from './ui/StatCard';
+import Card from './ui/Card';
+import Button from './ui/Button';
+import Badge from './ui/Badge';
+import { DashboardSkeleton } from './ui/LoadingState';
+import { Table, THead, Th, Td, Tr } from './ui/Table';
+import EmptyState from './ui/EmptyState';
 
-const EventCards = () => {
-  const particlesInit = useCallback(async (engine) => {
-    await loadSlim(engine);
-  }, []);
-
-  const particlesOptions = {
-    background: {
-      color: {
-        value: "#000000",
-      },
-    },
-    fpsLimit: 120,
-    interactivity: {
-      events: {
-        onClick: { enable: true, mode: "push" },
-        onHover: { enable: true, mode: "repulse" },
-        resize: true,
-      },
-      modes: {
-        push: { quantity: 4 },
-        repulse: { distance: 200, duration: 0.4 },
-      },
-    },
-    particles: {
-      color: { value: "#38bdf8" },
-      links: { color: "#0284c7", distance: 150, enable: true, opacity: 0.25, width: 1 },
-      move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 1, straight: false },
-      number: { density: { enable: true, area: 800 }, value: 80 },
-      opacity: { value: 0.4 },
-      shape: { type: "circle" },
-      size: { value: { min: 1, max: 3 } },
-    },
-    detectRetina: true,
-  };
+export default function Dashboard() {
   const navigate = useNavigate();
-
+  const [stats, setStats] = useState({});
   const [events, setEvents] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const load = async () => {
+      setLoading(true);
+      setError('');
       try {
-        const response = await adminAPI.getEvents();
-        console.log("Fetched events:", response.data);
-        setEvents(response.data.data);
+        const [statsRes, eventsRes, assocRes, procRes, itemsRes] = await Promise.allSettled([
+          adminAPI.getStats(),
+          adminAPI.getEvents(),
+          adminAPI.getAssociations(),
+          adminAPI.getProcurements(),
+          adminAPI.getItems(),
+        ]);
+
+        const statsData = statsRes.status === 'fulfilled' ? statsRes.value.data?.data || {} : {};
+        const eventsList =
+          eventsRes.status === 'fulfilled'
+            ? eventsRes.value.data?.data || eventsRes.value.data?.events || []
+            : [];
+        const assocList = assocRes.status === 'fulfilled' ? assocRes.value.data?.data || [] : [];
+        const procItems =
+          procRes.status === 'fulfilled' ? procRes.value.data?.data?.items || [] : [];
+        const itemsList = itemsRes.status === 'fulfilled' ? itemsRes.value.data?.data || [] : [];
+        const stockSum = itemsList.reduce((acc, item) => acc + (item.available_quantity || 0), 0);
+        const submitted = eventsList.filter((e) =>
+          ['submitted', 'approved', 'under_review'].includes(String(e.status || '').toLowerCase())
+        ).length;
+        const pending = eventsList.filter((e) =>
+          ['draft', 'pending'].includes(String(e.status || '').toLowerCase())
+        ).length;
+
+        setEvents(eventsList);
+        setItems(itemsList);
+        setStats({
+          totalClubs: statsData.totalClubs || assocList.length || 0,
+          totalEvents: statsData.totalEvents || eventsList.length || 0,
+          submittedEvents: statsData.submittedEvents || submitted,
+          pendingSubmissions: statsData.pendingSubmissions ?? pending,
+          pendingEditRequests: statsData.pendingEditRequests || 0,
+          totalItems: statsData.totalItems || itemsList.length || 0,
+          totalAvailableStock: stockSum,
+          totalGrants: statsData.totalGrants || 0,
+          procurementCount: procItems.length,
+        });
       } catch (err) {
-        setError(err.message);
+        setError(getApiErrorMessage(err, 'Unable to load dashboard. Please try again.'));
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
+    load();
   }, []);
 
-  const filteredEvents = events.filter(
-    (event) =>
-      (event.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (event.club_name || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const eventItems = filteredEvents.map((event) => {
-    const association = event?.club_name || "Unknown Club";
-    const twoDays = event?.form?.two_days;
-    const dayInfo = twoDays
-      ? /yes/i.test(twoDays)
-        ? "Both days"
-        : event?.form?.day || "Single day"
-      : "Schedule TBA";
-
-    const convenorNames = [
-      event?.details?.convenor1_name,
-      event?.details?.convenor2_name,
-    ].filter(Boolean);
-
-    const status = event?.status || event?.form?.status || "Pending";
-    const updatedAt = event?.updatedAt || event?.createdAt || event?.created_at || null;
-
-    return {
-      id: event?._id,
-      title: event?.name || event?.event_name || "Untitled Event",
-      tagline: event?.tagline || "",
-      about: event?.about || "",
-      association,
-      dayInfo,
-      convenors: convenorNames,
-      status,
-      updatedAt,
-      onClick: () => navigate(`/info-deep/${event?._id}`, { state: event }),
-    };
-  });
+  if (loading) return <DashboardSkeleton />;
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start bg-black overflow-hidden pt-24 px-4 sm:px-6">
-      <Particles id="info-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
+    <div>
+      <PageHeader
+        title="INTRAMS ERM Dashboard"
+        subtitle="Monitor associations, events, inventory and allocations"
+        actions={
+          <>
+            <Button variant="secondary" onClick={() => navigate('/associations')}>
+              View Associations
+            </Button>
+            <Button variant="secondary" onClick={() => navigate('/events')}>
+              Review Submissions
+            </Button>
+            <Button onClick={() => navigate('/grant-allocation')}>Grant Allocation</Button>
+            <Button variant="secondary" onClick={() => navigate('/inventory')}>
+              Manage Inventory
+            </Button>
+            <Button variant="secondary" onClick={() => navigate('/procurement')}>
+              Procurement
+            </Button>
+          </>
+        }
+      />
 
-      <div className="relative z-10 w-full max-w-5xl">
-        <div className="flex flex-col gap-4 mb-6">
-          <div className="relative w-full">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              type="search"
-              placeholder="Search Events or Club Associations..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-800 outline-none focus:ring-2 focus:ring-sky-500 text-white placeholder-slate-500 shadow-xl"
-            />
+      {error && <p className="mb-4 text-[13px] text-rose-300">{error}</p>}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <StatCard title="Associations" value={stats.totalClubs} subtext="Registered clubs" icon={Building2} onClick={() => navigate('/associations')} />
+        <StatCard title="Total Events" value={stats.totalEvents} subtext="All ERM proposals" icon={Calendar} onClick={() => navigate('/events')} />
+        <StatCard title="Submitted ERM" value={stats.submittedEvents} subtext="Awaiting or under review" icon={Calendar} onClick={() => navigate('/events')} />
+        <StatCard title="Pending Submissions" value={stats.pendingSubmissions} subtext="Still in draft" icon={FileWarning} />
+        <StatCard title="Master Items" value={stats.totalItems} subtext="Catalog entries" icon={Package} onClick={() => navigate('/items')} />
+        <StatCard title="Available Inventory" value={stats.totalAvailableStock} subtext="Units currently in stock" icon={Warehouse} onClick={() => navigate('/inventory')} />
+        <StatCard title="Allocated Items" value={stats.totalGrants} subtext="Grant records" icon={Gift} onClick={() => navigate('/grant-history')} />
+        <StatCard title="Shortages" value={stats.procurementCount} subtext="Procurement requisitions" icon={ShoppingCart} onClick={() => navigate('/procurement')} />
+        <StatCard title="Pending Edit Requests" value={stats.pendingEditRequests} subtext="Convenor edit access" icon={ShieldCheck} onClick={() => navigate('/edit-access')} />
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-6">
+        <Card className="xl:col-span-2 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+            <h2 className="font-heading text-base font-semibold">Recent events</h2>
+            <Button variant="ghost" onClick={() => navigate('/events')}>
+              View all
+            </Button>
           </div>
-        </div>
+          {events.length === 0 ? (
+            <EmptyState title="No events" message="Submitted ERM forms will appear here." />
+          ) : (
+            <Table>
+              <THead>
+                <tr>
+                  <Th>Event</Th>
+                  <Th>Association</Th>
+                  <Th>Status</Th>
+                  <Th numeric>Items</Th>
+                </tr>
+              </THead>
+              <tbody>
+                {events.slice(0, 8).map((ev) => (
+                  <Tr key={ev._id || ev.id} onClick={() => navigate(`/events/${ev._id || ev.id}`)}>
+                    <Td className="text-white font-medium">{ev.name || ev.event_name || 'Untitled'}</Td>
+                    <Td>{ev.club_name || '—'}</Td>
+                    <Td>
+                      <Badge status={ev.status} />
+                    </Td>
+                    <Td numeric>{Array.isArray(ev.items) ? ev.items.length : 0}</Td>
+                  </Tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Card>
 
-        {loading && (
-          <div className="text-center py-16 text-white flex flex-col items-center gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
-            <p className="text-lg">Loading events...</p>
+        <Card className="overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
+            <h2 className="font-heading text-base font-semibold">Inventory snapshot</h2>
+            <Button variant="ghost" onClick={() => navigate('/inventory')}>
+              Open
+            </Button>
           </div>
-        )}
-
-        {error && (
-          <div className="text-center py-12 text-red-300 bg-red-500/20 rounded-3xl border border-red-500/30 backdrop-blur-md">
-            <p className="text-lg">Error loading events: {error}</p>
-          </div>
-        )}
-
-        {!loading && !error && <HoverEffect items={eventItems} />}
-
-        {!loading && !error && filteredEvents.length === 0 && (
-          <div className="text-center py-16 text-white/70 bg-white/10 rounded-3xl backdrop-blur-xl border border-white/20">
-            <p className="text-xl font-semibold">No events found</p>
-            <p className="text-sm mt-1">Try adjusting your search criteria</p>
-          </div>
-        )}
+          {items.length === 0 ? (
+            <EmptyState title="No inventory" message="Master items will appear here." />
+          ) : (
+            <div className="divide-y divide-[var(--border)]">
+              {items.slice(0, 8).map((item) => (
+                <div key={item._id} className="px-4 py-3 flex justify-between text-[13px]">
+                  <span className="text-white">{item.item_name}</span>
+                  <span className="font-mono text-slate-400">{item.available_quantity ?? 0}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   );
-};
-
-export default EventCards;
+}

@@ -1,139 +1,109 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim';
+import { AlertCircle, Eye, EyeOff, Lock, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, Lock, User, AlertCircle, Key } from 'lucide-react';
+import AnimatedNetworkBackground from './layout/AnimatedNetworkBackground';
+import Button from './ui/Button';
+import Input from './ui/Input';
 
-function Login() {
+export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
   const { user, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user || localStorage.getItem('token')) {
-      navigate('/cards', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
 
-  const particlesInit = useCallback(async (engine) => {
-    await loadSlim(engine);
-  }, []);
-
-  const particlesOptions = {
-    background: {
-      color: { value: '#000000' },
-    },
-    fpsLimit: 120,
-    interactivity: {
-      events: {
-        onClick: { enable: true, mode: 'push' },
-        onHover: { enable: true, mode: 'repulse' },
-        resize: true,
-      },
-      modes: {
-        push: { quantity: 4 },
-        repulse: { distance: 200, duration: 0.4 },
-      },
-    },
-    particles: {
-      color: { value: '#38bdf8' },
-      links: { color: '#0284c7', distance: 150, enable: true, opacity: 0.25, width: 1 },
-      move: { direction: 'none', enable: true, outModes: { default: 'bounce' }, speed: 1 },
-      number: { density: { enable: true, area: 800 }, value: 70 },
-      opacity: { value: 0.4 },
-      shape: { type: 'circle' },
-      size: { value: { min: 1, max: 3 } },
-    },
-    detectRetina: true,
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError('');
+
     if (!username || !password) {
-      setError('Please fill in all fields.');
+      setError('Enter both username and password.');
       return;
     }
+
     setLoading(true);
     const result = await login(username, password);
     setLoading(false);
 
     if (result.success) {
-      navigate('/cards');
-    } else {
-      setError(result.error || 'Invalid credentials');
+      navigate('/dashboard');
+      return;
     }
+
+    setError(result.error || 'Invalid username or password');
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-black overflow-hidden px-4">
-      <Particles id="admin-login-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--bg)] px-4">
+      <AnimatedNetworkBackground />
 
-      <div className="relative z-10 w-full max-w-sm bg-zinc-950/90 backdrop-blur-xl rounded-xl shadow-lg border border-zinc-800 p-6">
-        <div className="text-center mb-5">
-          <div className="w-12 h-12 bg-white text-black rounded-lg mx-auto mb-3 flex items-center justify-center shadow-md">
-            <ShieldCheck className="w-6 h-6 text-black" />
-          </div>
-          <h2 className="text-lg font-bold text-white tracking-tight">INTRAMS Admin Login</h2>
-          <p className="text-zinc-400 text-xs mt-1">Login with administrative credentials</p>
+      <div className="relative z-10 w-full max-w-[440px] rounded-xl border border-white/10 bg-[rgba(11,17,28,0.88)] p-6 shadow-[0_0_30px_rgba(14,165,233,0.08)] backdrop-blur-sm sm:p-8">
+        <div className="mb-7 text-center">
+          <div className="font-heading text-[17px] font-semibold uppercase tracking-[0.22em] text-white">INTRAMS</div>
+          <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">Admin Portal</div>
+        </div>
+
+        <div className="mb-5 text-center">
+          <h1 className="font-heading text-[26px] tracking-tight text-white">INTRAMS ADMIN LOGIN</h1>
         </div>
 
         {error && (
-          <div className="mb-4 bg-rose-950/60 border border-rose-800 text-rose-300 rounded-lg p-3 flex items-center gap-2 text-xs">
-            <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+          <div className="mb-4 flex items-start gap-2 rounded-lg border border-rose-500/30 bg-rose-950/30 px-3 py-2 text-[12px] text-rose-200">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1">
-              Username <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <input
-                type="text"
-                placeholder="Enter admin username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-zinc-900 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-white text-xs placeholder-zinc-500"
-              />
-            </div>
+          <div className="relative">
+            <User className="pointer-events-none absolute left-3 top-[46px] h-4 w-4 text-slate-500" />
+            <Input
+              label="Username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              autoComplete="username"
+              className="pl-10"
+              placeholder="Enter username"
+            />
           </div>
 
-          <div>
-            <label className="block text-xs font-medium text-zinc-300 mb-1">
-              Password <span className="text-rose-500">*</span>
-            </label>
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3 top-[46px] h-4 w-4 text-slate-500" />
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-              <input
-                type="password"
-                placeholder="Enter admin password"
+              <Input
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-9 pr-3 py-2.5 bg-zinc-900 border border-zinc-800 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-white text-xs placeholder-zinc-500"
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                className="pl-10 pr-10"
+                placeholder="Enter password"
               />
+              <button
+                type="button"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword((value) => !value)}
+                className="absolute right-3 top-[44px] flex h-6 w-6 items-center justify-center rounded text-slate-400 transition hover:text-cyan-300"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-white hover:bg-zinc-200 text-black font-semibold py-2.5 px-4 rounded-lg text-xs tracking-wider uppercase transition-all disabled:opacity-50"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
+          <Button type="submit" loading={loading} className="mt-2 w-full justify-center py-3 text-[13px] uppercase tracking-[0.16em]">
+            {loading ? 'LOGGING IN...' : 'LOGIN'}
+          </Button>
         </form>
       </div>
     </div>
   );
 }
-
-export default Login;

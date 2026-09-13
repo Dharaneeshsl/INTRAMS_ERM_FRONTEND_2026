@@ -1,0 +1,19 @@
+export async function handlePdfBlob(response, { filename, preview = false } = {}) {
+  const blob = new Blob([response.data], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+
+  if (preview) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    return url;
+  }
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename || 'report.pdf';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return url;
+}

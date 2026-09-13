@@ -1,857 +1,338 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import { adminAPI } from "../api";
-import { 
-  Package, 
-  Loader2, 
-  AlertTriangle, 
-  X, 
-  Gift,
-  ArrowLeft,
-  CheckCircle,
-  Clock,
-  XCircle,
-  Plus,
-  Search,
-  History,
-  RotateCcw,
-  FileDown,
-  Eye,
-} from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Package } from 'lucide-react';
+import { adminAPI } from '../api';
+import { getApiErrorMessage, INVENTORY_CHANGED_MESSAGE } from '../utils/apiError';
+import { getAllocationMetrics, validateAllocation } from '../utils/allocation';
+import { handlePdfBlob } from '../utils/pdf';
+import { useToast } from '../context/ToastContext';
+import PageHeader from './ui/PageHeader';
+import Button from './ui/Button';
+import Input from './ui/Input';
+import Card from './ui/Card';
+import Badge from './ui/Badge';
+import Modal from './ui/Modal';
+import EmptyState from './ui/EmptyState';
+import { Table, THead, Th, Td, Tr } from './ui/Table';
+import { TableSkeleton } from './ui/LoadingState';
 
-function GrantEventItems() {
+export default function GrantEventItems() {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const particlesInit = React.useCallback(async (engine) => {
-    await loadSlim(engine);
-  }, []);
-
-  const particlesOptions = {
-    background: {
-      color: {
-        value: "linear-gradient(135deg, #FF9800 0%, #FFD600 100%)",
-      },
-    },
-    fpsLimit: 120,
-    interactivity: {
-      events: {
-        onClick: { enable: true, mode: "push" },
-        onHover: { enable: true, mode: "repulse" },
-        resize: true,
-      },
-      modes: {
-        push: { quantity: 4 },
-        repulse: { distance: 200, duration: 0.4 },
-      },
-    },
-    particles: {
-      color: { value: "#ffffff" },
-      links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.2, width: 1 },
-      move: { direction: "none", enable: true, outModes: { default: "bounce" }, random: false, speed: 1, straight: false },
-      number: { density: { enable: true, area: 800 }, value: 80 },
-      opacity: { value: 0.3 },
-      shape: { type: "circle" },
-      size: { value: { min: 1, max: 3 } },
-    },
-    detectRetina: true,
-  };
-
+  const { showToast } = useToast();
   const [eventData, setEventData] = useState(null);
   const [availableItems, setAvailableItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  
-  const [pdfLoading, setPdfLoading] = useState(false);
-
-  const [showGrantModal, setShowGrantModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [grantQuantity, setGrantQuantity] = useState('');
-  const [granting, setGranting] = useState(false);
+  const [grantNotes, setGrantNotes] = useState('');
   const [grantError, setGrantError] = useState('');
-  const [maxGrantQuantityForModal, setMaxGrantQuantityForModal] = useState(0);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [granting, setGranting] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmModalData, setConfirmModalData] = useState(null);
+  const getMaster = (name) =>
+    availableItems.find((i) => (i.item_name || '').toLowerCase() === (name || '').toLowerCase());
+  const getStock = (name) => getMaster(name)?.available_quantity || 0;
 
-  const [showGrantHistoryModal, setShowGrantHistoryModal] = useState(false);
-  const [grantHistory, setGrantHistory] = useState(null);
-  const [historyLoading, setHistoryLoading] = useState(false);
-  const [historyError, setHistoryError] = useState('');
-  const [revertingGrants, setRevertingGrants] = useState(new Set());
-
-  useEffect(() => {
-    if (id) {
-      fetchEventData();
-      fetchAvailableItems();
-    }
-  }, [id]);
-
-  const fetchEventData = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      setError(null);
-      const response = await adminAPI.getEventQuantityToProvide(id);
-      if (response.data.success) {
-        setEventData(response.data.data);
-      } else {
-        setError('Failed to fetch event data');
-      }
+      setError('');
+      const [eventRes, itemsRes] = await Promise.all([adminAPI.getEventQuantityToProvide(id), adminAPI.getItems()]);
+      if (eventRes.data?.success) setEventData(eventRes.data.data);
+      else setError('Unable to load grant details.');
+      setAvailableItems(itemsRes.data?.data || []);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch event data');
+      setError(getApiErrorMessage(err, 'Unable to load allocation data.'));
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchAvailableItems = async () => {
-    try {
-      const response = await adminAPI.getItems();
-      if (response.data.success) {
-        setAvailableItems(response.data.data);
-      }
-    } catch (err) {
-      console.error('Failed to fetch available items:', err);
-    }
-  };
+  useEffect(() => {
+    if (id) fetchData();
+  }, [id]);
 
-  const getAvailableQuantity = (itemName) => {
-    const availableItem = availableItems.find(item => item.item_name === itemName);
-    return availableItem ? availableItem.available_quantity : 0;
-  };
+  const metrics = selectedItem ? getAllocationMetrics(selectedItem, getStock(selectedItem.item_name)) : null;
+  const qty = parseInt(grantQuantity, 10);
 
-  const handleGrantClick = (item, maxQuantity) => {
-    if (maxQuantity <= 0) {
-      alert('No items available to grant for this request.');
+  const openAllocate = (item) => {
+    const m = getAllocationMetrics(item, getStock(item.item_name));
+    if (m.maxAllocatable <= 0) {
+      showToast(m.availableStock <= 0 ? 'No stock available for this item.' : 'This request is already fully allocated.', 'warning');
       return;
     }
     setSelectedItem(item);
-    setMaxGrantQuantityForModal(maxQuantity);
     setGrantQuantity('');
+    setGrantNotes('');
     setGrantError('');
-    setShowGrantModal(true);
+    setConfirmOpen(false);
   };
 
-  const closeGrantModal = () => {
-    setShowGrantModal(false);
-    setSelectedItem(null);
-    setGrantQuantity('');
+  const goConfirm = (e) => {
+    e.preventDefault();
+    const m = getAllocationMetrics(selectedItem, getStock(selectedItem.item_name));
+    const invalid = validateAllocation(qty, m.remainingRequest, m.availableStock);
+    if (invalid) {
+      setGrantError(invalid);
+      return;
+    }
     setGrantError('');
-    setMaxGrantQuantityForModal(0);
+    setConfirmOpen(true);
   };
 
-  const proceedWithGrant = async (grantData) => {
+  const executeGrant = async () => {
+    const m = getAllocationMetrics(selectedItem, getStock(selectedItem.item_name));
+    const master = getMaster(selectedItem.item_name);
     try {
       setGranting(true);
-      setGrantError('');
-
-      setShowConfirmModal(false);
-      setConfirmModalData(null);
-
-      await adminAPI.grantItemsToEvent(grantData);
-
-      await fetchEventData();
-      await fetchAvailableItems();
-
-      closeGrantModal();
+      await adminAPI.grantItemsToEvent({
+        event_id: id,
+        submission_id: id,
+        item_id: master?._id || selectedItem.item_id,
+        quantity: qty,
+        granted_to:
+          eventData?.eventDetails?.associationName ||
+          eventData?.event?.club_name ||
+          eventData?.eventDetails?.eventName ||
+          'Association',
+        notes: grantNotes || 'Admin item allocation',
+      });
+      showToast(`Allocated ${qty} ${selectedItem.item_name}.`, 'success');
+      setSelectedItem(null);
+      setConfirmOpen(false);
+      await fetchData();
     } catch (err) {
-      setGrantError(err.response?.data?.message || 'Failed to grant items');
+      const mapped = getApiErrorMessage(err, 'Unable to allocate items.');
+      const message = mapped === 'INVENTORY_CHANGED' ? INVENTORY_CHANGED_MESSAGE : mapped;
+      setGrantError(message);
+      showToast(message, 'error');
+      setConfirmOpen(false);
+      await fetchData();
     } finally {
       setGranting(false);
-      setShowConfirmModal(false);
-      setConfirmModalData(null);
     }
   };
 
-  const handleGrantSubmit = async () => {
-    if (!selectedItem || !grantQuantity) {
-      setGrantError('Please enter a quantity.');
-      return;
-    }
-
-    const quantity = parseInt(grantQuantity, 10);
-    const maxQuantity = maxGrantQuantityForModal;
-    const availableStock = getAvailableQuantity(selectedItem.item_name);
-
-    if (isNaN(quantity) || quantity <= 0) {
-      setGrantError('Quantity must be a positive number.');
-      return;
-    }
-
-    if (quantity > availableStock) {
-      setGrantError(`Cannot grant more than the available stock of ${availableStock}.`);
-      return;
-    }
-
-    if (quantity > maxQuantity) {
-      setGrantError(`Quantity must be between 1 and ${maxQuantity}.`);
-      return;
-    }
-
-    const grantData = {
-      itemName: selectedItem.item_name,
-      quantity: quantity,
-      granted_to: eventData?.eventDetails?.associationName || '',
-      eventId: id
-    };
-
-    await proceedWithGrant(grantData);
-  };
-
-  const filteredItems = eventData?.items?.filter((item) => {
-    const searchLower = searchTerm.toLowerCase();
-    const itemName = (item.item_name || '').toLowerCase();
-    return itemName.includes(searchLower);
-  }) || [];
-
-  const fetchGrantHistory = async () => {
+  const revert = async (grantId) => {
+    if (!window.confirm('Reverting this allocation will return the allocated quantity to inventory.')) return;
     try {
-      setHistoryLoading(true);
-      setHistoryError('');
-      const response = await adminAPI.getEventGrantHistory(id);
-      
-      if (response.data.success) {
-        setGrantHistory(response.data.data);
-      } else {
-        setHistoryError('Failed to fetch grant history');
-      }
-    } catch (err) {
-      setHistoryError(err.response?.data?.message || 'Failed to fetch grant history');
-    } finally {
-      setHistoryLoading(false);
-    }
-  };
-
-  const handleViewGrantHistory = () => {
-    setShowGrantHistoryModal(true);
-    fetchGrantHistory();
-  };
-
-  const closeGrantHistoryModal = () => {
-    setShowGrantHistoryModal(false);
-    setGrantHistory(null);
-    setHistoryError('');
-    setRevertingGrants(new Set());
-  };
-
-  const handleRevertGrant = async (grantId) => {
-    if (!confirm('Are you sure you want to revert this grant? This action cannot be undone.')) {
-      return;
-    }
-
-    try {
-      setRevertingGrants(prev => new Set([...prev, grantId]));
       await adminAPI.revertGrant(grantId);
-      await fetchGrantHistory();
-      await fetchEventData();
-      await fetchAvailableItems();
+      showToast('Grant reverted. Inventory updated.', 'success');
+      const res = await adminAPI.getEventGrantHistory(id);
+      setHistory(res.data?.data || []);
+      await fetchData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to revert grant');
-    } finally {
-      setRevertingGrants(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(grantId);
-        return newSet;
-      });
+      showToast(getApiErrorMessage(err, 'Unable to revert grant.'), 'error');
     }
   };
 
-  const sanitize = (str) => String(str || '')
-    .replace(/[^a-z0-9_\-]+/gi, '_')
-    .toLowerCase();
-
-  const handlePdfAction = async (action) => {
-    setPdfLoading(true);
-    try {
-      const response = await adminAPI.getProcurementPDF(id);
-      const clubName = eventData?.eventDetails?.associationName || 'na';
-      const eventName = eventData?.eventDetails?.eventName || 'na';
-      const customEventId = eventData?.eventDetails?.eventId || 'na';
-      const filename = `${sanitize(clubName)}_${sanitize(eventName)}_${sanitize(customEventId)}_procurement.pdf`;
-
-      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-
-      if (action === 'view') {
-        const win = window.open(pdfUrl, '_blank');
-        if (win) setTimeout(() => { try { win.document.title = filename; } catch {} }, 300);
-      } else if (action === 'download') {
-        const link = document.createElement('a');
-        link.href = pdfUrl;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      setTimeout(() => URL.revokeObjectURL(pdfUrl), 500);
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Failed to generate PDF.';
-      alert(`Error generating PDF: ${errorMessage}`);
-    } finally {
-      setPdfLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen relative flex items-center justify-center bg-[#000000] text-white overflow-hidden">
-        <Particles
-          id="tsparticles"
-          init={particlesInit}
-          options={particlesOptions}
-          className="absolute inset-0 z-0"
-        />
-        <div className="relative z-10 flex items-center gap-3 bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-2xl p-6 shadow-2xl">
-          <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
-          <span className="text-lg text-slate-300">Loading event data...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen relative flex items-center justify-center bg-[#000000] text-white overflow-hidden">
-        <Particles
-          id="tsparticles"
-          init={particlesInit}
-          options={particlesOptions}
-          className="absolute inset-0 z-0"
-        />
-        <div className="relative z-10 max-w-md w-full bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-3xl p-6 shadow-2xl text-center">
-          <AlertTriangle className="w-12 h-12 text-rose-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Failed to Load Event</h2>
-          <p className="text-slate-400 text-sm mb-6">{error}</p>
-          <button
-            onClick={fetchEventData}
-            className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-semibold transition-colors shadow-md"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const fullyProvidedCount = eventData?.items?.filter(
-    item => item.provided_quantity >= item.asked_quantity
-  ).length || 0;
+  const itemsList = eventData?.items || [];
+  const filtered = itemsList.filter((item) => (item.item_name || '').toLowerCase().includes(searchTerm.toLowerCase()));
+  const eventName = eventData?.eventDetails?.eventName || eventData?.event?.name || 'Event';
 
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-start bg-[#000000] text-white overflow-hidden pb-12">
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={particlesOptions}
-        className="absolute inset-0 z-0"
+    <div>
+      <Button variant="ghost" className="mb-4 px-0" onClick={() => navigate('/grant-allocation')}>
+        Back to grant allocation
+      </Button>
+      <PageHeader
+        title="Admin allocation"
+        subtitle={`${eventName} · ${eventData?.eventDetails?.associationName || eventData?.event?.club_name || ''}`}
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              loading={pdfLoading}
+              onClick={async () => {
+                try {
+                  setPdfLoading(true);
+                  const res = await adminAPI.getProcurementPDF(id);
+                  await handlePdfBlob(res, { filename: `Procurement_${eventName}.pdf`, preview: true });
+                } catch (err) {
+                  showToast(getApiErrorMessage(err, 'Unable to generate PDF.'), 'error');
+                } finally {
+                  setPdfLoading(false);
+                }
+              }}
+            >
+              Preview PDF
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={async () => {
+                setHistoryOpen(true);
+                try {
+                  const res = await adminAPI.getEventGrantHistory(id);
+                  setHistory(res.data?.data || []);
+                } catch (err) {
+                  showToast(getApiErrorMessage(err, 'Unable to load grant history.'), 'error');
+                }
+              }}
+            >
+              Event grant history
+            </Button>
+          </>
+        }
       />
-      
-      <div className="relative z-10 w-full max-w-7xl px-4 sm:px-6 pt-24">
-        <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800 p-6 lg:p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/grant-items')}
-                className="p-2 text-slate-400 hover:text-white transition-colors"
-              >
-                <ArrowLeft className="w-6 h-6" />
-              </button>
-              <div className="flex items-center gap-3">
-                <Gift className="w-8 h-8 text-sky-400" />
-                <div>
-                  <h1 className="text-3xl font-bold text-sky-400 font-heading">Grant Items</h1>
-                  <p className="text-slate-400">{eventData?.eventDetails?.eventName}</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => handlePdfAction('view')}
-                disabled={pdfLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
-              >
-                {pdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Eye className="w-4 h-4" />}
-                View PDF
-              </button>
-              <button
-                onClick={() => handlePdfAction('download')}
-                disabled={pdfLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:bg-gray-400"
-              >
-                {pdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
-                Download PDF
-              </button>
-              <button
-                onClick={handleViewGrantHistory}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                <History className="w-4 h-4" />
-                Revert Past Grants
-              </button>
+
+      {loading && <TableSkeleton />}
+      {error && <p className="text-rose-300 text-[13px] mb-4">{error}</p>}
+
+      {!loading && !error && (
+        <Card className="overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)] flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+            <h2 className="font-heading font-semibold">Requested items</h2>
+            <div className="sm:w-64">
+              <Input placeholder="Search items" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
             </div>
           </div>
-
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Event Details</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="font-medium text-gray-600">Event Name:</span>
-                <p className="text-gray-800">{eventData?.eventDetails?.eventName}</p>
-              </div>
-              <div>
-                <span className="font-medium text-gray-600">Association:</span>
-                <p className="text-gray-800">{eventData?.eventDetails?.associationName}</p>
-              </div>
-              <div>
-                <span className="font-medium text-gray-600">Event ID:</span>
-                <p className="text-gray-800">{eventData?.eventDetails?.eventId}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-4 mb-6">
-            <div className="flex-1 bg-blue-50 border border-blue-200 rounded-lg p-4 min-w-[180px]">
-              <div className="flex items-center gap-2">
-                <Package className="w-5 h-5 text-blue-600" />
-                <span className="text-blue-600 font-medium">Total Items</span>
-              </div>
-              <p className="text-2xl font-bold text-blue-800">{eventData?.summary?.totalItems || 0}</p>
-            </div>
-
-            <div className="flex-1 bg-green-50 border border-green-200 rounded-lg p-4 min-w-[180px]">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="text-green-600 font-medium">Fully Provided</span>
-              </div>
-              <p className="text-2xl font-bold text-green-800">{fullyProvidedCount}</p>
-            </div>
-
-            <div className="flex-1 bg-red-50 border border-red-200 rounded-lg p-4 min-w-[180px]">
-              <div className="flex items-center gap-2">
-                <XCircle className="w-5 h-5 text-red-600" />
-                <span className="text-red-600 font-medium">Pending</span>
-              </div>
-              <p className="text-2xl font-bold text-red-800">{eventData?.summary?.pendingItems || 0}</p>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <div className="relative max-w-md">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search items..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30"
-              />
-            </div>
-            {searchTerm && (
-              <p className="mt-2 text-sm text-gray-600">
-                Showing {filteredItems.length} of {eventData?.items?.length || 0} items
-              </p>
-            )}
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full bg-white rounded-lg shadow-sm">
-              <thead className="bg-gray-50">
+          {filtered.length === 0 ? (
+            <EmptyState icon={Package} title="No requested items" />
+          ) : (
+            <Table>
+              <THead>
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Item Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Asked</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Provided</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Remaining</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Available in Stock</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Action</th>
+                  <Th>Item</Th>
+                  <Th numeric>Requested</Th>
+                  <Th numeric>Allocated</Th>
+                  <Th numeric>Remaining</Th>
+                  <Th numeric>Available stock</Th>
+                  <Th numeric>Max allocatable</Th>
+                  <Th></Th>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredItems.map((item) => {
-                  const remainingForEvent = Math.max(0, item.asked_quantity - item.provided_quantity);
-
-                  const getStatus = () => {
-                    if (item.provided_quantity >= item.asked_quantity) {
-                      return { status: 'Provided', color: 'text-green-600', bgColor: 'bg-green-100', icon: CheckCircle };
-                    } else if (item.provided_quantity > 0) {
-                      return { status: 'Partially Provided', color: 'text-yellow-600', bgColor: 'bg-yellow-100', icon: Clock };
-                    } else {
-                      return { status: 'Pending', color: 'text-red-600', bgColor: 'bg-red-100', icon: XCircle };
-                    }
-                  };
-
-                  const statusInfo = getStatus();
-                  const StatusIcon = statusInfo.icon;
-                  const availableQty = getAvailableQuantity(item.item_name);
-                  const maxGrantQty = Math.min(remainingForEvent, availableQty);
-
+              </THead>
+              <tbody>
+                {filtered.map((item) => {
+                  const m = getAllocationMetrics(item, getStock(item.item_name));
+                  const status =
+                    m.remainingRequest === 0 ? 'fully_allocated' : m.alreadyAllocated > 0 ? 'partially_allocated' : 'pending';
                   return (
-                    <tr key={item._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                        {item.item_name}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {item.asked_quantity}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {item.provided_quantity}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                        {remainingForEvent}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
-                        {availableQty}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusInfo.bgColor} ${statusInfo.color}`}>
-                          <StatusIcon className="w-3 h-3" />
-                          {statusInfo.status}
+                    <Tr key={item._id || item.item_name}>
+                      <Td className="text-white font-medium">{item.item_name}</Td>
+                      <Td numeric>{m.requested}</Td>
+                      <Td numeric>{m.alreadyAllocated}</Td>
+                      <Td numeric>{m.remainingRequest}</Td>
+                      <Td numeric>{m.availableStock}</Td>
+                      <Td numeric>{m.maxAllocatable}</Td>
+                      <Td>
+                        <div className="flex items-center justify-end gap-2">
+                          <Badge status={status} />
+                          <Button disabled={m.maxAllocatable <= 0} onClick={() => openAllocate(item)}>
+                            Allocate
+                          </Button>
                         </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleGrantClick(item, maxGrantQty)}
-                          disabled={maxGrantQty <= 0}
-                          className="flex items-center gap-1 px-3 py-1 text-sm bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                        >
-                          <Plus className="w-3 h-3" />
-                          Grant
-                        </button>
-                      </td>
-                    </tr>
+                      </Td>
+                    </Tr>
                   );
                 })}
               </tbody>
-            </table>
-
-            {filteredItems.length === 0 && eventData?.items?.length > 0 && (
-              <div className="text-center py-12">
-                <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">No items match your search</p>
-                <p className="text-gray-400 text-sm mt-2">Try searching with a different term</p>
-              </div>
-            )}
-
-            {(!eventData?.items || eventData.items.length === 0) && (
-              <div className="text-center py-12">
-                <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">No items found for this event</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="text-center mt-8 text-white/70 text-sm">
-          <p>&copy; INTRAMS ERM Forms. All rights reserved.</p>
-        </div>
-      </div>
-
-      {showGrantModal && selectedItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-md">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <Gift className="w-6 h-6 text-sky-400" />
-                <h2 className="text-xl font-semibold text-gray-800">Grant Items</h2>
-              </div>
-              <button onClick={closeGrantModal} className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-6">
-              <div className="mb-4">
-                <h3 className="font-medium text-gray-800 mb-2">{selectedItem.item_name}</h3>
-                <p className="text-sm text-gray-600">
-                  Max quantity to grant: {maxGrantQuantityForModal}
-                  (Available in stock: {getAvailableQuantity(selectedItem.item_name)},
-                  Remaining for event: {Math.max(0, selectedItem.asked_quantity - selectedItem.provided_quantity)})
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quantity to Grant
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max={maxGrantQuantityForModal}
-                    value={grantQuantity}
-                    onChange={(e) => setGrantQuantity(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500/30"
-                    placeholder="Enter quantity"
-                  />
-                </div>
-              </div>
-
-              {grantError && (
-                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-600 text-sm">{grantError}</p>
-                </div>
-              )}
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={closeGrantModal}
-                  className="flex-1 px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                  disabled={granting}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleGrantSubmit}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition-colors disabled:opacity-50"
-                  disabled={granting}
-                >
-                  {granting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Granting...
-                    </>
-                  ) : (
-                    <>
-                      <Gift className="w-4 h-4" />
-                      Grant Items
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+            </Table>
+          )}
+        </Card>
       )}
 
-      {showConfirmModal && confirmModalData && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[60] p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-md">
-            <div className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
-                  <AlertTriangle className="h-6 w-6 text-yellow-600" aria-hidden="true" />
-                </div>
-                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                    {confirmModalData.title}
-                  </h3>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      {confirmModalData.message}
-                    </p>
-                  </div>
-                </div>
-              </div>
+      <Modal open={Boolean(selectedItem) && !confirmOpen} title="Allocate item" onClose={() => setSelectedItem(null)}>
+        {selectedItem && metrics && (
+          <form onSubmit={goConfirm} className="space-y-3">
+            <p className="text-[13px] text-slate-400">{selectedItem.item_name}</p>
+            <div className="grid grid-cols-2 gap-2 text-[13px]">
+              <p>Requested: <span className="text-white">{metrics.requested}</span></p>
+              <p>Already allocated: <span className="text-white">{metrics.alreadyAllocated}</span></p>
+              <p>Remaining: <span className="text-white">{metrics.remainingRequest}</span></p>
+              <p>Available inventory: <span className="text-white">{metrics.availableStock}</span></p>
             </div>
-            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-3xl">
-              <button
-                type="button"
-                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sky-500 text-base font-medium text-white hover:bg-sky-400 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
-                onClick={confirmModalData.onConfirm}
-                disabled={granting}
-              >
-                {granting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Proceed'}
-              </button>
-              <button
-                type="button"
-                className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
-                onClick={() => setShowConfirmModal(false)}
-                disabled={granting}
-              >
+            <Input
+              label={`Quantity (max ${metrics.maxAllocatable})`}
+              type="number"
+              min="1"
+              max={metrics.maxAllocatable}
+              value={grantQuantity}
+              onChange={(e) => setGrantQuantity(e.target.value)}
+            />
+            <Input label="Notes" value={grantNotes} onChange={(e) => setGrantNotes(e.target.value)} />
+            {grantError && <p className="text-rose-400 text-[13px]">{grantError}</p>}
+            <div className="flex justify-end gap-2">
+              <Button variant="secondary" type="button" onClick={() => setSelectedItem(null)}>
                 Cancel
-              </button>
+              </Button>
+              <Button type="submit">Continue</Button>
             </div>
+          </form>
+        )}
+      </Modal>
+
+      <Modal
+        open={confirmOpen}
+        title="Confirm allocation"
+        onClose={() => setConfirmOpen(false)}
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button loading={granting} onClick={executeGrant}>
+              Confirm allocation
+            </Button>
+          </>
+        }
+      >
+        {selectedItem && metrics && (
+          <div className="space-y-2 text-[13px] text-slate-300">
+            <p>Event: <span className="text-white">{eventName}</span></p>
+            <p>Item: <span className="text-white">{selectedItem.item_name}</span></p>
+            <p>Requested: {metrics.requested}</p>
+            <p>Already allocated: {metrics.alreadyAllocated}</p>
+            <p>Remaining: {metrics.remainingRequest}</p>
+            <p>Available inventory: {metrics.availableStock}</p>
+            <p>You are allocating: <span className="text-white font-semibold">{qty || 0}</span></p>
+            <p>Remaining after allocation: {Math.max(0, metrics.remainingRequest - (qty || 0))}</p>
+            {grantError && <p className="text-rose-400">{grantError}</p>}
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
 
-      {showGrantHistoryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-6xl max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <History className="w-6 h-6 text-sky-400" />
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-800">Grant History</h2>
-                  <p className="text-sm text-gray-600">{grantHistory?.eventDetails?.eventName}</p>
-                </div>
-              </div>
-              <button
-                onClick={closeGrantHistoryModal}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="flex-1 p-6 overflow-y-auto">
-              {historyLoading && (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-sky-400" />
-                  <span className="ml-3 text-lg text-gray-600">Loading grant history...</span>
-                </div>
-              )}
-
-              {historyError && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5 text-red-500" />
-                    <span className="text-red-700 font-medium">Error</span>
-                  </div>
-                  <p className="text-red-600 mt-1">{historyError}</p>
-                  <button
-                    onClick={fetchGrantHistory}
-                    className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                  >
-                    Retry
-                  </button>
-                </div>
-              )}
-
-              {!historyLoading && !historyError && grantHistory && (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <Gift className="w-5 h-5 text-blue-600" />
-                        <span className="text-blue-600 font-medium">Total Grants</span>
-                      </div>
-                      <p className="text-2xl font-bold text-blue-800">{grantHistory.summary?.totalGrants || 0}</p>
-                    </div>
-                    
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <Package className="w-5 h-5 text-green-600" />
-                        <span className="text-green-600 font-medium">Total Quantity</span>
-                      </div>
-                      <p className="text-2xl font-bold text-green-800">{grantHistory.summary?.totalQuantityGranted || 0}</p>
-                    </div>
-                    
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-purple-600" />
-                        <span className="text-purple-600 font-medium">Unique Items</span>
-                      </div>
-                      <p className="text-2xl font-bold text-purple-800">{grantHistory.summary?.uniqueItems || 0}</p>
-                    </div>
-                    
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-5 h-5 text-orange-600" />
-                        <span className="text-orange-600 font-medium">Latest Grant</span>
-                      </div>
-                      <p className="text-sm font-bold text-orange-800">
-                        {grantHistory.grants?.length > 0 
-                          ? new Date(grantHistory.grants[0].createdAt).toLocaleDateString('en-IN')
-                          : 'N/A'
-                        }
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full bg-white rounded-lg shadow-sm">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Date & Time</th>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Item Name</th>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Quantity</th>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Granted To</th>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Granted By</th>
-                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        {grantHistory.grants?.map((grant) => {
-                          const isReverting = revertingGrants.has(grant._id);
-                          
-                          return (
-                            <tr key={grant._id} className="hover:bg-gray-50 transition-colors">
-                              <td className="px-4 py-3 text-sm text-gray-600">
-                                {new Date(grant.createdAt).toLocaleString('en-IN', {
-                                  year: 'numeric',
-                                  month: 'short',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </td>
-                              <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                                {grant.item_name}
-                              </td>
-                              <td className="px-4 py-3 text-sm text-gray-600">
-                                {grant.quantity}
-                              </td>
-                              <td className="px-4 py-3 text-sm text-gray-600">
-                                {grant.granted_to}
-                              </td>
-                              <td className="px-4 py-3 text-sm text-gray-600">
-                                {grant.granted_by}
-                              </td>
-                              <td className="px-4 py-3">
-                                <button
-                                  onClick={() => handleRevertGrant(grant._id)}
-                                  disabled={isReverting}
-                                  className="flex items-center gap-1 px-3 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-                                >
-                                  {isReverting ? (
-                                    <>
-                                      <Loader2 className="w-3 h-3 animate-spin" />
-                                      Reverting...
-                                    </>
-                                  ) : (
-                                    <>
-                                      <RotateCcw className="w-3 h-3" />
-                                      Revert
-                                    </>
-                                  )}
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-
-                    {(!grantHistory.grants || grantHistory.grants.length === 0) && (
-                      <div className="text-center py-12">
-                        <History className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                        <p className="text-gray-500 text-lg">No grant history found for this event</p>
-                      </div>
+      <Modal open={historyOpen} title="Event grant history" onClose={() => setHistoryOpen(false)} wide>
+        {history.length === 0 ? (
+          <EmptyState title="No grants for this event" />
+        ) : (
+          <Table>
+            <THead>
+              <tr>
+                <Th>Item</Th>
+                <Th numeric>Qty</Th>
+                <Th>Admin</Th>
+                <Th>Status</Th>
+                <Th></Th>
+              </tr>
+            </THead>
+            <tbody>
+              {history.map((g) => (
+                <Tr key={g._id}>
+                  <Td className="text-white">{g.item_name}</Td>
+                  <Td numeric>{g.quantity}</Td>
+                  <Td>{g.granted_by?.username || g.granted_by || 'Admin'}</Td>
+                  <Td>
+                    <Badge status={g.grant_status || 'active'} />
+                  </Td>
+                  <Td>
+                    {g.grant_status !== 'returned' && (
+                      <Button variant="danger" onClick={() => revert(g._id)}>
+                        Revert
+                      </Button>
                     )}
-                  </div>
-
-                  {grantHistory.summary?.itemBreakdown && Object.keys(grantHistory.summary.itemBreakdown).length > 0 && (
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-4">Item Breakdown</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {Object.entries(grantHistory.summary.itemBreakdown).map(([itemName, breakdown]) => (
-                          <div key={itemName} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                            <h4 className="font-medium text-gray-800 mb-2">{itemName}</h4>
-                            <div className="text-sm text-gray-600">
-                              <p><span className="font-medium">Total Grants:</span> {breakdown.count}</p>
-                              <p><span className="font-medium">Total Quantity:</span> {breakdown.totalQuantity}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+                  </Td>
+                </Tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Modal>
     </div>
   );
 }
-
-export default GrantEventItems;

@@ -1,159 +1,89 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const Login = lazy(() => import('./components/login'));
 const ForgotPassword = lazy(() => import('./components/ForgotPassword'));
-const EventCards = lazy(() => import('./components/info'));
-const InfoDeep = lazy(() => import('./components/info-deep'));
-const Add = lazy(() => import('./components/adduser'));
+const Dashboard = lazy(() => import('./components/info'));
+const EventsList = lazy(() => import('./components/events'));
+const AssociationsList = lazy(() => import('./components/associations'));
+const AssociationDetail = lazy(() => import('./components/associationDetail'));
+const EventDetail = lazy(() => import('./components/info-deep'));
 const Items = lazy(() => import('./components/items'));
-const Stocks = lazy(() => import('./components/stocks'));
-const Stats = lazy(() => import('./components/stats'));
+const Inventory = lazy(() => import('./components/stocks'));
 const LabConfirmation = lazy(() => import('./components/labConfirmation'));
 const GrantItems = lazy(() => import('./components/grantItems'));
 const GrantEventItems = lazy(() => import('./components/grantEventItems'));
 const GrantLogs = lazy(() => import('./components/grantLogs'));
 const EditAccess = lazy(() => import('./components/editaccess'));
-const RolePdf = lazy(() => import('./components/rolePdf'));
 const Procurements = lazy(() => import('./components/procurements'));
 
 function PageLoader() {
-  return (
-    <div className="flex justify-center items-center h-screen bg-slate-950 text-sky-400">
-      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-sky-400" />
-    </div>
-  );
+  return <div className="min-h-screen bg-[var(--bg)]" />;
+}
+
+function Guard({ roles, children }) {
+  return <ProtectedRoute allowedRoles={roles}>{children}</ProtectedRoute>;
+}
+
+function RedirectTo({ to }) {
+  const params = useParams();
+  const path = to.replace(/:([A-Za-z]+)/g, (_, key) => params[key]);
+  return <Navigate to={path} replace />;
 }
 
 function AppRoutes() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      <Route
-        path="/cards"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'member']}>
-            <EventCards />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/info-deep/:id"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'member']}>
-            <InfoDeep />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/add"
-        element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <Add />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/items"
-        element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <Items />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/stocks"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'procurement']}>
-            <Stocks />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/stats"
-        element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <Stats />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/lab-confirmation"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'member']}>
-            <LabConfirmation />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/grant-items"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'procurement']}>
-            <GrantItems />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/grant-event-items/:id"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'procurement']}>
-            <GrantEventItems />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/grant-logs"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'procurement']}>
-            <GrantLogs />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/edit-access"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'member']}>
-            <EditAccess />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/role-pdf"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'member']}>
-            <RolePdf />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/procurements"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'procurement']}>
-            <Procurements />
-          </ProtectedRoute>
-        }
-      />
+        <Route path="/dashboard" element={<Guard roles={['admin', 'member', 'procurement']}><Dashboard /></Guard>} />
+        <Route path="/cards" element={<Navigate to="/dashboard" replace />} />
 
-      <Route path="*" element={<Navigate to="/cards" replace />} />
-    </Routes>
+        <Route path="/events" element={<Guard roles={['admin', 'member', 'procurement']}><EventsList /></Guard>} />
+        <Route path="/events/:id" element={<Guard roles={['admin', 'member', 'procurement']}><EventDetail /></Guard>} />
+        <Route path="/info-deep/:id" element={<RedirectTo to="/events/:id" />} />
+
+        <Route path="/associations" element={<Guard roles={['admin', 'member']}><AssociationsList /></Guard>} />
+        <Route path="/associations/:id" element={<Guard roles={['admin', 'member']}><AssociationDetail /></Guard>} />
+        <Route path="/add" element={<Navigate to="/associations" replace />} />
+
+        <Route path="/items" element={<Guard roles={['admin']}><Items /></Guard>} />
+        <Route path="/inventory" element={<Guard roles={['admin', 'procurement']}><Inventory /></Guard>} />
+        <Route path="/stocks" element={<Navigate to="/inventory" replace />} />
+
+        <Route path="/grant-allocation" element={<Guard roles={['admin', 'procurement']}><GrantItems /></Guard>} />
+        <Route path="/grant-allocation/:id" element={<Guard roles={['admin', 'procurement']}><GrantEventItems /></Guard>} />
+        <Route path="/grant-items" element={<Navigate to="/grant-allocation" replace />} />
+        <Route path="/grant-event-items/:id" element={<RedirectTo to="/grant-allocation/:id" />} />
+        <Route path="/grant-history" element={<Guard roles={['admin', 'procurement']}><GrantLogs /></Guard>} />
+        <Route path="/grant-logs" element={<Navigate to="/grant-history" replace />} />
+
+        <Route path="/procurement" element={<Guard roles={['admin', 'procurement']}><Procurements /></Guard>} />
+        <Route path="/procurements" element={<Navigate to="/procurement" replace />} />
+
+        <Route path="/edit-access" element={<Guard roles={['admin', 'member']}><EditAccess /></Guard>} />
+        <Route path="/lab-confirmation" element={<Guard roles={['admin', 'member']}><LabConfirmation /></Guard>} />
+
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
     </Suspense>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
+      <ToastProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }
-
-export default App;

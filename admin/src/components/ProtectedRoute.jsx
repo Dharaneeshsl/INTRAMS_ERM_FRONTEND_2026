@@ -1,17 +1,13 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Layout from './Layout';
+import AdminLayout from './layout/AdminLayout';
 
-function ProtectedRoute({ children, allowedRoles }) {
+export default function ProtectedRoute({ children, allowedRoles }) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
-      </div>
-    );
+    return <div className="min-h-screen bg-[var(--bg)]" />;
   }
 
   const token = localStorage.getItem('token');
@@ -20,12 +16,10 @@ function ProtectedRoute({ children, allowedRoles }) {
   }
 
   const userRole = user?.role ?? localStorage.getItem('role') ?? 'member';
-  if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
-    const defaultHome = userRole === 'procurement' ? '/grant-items' : '/cards';
+  if (allowedRoles?.length && !allowedRoles.includes(userRole)) {
+    const defaultHome = userRole === 'procurement' ? '/grant-allocation' : '/dashboard';
     return <Navigate to={defaultHome} replace />;
   }
 
-  return <Layout>{children}</Layout>;
+  return <AdminLayout>{children}</AdminLayout>;
 }
-
-export default ProtectedRoute;
