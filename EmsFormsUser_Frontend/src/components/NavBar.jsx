@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, LogIn, PlusCircle, List, Menu, X, Edit3, ShieldCheck } from 'lucide-react';
+import { LogOut, LogIn, PlusCircle, FileText, Menu, X, Edit3, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen = false }) {
@@ -59,7 +59,7 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
                   className="flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sky-300 rounded-2xl text-xs sm:text-sm font-bold transition-colors"
                   title="My Proposals"
                 >
-                  <List className="w-4 h-4 text-sky-400" />
+                  <FileText className="w-4 h-4 text-sky-400" />
                   <span className="hidden md:inline">Proposals</span>
                 </button>
                 <button
