@@ -97,10 +97,10 @@ function Stats() {
 
       <div className="relative z-10 max-w-6xl w-full mx-auto space-y-8 pt-16 sm:pt-6">
         {/* Top Header & Export Button */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-heading tracking-wide uppercase flex items-center gap-3">
-              <TrendingUp className="w-8 h-8 text-sky-400" />
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading tracking-wide uppercase flex items-center gap-3">
+              <TrendingUp className="w-7 h-7 text-sky-400" />
               ITEM STATISTICS
             </h1>
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
@@ -111,9 +111,9 @@ function Stats() {
           <button
             onClick={handleDownloadExcel}
             disabled={items.length === 0}
-            className="self-start md:self-auto bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold px-6 py-3.5 rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-sky-500/20 transition-all transform hover:scale-[1.02] flex items-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="self-start sm:self-auto bg-white hover:bg-zinc-200 text-black font-extrabold px-6 py-3.5 rounded-none text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 border border-black disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 text-black" />
             DOWNLOAD EXCEL
           </button>
         </div>
@@ -124,7 +124,7 @@ function Stats() {
             <p className="text-slate-400 text-sm">Calculating statistics & valuation...</p>
           </div>
         ) : error ? (
-          <div className="text-center py-12 text-rose-400 bg-rose-500/10 rounded-3xl border border-rose-500/20 backdrop-blur-md">
+          <div className="text-center py-12 text-rose-400 bg-rose-500/10 rounded-none border border-rose-500/20 backdrop-blur-md">
             <p className="text-base font-semibold">Error loading statistics: {error}</p>
           </div>
         ) : (
@@ -132,88 +132,92 @@ function Stats() {
             {/* Summary KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Total Items Card */}
-              <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 border border-slate-800 shadow-2xl flex items-center justify-between group hover:border-sky-500/50 transition-all">
-                <div className="space-y-1">
-                  <p className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Total Items</p>
-                  <h3 className="text-3xl font-extrabold text-white font-mono tracking-tight">
-                    {totalItemsCount.toLocaleString()}
-                  </h3>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-sky-400 group-hover:scale-110 transition-transform">
-                  <Package className="w-7 h-7" />
+              <div className="bg-white border-2 border-black p-6 rounded-none shadow-md flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-black text-white rounded-none flex items-center justify-center flex-shrink-0">
+                    <Package className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Total Items</p>
+                    <h3 className="text-3xl font-extrabold text-black font-mono tracking-tight mt-0.5">
+                      {totalItemsCount.toLocaleString()}
+                    </h3>
+                  </div>
                 </div>
               </div>
 
               {/* Total Value Card */}
-              <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 border border-slate-800 shadow-2xl flex items-center justify-between group hover:border-sky-500/50 transition-all">
-                <div className="space-y-1">
-                  <p className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Total Value</p>
-                  <h3 className="text-3xl font-extrabold text-sky-400 font-mono tracking-tight">
-                    ₹{totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </h3>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
-                  <IndianRupee className="w-7 h-7" />
+              <div className="bg-white border-2 border-black p-6 rounded-none shadow-md flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-black text-white rounded-none flex items-center justify-center font-bold text-xl flex-shrink-0">
+                    $
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Total Value</p>
+                    <h3 className="text-3xl font-extrabold text-black font-mono tracking-tight mt-0.5">
+                      ₹{totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </h3>
+                  </div>
                 </div>
               </div>
 
               {/* Unique Items Card */}
-              <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 border border-slate-800 shadow-2xl flex items-center justify-between group hover:border-sky-500/50 transition-all">
-                <div className="space-y-1">
-                  <p className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Unique Items</p>
-                  <h3 className="text-3xl font-extrabold text-white font-mono tracking-tight">
-                    {uniqueItemsCount.toLocaleString()}
-                  </h3>
-                </div>
-                <div className="w-14 h-14 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
-                  <BarChart3 className="w-7 h-7" />
+              <div className="bg-white border-2 border-black p-6 rounded-none shadow-md flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-black text-white rounded-none flex items-center justify-center flex-shrink-0">
+                    <BarChart3 className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Unique Items</p>
+                    <h3 className="text-3xl font-extrabold text-black font-mono tracking-tight mt-0.5">
+                      {uniqueItemsCount.toLocaleString()}
+                    </h3>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* ITEM BREAKDOWN Table */}
-            <div className="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-800 overflow-hidden space-y-6 p-6 sm:p-8">
-              <div className="border-b border-slate-800 pb-4">
-                <h2 className="text-lg font-extrabold text-white font-heading uppercase tracking-wide">
+            <div className="bg-white border-2 border-black rounded-none shadow-xl overflow-hidden p-6 space-y-4">
+              <div className="border-b-2 border-black pb-4">
+                <h2 className="text-lg font-extrabold text-black font-heading uppercase tracking-wide">
                   ITEM BREAKDOWN
                 </h2>
               </div>
 
               {items.length === 0 ? (
-                <div className="text-center py-12 text-slate-400 bg-slate-950/50 rounded-2xl border border-slate-800">
+                <div className="text-center py-12 text-slate-600 bg-zinc-100 border border-black">
                   <p className="text-base font-semibold">No items available to generate statistics.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-2xl border border-slate-800">
-                  <table className="w-full text-left text-sm text-slate-200">
-                    <thead className="bg-slate-950 text-slate-300 font-bold uppercase tracking-wider text-xs border-b border-slate-800">
+                <div className="overflow-x-auto border border-black">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead className="bg-white text-black font-extrabold uppercase tracking-wider border-b-2 border-black">
                       <tr>
-                        <th className="py-4 px-6">ITEM NAME</th>
-                        <th className="py-4 px-6 text-center">QUANTITY</th>
-                        <th className="py-4 px-6 text-right">UNIT PRICE</th>
-                        <th className="py-4 px-6 text-right">TOTAL VALUE</th>
+                        <th className="py-3.5 px-4 border-r border-black font-extrabold">ITEM NAME</th>
+                        <th className="py-3.5 px-4 text-center border-r border-black font-extrabold">QUANTITY</th>
+                        <th className="py-3.5 px-4 text-right border-r border-black font-extrabold">UNIT PRICE</th>
+                        <th className="py-3.5 px-4 text-right font-extrabold">TOTAL VALUE</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/60 bg-slate-950/60">
+                    <tbody className="divide-y divide-black bg-white text-black">
                       {items.map((item) => {
                         const qty = Number(item.available_quantity) || 0;
                         const price = Number(item.price_per_unit) || 0;
                         const itemTotal = qty * price;
 
                         return (
-                          <tr key={item._id} className="hover:bg-slate-900/80 transition-colors">
-                            <td className="py-4 px-6 font-bold text-white font-heading">
+                          <tr key={item._id} className="hover:bg-zinc-50 transition-colors">
+                            <td className="py-3 px-4 font-bold text-black border-r border-black font-sans">
                               {item.item_name}
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-200 font-mono text-xs font-semibold">
-                                {qty.toLocaleString()}
-                              </span>
+                            <td className="py-3 px-4 text-center font-mono font-bold text-black border-r border-black">
+                              {qty.toLocaleString()}
                             </td>
-                            <td className="py-4 px-6 text-right font-mono text-slate-300">
+                            <td className="py-3 px-4 text-right font-mono text-black border-r border-black">
                               ₹{price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="py-4 px-6 text-right font-mono font-bold text-sky-400">
+                            <td className="py-3 px-4 text-right font-mono font-extrabold text-black">
                               ₹{itemTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </td>
                           </tr>
