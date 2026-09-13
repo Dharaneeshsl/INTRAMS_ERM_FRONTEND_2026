@@ -1,10 +1,9 @@
-export async function handlePdfBlob(response, { filename, preview = false } = {}) {
+﻿export async function handlePdfBlob(response, { filename, preview = false } = {}) {
   const blob = new Blob([response.data], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
 
   if (preview) {
-    window.open(url, '_blank', 'noopener,noreferrer');
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    setTimeout(() => URL.revokeObjectURL(url), 120000);
     return url;
   }
 
