@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, PlusCircle, Edit3, ShieldCheck, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, FileText, Edit3, ShieldCheck, LogOut, X } from 'lucide-react';
 
 function Sidebar({ mobile = false, onClose }) {
   const { user, logout } = useAuth();
@@ -16,6 +16,7 @@ function Sidebar({ mobile = false, onClose }) {
   const navItems = [
     { to: '/home', label: 'DASHBOARD', icon: LayoutDashboard },
     { to: '/create-event', label: 'CREATE PROPOSAL', icon: PlusCircle },
+    { to: '/view-events', label: 'MY PROPOSALS', icon: FileText },
     { to: '/edit', label: 'EDIT ACCESS', icon: Edit3 },
     { to: '/lab-confirmation', label: 'LAB CONFIRMATIONS', icon: ShieldCheck },
   ];

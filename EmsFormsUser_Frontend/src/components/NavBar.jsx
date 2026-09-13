@@ -13,74 +13,76 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
   };
 
   return (
-    <header className="bg-black/90 backdrop-blur-xl border-b border-slate-800 text-slate-100 sticky top-0 z-30 shadow-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          <div className="flex items-center gap-3">
+    <header className="bg-black/95 backdrop-blur-xl border-b border-slate-800 text-slate-100 sticky top-0 z-30 shadow-2xl w-full max-w-full overflow-hidden">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
+          {/* Left side: Hamburger Toggle & Logo */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {showSidebarToggle && (
               <button
                 onClick={onToggleMobileMenu}
-                className="lg:hidden p-2 rounded-2xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors"
+                className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors flex-shrink-0"
                 aria-label="Toggle Navigation Menu"
               >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? <X className="w-5 h-5 text-sky-400" /> : <Menu className="w-5 h-5 text-sky-400" />}
               </button>
             )}
 
-            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/home')}>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white font-black flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform text-xs sm:text-sm">
+            <div className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0" onClick={() => navigate('/home')}>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white font-black flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform text-xs sm:text-sm flex-shrink-0">
                 <span>INT</span>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="font-extrabold text-white leading-tight font-heading text-sm sm:text-base">INTRAMS ERM Forms</h1>
-                  <span className="hidden sm:inline-block text-[10px] uppercase font-mono tracking-widest px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-400 font-bold">
-                    Horizon 2026
+              <div className="min-w-0 truncate">
+                <div className="flex items-center gap-2 truncate">
+                  <h1 className="font-extrabold text-white leading-tight font-heading text-xs sm:text-base truncate">INTRAMS ERM</h1>
+                  <span className="hidden sm:inline-block text-[10px] uppercase font-mono tracking-widest px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-400 font-bold flex-shrink-0">
+                    2026
                   </span>
                 </div>
-                <p className="text-[11px] text-sky-400 font-mono hidden xs:block">{user?.username || user?.club_name || 'Sailing Into The Unknown'}</p>
+                <p className="text-[10px] text-sky-400 font-mono hidden sm:block truncate">{user?.username || user?.club_name || 'Convenor Portal'}</p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right side: Action Buttons */}
+          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
             {user ? (
               <>
                 <button
                   onClick={() => navigate('/create-event')}
-                  className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold rounded-2xl text-xs sm:text-sm shadow-lg shadow-sky-500/25 transition-all transform hover:scale-[1.02]"
+                  className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-md shadow-sky-500/20 transition-all flex-shrink-0"
                 >
-                  <PlusCircle className="w-4 h-4" />
+                  <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span className="hidden sm:inline">Create Proposal</span>
                   <span className="sm:hidden">Create</span>
                 </button>
                 <button
                   onClick={() => navigate('/view-events')}
-                  className="flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sky-300 rounded-2xl text-xs sm:text-sm font-bold transition-colors"
+                  className="hidden lg:flex items-center gap-2 px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sky-300 rounded-xl text-xs font-bold transition-colors"
                   title="My Proposals"
                 >
                   <FileText className="w-4 h-4 text-sky-400" />
-                  <span className="hidden md:inline">Proposals</span>
+                  <span>Proposals</span>
                 </button>
                 <button
                   onClick={() => navigate('/edit')}
-                  className="flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-300 rounded-2xl text-xs sm:text-sm font-bold transition-colors"
+                  className="hidden lg:flex items-center gap-2 px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-300 rounded-xl text-xs font-bold transition-colors"
                   title="Edit Access Requests"
                 >
                   <Edit3 className="w-4 h-4 text-amber-400" />
-                  <span className="hidden md:inline">Edit Access</span>
+                  <span>Edit Access</span>
                 </button>
                 <button
                   onClick={() => navigate('/lab-confirmation')}
-                  className="flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-emerald-300 rounded-2xl text-xs sm:text-sm font-bold transition-colors"
+                  className="hidden lg:flex items-center gap-2 px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-emerald-300 rounded-xl text-xs font-bold transition-colors"
                   title="Lab Confirmation Forms"
                 >
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span className="hidden md:inline">Lab Forms</span>
+                  <span>Lab Forms</span>
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="p-2 sm:p-2.5 text-slate-400 hover:text-white hover:bg-slate-900 rounded-2xl transition-colors"
+                  className="p-1.5 sm:p-2.5 text-slate-400 hover:text-white hover:bg-slate-900 rounded-xl transition-colors flex-shrink-0"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4 sm:w-5 sm:h-5 text-rose-400" />
@@ -89,7 +91,7 @@ function NavBar({ showSidebarToggle = false, onToggleMobileMenu, mobileMenuOpen 
             ) : (
               <button
                 onClick={() => navigate('/login')}
-                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold rounded-2xl text-xs sm:text-sm shadow-lg shadow-sky-500/25 transition-all"
+                className="flex items-center gap-2 px-3 py-1.5 sm:px-5 sm:py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold rounded-xl text-xs sm:text-sm shadow-lg shadow-sky-500/25 transition-all"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Login</span>

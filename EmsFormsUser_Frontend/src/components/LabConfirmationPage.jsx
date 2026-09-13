@@ -173,9 +173,9 @@ function LabConfirmationPage() {
 
                       <div className="text-xs text-zinc-300 space-y-2 pt-3 border-t border-zinc-800">
                         {formSpecs.preferred_halls && (
-                          <div className="flex justify-between items-center">
-                            <span className="font-medium text-zinc-400" style={{ color: '#a1a1aa' }}>Lab / Hall:</span>
-                            <span className="font-mono font-bold text-white bg-zinc-800 px-2 py-0.5 border border-zinc-700 text-xs" style={{ color: '#ffffff' }}>
+                          <div className="flex justify-between items-center gap-2">
+                            <span className="font-medium text-zinc-400 flex-shrink-0" style={{ color: '#a1a1aa' }}>Lab / Hall:</span>
+                            <span className="font-mono font-bold text-white bg-zinc-800 px-2 py-0.5 border border-zinc-700 text-xs truncate max-w-[180px]" style={{ color: '#ffffff' }}>
                               {formSpecs.preferred_halls}
                             </span>
                           </div>
