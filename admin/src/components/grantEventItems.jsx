@@ -138,12 +138,12 @@ export default function GrantEventItems() {
 
   return (
     <div>
-      <Button variant="ghost" className="mb-4 px-0" onClick={() => navigate('/grant-allocation')}>
-        Back to grant allocation
+      <Button variant="ghost" className="mb-4 px-0 border-none" onClick={() => navigate('/grant-allocation')}>
+        ← BACK TO GRANT ALLOCATION
       </Button>
       <PageHeader
-        title="Admin allocation"
-        subtitle={`${eventName} · ${eventData?.eventDetails?.associationName || eventData?.event?.club_name || ''}`}
+        title="GRANT ITEM ALLOCATION"
+        subtitle={`${eventName.toUpperCase()} · ${(eventData?.eventDetails?.associationName || eventData?.event?.club_name || '').toUpperCase()}`}
         actions={
           <>
             <Button
@@ -161,7 +161,7 @@ export default function GrantEventItems() {
                 }
               }}
             >
-              Preview PDF
+              PREVIEW PDF
             </Button>
             <Button
               variant="secondary"
@@ -175,35 +175,35 @@ export default function GrantEventItems() {
                 }
               }}
             >
-              Event grant history
+              GRANT HISTORY
             </Button>
           </>
         }
       />
 
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px] mb-4">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] mb-4 font-bold border border-[#FF4D67]/40 bg-[#050505] p-3">{error}</p>}
 
       {!loading && !error && (
         <Card className="overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border)] flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-            <h2 className="font-heading font-semibold">Requested items</h2>
+          <div className="px-4 py-3 border-b border-[#252525] bg-[#000000] flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+            <h2 className="font-heading font-bold text-[#FFFFFF] text-sm uppercase tracking-wider">REQUESTED ITEMS DIRECTORY</h2>
             <div className="sm:w-64">
-              <Input placeholder="Search items" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              <Input placeholder="SEARCH ITEMS..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
             </div>
           </div>
           {filtered.length === 0 ? (
-            <EmptyState icon={Package} title="No requested items" />
+            <EmptyState icon={Package} title="NO REQUESTED ITEMS" />
           ) : (
             <Table>
               <THead>
                 <tr>
-                  <Th>Item</Th>
-                  <Th numeric>Requested</Th>
-                  <Th numeric>Allocated</Th>
-                  <Th numeric>Remaining</Th>
-                  <Th numeric>Available stock</Th>
-                  <Th numeric>Max allocatable</Th>
+                  <Th>ITEM</Th>
+                  <Th numeric>REQUESTED</Th>
+                  <Th numeric>PROVIDED</Th>
+                  <Th numeric>REMAINING</Th>
+                  <Th numeric>SU STOCK</Th>
+                  <Th numeric>MAX ALLOCATABLE</Th>
                   <Th></Th>
                 </tr>
               </THead>
@@ -214,17 +214,17 @@ export default function GrantEventItems() {
                     m.remainingRequest === 0 ? 'fully_allocated' : m.alreadyAllocated > 0 ? 'partially_allocated' : 'pending';
                   return (
                     <Tr key={item._id || item.item_name}>
-                      <Td className="text-white font-medium">{item.item_name}</Td>
+                      <Td className="text-[#FFFFFF] font-bold">{item.item_name}</Td>
                       <Td numeric>{m.requested}</Td>
                       <Td numeric>{m.alreadyAllocated}</Td>
                       <Td numeric>{m.remainingRequest}</Td>
                       <Td numeric>{m.availableStock}</Td>
-                      <Td numeric>{m.maxAllocatable}</Td>
+                      <Td numeric className="text-[#00AEEF] font-bold">{m.maxAllocatable}</Td>
                       <Td>
                         <div className="flex items-center justify-end gap-2">
                           <Badge status={status} />
                           <Button disabled={m.maxAllocatable <= 0} onClick={() => openAllocate(item)}>
-                            Allocate
+                            ALLOCATE
                           </Button>
                         </div>
                       </Td>
@@ -237,31 +237,31 @@ export default function GrantEventItems() {
         </Card>
       )}
 
-      <Modal open={Boolean(selectedItem) && !confirmOpen} title="Allocate item" onClose={() => setSelectedItem(null)}>
+      <Modal open={Boolean(selectedItem) && !confirmOpen} title="ALLOCATE ITEM" onClose={() => setSelectedItem(null)}>
         {selectedItem && metrics && (
-          <form onSubmit={goConfirm} className="space-y-3">
-            <p className="text-[13px] text-slate-400">{selectedItem.item_name}</p>
-            <div className="grid grid-cols-2 gap-2 text-[13px]">
-              <p>Requested: <span className="text-white">{metrics.requested}</span></p>
-              <p>Already allocated: <span className="text-white">{metrics.alreadyAllocated}</span></p>
-              <p>Remaining: <span className="text-white">{metrics.remainingRequest}</span></p>
-              <p>Available inventory: <span className="text-white">{metrics.availableStock}</span></p>
+          <form onSubmit={goConfirm} className="space-y-4">
+            <p className="text-[14px] font-bold text-[#00AEEF] uppercase">{selectedItem.item_name}</p>
+            <div className="grid grid-cols-2 gap-2 text-[13px] bg-[#000000] border border-[#252525] p-3">
+              <p className="text-[#A0A0A0]">REQUESTED: <span className="text-[#FFFFFF] font-bold">{metrics.requested}</span></p>
+              <p className="text-[#A0A0A0]">ALREADY ALLOCATED: <span className="text-[#FFFFFF] font-bold">{metrics.alreadyAllocated}</span></p>
+              <p className="text-[#A0A0A0]">REMAINING REQUEST: <span className="text-[#FFFFFF] font-bold">{metrics.remainingRequest}</span></p>
+              <p className="text-[#A0A0A0]">AVAILABLE SU STOCK: <span className="text-[#00AEEF] font-bold">{metrics.availableStock}</span></p>
             </div>
             <Input
-              label={`Quantity (max ${metrics.maxAllocatable})`}
+              label={`ALLOCATION QUANTITY (MAX ALLOCATABLE: ${metrics.maxAllocatable})`}
               type="number"
               min="1"
               max={metrics.maxAllocatable}
               value={grantQuantity}
               onChange={(e) => setGrantQuantity(e.target.value)}
             />
-            <Input label="Notes" value={grantNotes} onChange={(e) => setGrantNotes(e.target.value)} />
-            {grantError && <p className="text-rose-400 text-[13px]">{grantError}</p>}
-            <div className="flex justify-end gap-2">
+            <Input label="NOTES / REMARKS" value={grantNotes} onChange={(e) => setGrantNotes(e.target.value)} />
+            {grantError && <p className="text-[#FF4D67] text-[13px] font-bold">{grantError}</p>}
+            <div className="flex justify-end gap-2 pt-2">
               <Button variant="secondary" type="button" onClick={() => setSelectedItem(null)}>
-                Cancel
+                CANCEL
               </Button>
-              <Button type="submit">Continue</Button>
+              <Button type="submit">CONTINUE</Button>
             </div>
           </form>
         )}
@@ -269,52 +269,52 @@ export default function GrantEventItems() {
 
       <Modal
         open={confirmOpen}
-        title="Confirm allocation"
+        title="CONFIRM ITEM ALLOCATION"
         onClose={() => setConfirmOpen(false)}
         footer={
           <>
             <Button variant="secondary" onClick={() => setConfirmOpen(false)}>
-              Cancel
+              CANCEL
             </Button>
             <Button loading={granting} onClick={executeGrant}>
-              Confirm allocation
+              CONFIRM ALLOCATION
             </Button>
           </>
         }
       >
         {selectedItem && metrics && (
-          <div className="space-y-2 text-[13px] text-slate-300">
-            <p>Event: <span className="text-white">{eventName}</span></p>
-            <p>Item: <span className="text-white">{selectedItem.item_name}</span></p>
-            <p>Requested: {metrics.requested}</p>
-            <p>Already allocated: {metrics.alreadyAllocated}</p>
-            <p>Remaining: {metrics.remainingRequest}</p>
-            <p>Available inventory: {metrics.availableStock}</p>
-            <p>You are allocating: <span className="text-white font-semibold">{qty || 0}</span></p>
-            <p>Remaining after allocation: {Math.max(0, metrics.remainingRequest - (qty || 0))}</p>
-            {grantError && <p className="text-rose-400">{grantError}</p>}
+          <div className="space-y-3 text-[13px] text-[#E5E5E5]">
+            <div className="bg-[#000000] border border-[#252525] p-4 space-y-1.5 font-bold">
+              <p>EVENT: <span className="text-[#00AEEF]">{eventName}</span></p>
+              <p>ITEM: <span className="text-[#FFFFFF]">{selectedItem.item_name}</span></p>
+              <p>REQUESTED: {metrics.requested}</p>
+              <p>CURRENT ALLOCATION: {metrics.alreadyAllocated}</p>
+              <p>NEW ALLOCATION QUANTITY: <span className="text-[#00D084]">{qty || 0}</span></p>
+              <p>REMAINING SU STOCK AFTER ALLOCATION: {Math.max(0, metrics.availableStock - (qty || 0))}</p>
+            </div>
+            {grantError && <p className="text-[#FF4D67] font-bold">{grantError}</p>}
           </div>
         )}
       </Modal>
 
-      <Modal open={historyOpen} title="Event grant history" onClose={() => setHistoryOpen(false)} wide>
+      <Modal open={historyOpen} title="EVENT GRANT HISTORY" onClose={() => setHistoryOpen(false)} wide>
         {history.length === 0 ? (
-          <EmptyState title="No grants for this event" />
+          <EmptyState title="NO GRANTS FOR THIS EVENT" />
         ) : (
           <Table>
             <THead>
               <tr>
-                <Th>Item</Th>
-                <Th numeric>Qty</Th>
-                <Th>Admin</Th>
-                <Th>Status</Th>
+                <Th>ITEM</Th>
+                <Th numeric>QTY</Th>
+                <Th>ADMIN</Th>
+                <Th>STATUS</Th>
                 <Th></Th>
               </tr>
             </THead>
             <tbody>
               {history.map((g) => (
                 <Tr key={g._id}>
-                  <Td className="text-white">{g.item_name}</Td>
+                  <Td className="text-[#FFFFFF] font-bold">{g.item_name}</Td>
                   <Td numeric>{g.quantity}</Td>
                   <Td>{g.granted_by?.username || g.granted_by || 'Admin'}</Td>
                   <Td>
@@ -323,7 +323,7 @@ export default function GrantEventItems() {
                   <Td>
                     {g.grant_status !== 'returned' && (
                       <Button variant="danger" onClick={() => revert(g._id)}>
-                        Revert
+                        REVERT
                       </Button>
                     )}
                   </Td>
@@ -336,3 +336,4 @@ export default function GrantEventItems() {
     </div>
   );
 }
+

@@ -82,30 +82,30 @@ export default function EventDetail() {
   };
 
   if (loading) return <TableSkeleton />;
-  if (!event) return <EmptyState title="Event not found" />;
+  if (!event) return <EmptyState title="EVENT NOT FOUND" />;
 
   const itemsList = Array.isArray(event.items) ? event.items : [];
   const contacts = event.contacts || {};
 
   return (
     <div>
-      <Button variant="ghost" className="mb-4 px-0" onClick={() => navigate('/events')}>
-        Back to events
+      <Button variant="ghost" className="mb-4 px-0 border-none" onClick={() => navigate('/events')}>
+        ← BACK TO EVENTS
       </Button>
       <PageHeader
-        title={event.name || event.event_name || 'Event'}
-        subtitle={`${event.club_name || 'Association'} · ${event.event_id || ''}`}
+        title={(event.name || event.event_name || 'EVENT').toUpperCase()}
+        subtitle={`${(event.club_name || 'ASSOCIATION').toUpperCase()} · ${event.event_id || ''}`}
         actions={
           <>
-            <Button onClick={() => navigate(`/grant-allocation/${event._id}`)}>Allocate items</Button>
+            <Button onClick={() => navigate(`/grant-allocation/${event._id}`)}>ALLOCATE ITEMS</Button>
             <Button variant="secondary" loading={pdfLoading === 'event'} onClick={() => handlePdf('event')}>
-              Event PDF
+              EVENT PDF
             </Button>
             <Button variant="secondary" loading={pdfLoading === 'items'} onClick={() => handlePdf('items')}>
-              Items PDF
+              ITEMS PDF
             </Button>
             <Button variant="secondary" loading={pdfLoading === 'procurement'} onClick={() => handlePdf('procurement')}>
-              Procurement PDF
+              PROCUREMENT PDF
             </Button>
           </>
         }
@@ -115,37 +115,37 @@ export default function EventDetail() {
         <div className="lg:col-span-2 space-y-4">
           <Card className="p-5">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-heading font-semibold">Event information</h2>
+              <h2 className="font-heading font-bold text-sm uppercase tracking-wider text-[#FFFFFF]">EVENT INFORMATION</h2>
               <Badge status={event.status} />
             </div>
-            {event.tagline && <p className="text-[13px] text-slate-400 italic mb-3">{event.tagline}</p>}
-            <p className="text-[14px] text-slate-300">{event.description || event.about || 'No description provided.'}</p>
-            <div className="grid grid-cols-2 gap-3 mt-4 text-[13px]">
+            {event.tagline && <p className="text-[13px] text-[#00AEEF] italic mb-3">{event.tagline}</p>}
+            <p className="text-[14px] text-[#E5E5E5] leading-relaxed">{event.description || event.about || 'No description provided.'}</p>
+            <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-[#252525] text-[13px]">
               <div>
-                <p className="text-slate-500">Type</p>
-                <p className="text-white">{event.event_type || 'General'}</p>
+                <p className="text-[#A0A0A0] text-[11px] font-bold uppercase">EVENT TYPE</p>
+                <p className="text-[#FFFFFF] font-bold mt-0.5">{event.event_type || 'GENERAL'}</p>
               </div>
               <div>
-                <p className="text-slate-500">Participant mode</p>
-                <p className="text-white">{event.form?.participant_type || '—'}</p>
+                <p className="text-[#A0A0A0] text-[11px] font-bold uppercase">PARTICIPANT MODE</p>
+                <p className="text-[#FFFFFF] font-bold mt-0.5">{event.form?.participant_type || '—'}</p>
               </div>
             </div>
           </Card>
 
           <Card className="overflow-hidden">
-            <div className="px-4 py-3 border-b border-[var(--border)]">
-              <h2 className="font-heading font-semibold">Requested items</h2>
+            <div className="px-4 py-3 border-b border-[#252525] bg-[#000000]">
+              <h2 className="font-heading font-bold text-sm uppercase tracking-wider text-[#FFFFFF]">REQUESTED EQUIPMENT ITEMS</h2>
             </div>
             {itemsList.length === 0 ? (
-              <EmptyState title="No requested items" />
+              <EmptyState title="NO REQUESTED ITEMS" />
             ) : (
               <Table>
                 <THead>
                   <tr>
-                    <Th>Item</Th>
-                    <Th numeric>Requested</Th>
-                    <Th numeric>Allocated</Th>
-                    <Th numeric>Remaining</Th>
+                    <Th>ITEM NAME</Th>
+                    <Th numeric>REQUESTED</Th>
+                    <Th numeric>ALLOCATED</Th>
+                    <Th numeric>REMAINING</Th>
                   </tr>
                 </THead>
                 <tbody>
@@ -154,10 +154,10 @@ export default function EventDetail() {
                     const allocated = getAllocated(item);
                     return (
                       <Tr key={item._id || item.item_name}>
-                        <Td className="text-white">{item.item_name}</Td>
+                        <Td className="text-[#FFFFFF] font-bold">{item.item_name}</Td>
                         <Td numeric>{requested}</Td>
                         <Td numeric>{allocated}</Td>
-                        <Td numeric>{Math.max(0, requested - allocated)}</Td>
+                        <Td numeric className="text-[#00AEEF] font-bold">{Math.max(0, requested - allocated)}</Td>
                       </Tr>
                     );
                   })}
@@ -169,25 +169,25 @@ export default function EventDetail() {
 
         <div className="space-y-4">
           <Card className="p-5">
-            <h3 className="font-heading font-semibold mb-3">Association</h3>
-            <p className="text-white text-[14px]">{event.club_name || '—'}</p>
+            <h3 className="font-heading font-bold text-sm uppercase tracking-wider text-[#FFFFFF] mb-3">ASSOCIATION DETAILS</h3>
+            <p className="text-[#00AEEF] text-[14px] font-bold">{event.club_name || '—'}</p>
             {contacts.faculty_advisor?.name && (
-              <p className="text-[13px] text-slate-400 mt-2">Advisor: {contacts.faculty_advisor.name}</p>
+              <p className="text-[13px] text-[#E5E5E5] mt-2 font-bold">ADVISOR: <span className="text-[#A0A0A0]">{contacts.faculty_advisor.name}</span></p>
             )}
             {contacts.secretary?.name && (
-              <p className="text-[13px] text-slate-400 mt-1">Secretary: {contacts.secretary.name}</p>
+              <p className="text-[13px] text-[#E5E5E5] mt-1 font-bold">SECRETARY: <span className="text-[#A0A0A0]">{contacts.secretary.name}</span></p>
             )}
           </Card>
           <Card className="p-5 space-y-2">
-            <h3 className="font-heading font-semibold mb-2">Admin actions</h3>
+            <h3 className="font-heading font-bold text-sm uppercase tracking-wider text-[#FFFFFF] mb-3">ADMINISTRATIVE ACTIONS</h3>
             <Button className="w-full" variant="success" loading={statusLoading} disabled={event.status === 'approved'} onClick={() => handleStatus('approved')}>
-              Approve
+              APPROVE PROPOSAL
             </Button>
             <Button className="w-full" variant="danger" loading={statusLoading} disabled={event.status === 'rejected'} onClick={() => handleStatus('rejected')}>
-              Reject
+              REJECT PROPOSAL
             </Button>
             <Button className="w-full" variant="ghost" onClick={handleDelete}>
-              Delete proposal
+              DELETE PROPOSAL
             </Button>
           </Card>
         </div>
@@ -195,3 +195,4 @@ export default function EventDetail() {
     </div>
   );
 }
+

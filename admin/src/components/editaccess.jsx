@@ -61,36 +61,36 @@ export default function EditAccess() {
   return (
     <div>
       <PageHeader
-        title="Edit access"
-        subtitle="Approve or reject convenor requests to reopen submitted ERM forms"
+        title="CONVENOR EDIT ACCESS REQUESTS"
+        subtitle="Approve or decline requests from convenors to reopen submitted ERM forms for edits"
         actions={
           <Button variant="secondary" onClick={fetchRequests}>
-            Refresh
+            REFRESH
           </Button>
         }
       />
       <div className="flex gap-2 mb-5">
         {['pending', 'approved', 'rejected', 'all'].map((s) => (
           <Button key={s} variant={filter === s ? 'primary' : 'secondary'} onClick={() => setFilter(s)}>
-            {s}
+            {s.toUpperCase()}
           </Button>
         ))}
       </div>
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px]">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] font-bold border border-[#FF4D67]/40 bg-[#050505] p-3 mb-4">{error}</p>}
       {!loading && !error && (
         <Card className="overflow-hidden">
           {filtered.length === 0 ? (
-            <EmptyState icon={ShieldCheck} title="No edit requests" message="Pending convenor requests will appear here." />
+            <EmptyState icon={ShieldCheck} title="NO EDIT REQUESTS FOUND" message="Convenor edit requests will appear here after submission." />
           ) : (
             <Table>
               <THead>
                 <tr>
-                  <Th>Event</Th>
-                  <Th>Association</Th>
-                  <Th>Reason</Th>
-                  <Th>Date</Th>
-                  <Th>Status</Th>
+                  <Th>EVENT</Th>
+                  <Th>ASSOCIATION</Th>
+                  <Th>REASON FOR EDIT</Th>
+                  <Th>REQUEST DATE</Th>
+                  <Th>STATUS</Th>
                   <Th></Th>
                 </tr>
               </THead>
@@ -100,7 +100,7 @@ export default function EditAccess() {
                   const eventId = req.submission_id?._id || req.submission_id;
                   return (
                     <Tr key={req._id}>
-                      <Td className="text-white">{req.submission_id?.event_name || req.submission_id?.name || 'Event'}</Td>
+                      <Td className="text-[#FFFFFF] font-bold">{req.submission_id?.event_name || req.submission_id?.name || 'Event'}</Td>
                       <Td>{req.requested_by?.club_name || req.requested_by?.username || '—'}</Td>
                       <Td className="max-w-xs truncate">{req.message || req.reason || '—'}</Td>
                       <Td>{req.createdAt ? new Date(req.createdAt).toLocaleString('en-IN') : '—'}</Td>
@@ -112,16 +112,16 @@ export default function EditAccess() {
                           {status === 'pending' && (
                             <>
                               <Button variant="success" loading={updating === req._id} onClick={() => decide(req._id, 'approve')}>
-                                Approve
+                                APPROVE
                               </Button>
                               <Button variant="danger" loading={updating === req._id} onClick={() => decide(req._id, 'reject')}>
-                                Reject
+                                DECLINE
                               </Button>
                             </>
                           )}
                           {eventId && (
                             <Button variant="secondary" onClick={() => navigate(`/events/${eventId}`)}>
-                              View
+                              VIEW
                             </Button>
                           )}
                         </div>
@@ -137,3 +137,4 @@ export default function EditAccess() {
     </div>
   );
 }
+

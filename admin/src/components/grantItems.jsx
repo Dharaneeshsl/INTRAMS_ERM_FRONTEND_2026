@@ -61,51 +61,51 @@ export default function GrantItems() {
   return (
     <div>
       <PageHeader
-        title="Grant allocation"
-        subtitle="Choose an association, then a submitted event, then allocate against SU inventory"
+        title="GRANT ALLOCATION DIRECTORY"
+        subtitle="Select a club association, choose an ERM proposal, and allocate SU inventory stock"
       />
-      <div className="max-w-sm mb-5">
-        <Input placeholder="Search associations" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      <div className="max-w-md mb-5">
+        <Input placeholder="SEARCH ASSOCIATIONS..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px]">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] font-bold border border-[#FF4D67]/40 bg-[#050505] p-3 mb-4">{error}</p>}
       {!loading && filtered.length === 0 && (
-        <EmptyState icon={Gift} title="No associations" message="Create clubs before allocating inventory." />
+        <EmptyState icon={Gift} title="NO ASSOCIATIONS FOUND" message="Create club associations before allocating inventory." />
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filtered.map((assoc) => (
           <button
             key={assoc._id}
             type="button"
             onClick={() => openAssociation(assoc)}
-            className="text-left bg-[var(--surface)] border border-[var(--border)] rounded-xl p-4 hover:border-white/20"
+            className="text-left bg-[#050505] border border-[#252525] rounded-none p-5 hover:border-[#00AEEF] hover:bg-[#080808] transition-all"
           >
-            <p className="font-heading font-semibold text-white">{assoc.club_name || assoc.association_name}</p>
-            <p className="text-[12px] text-slate-500 font-mono mt-1">@{assoc.username}</p>
+            <p className="font-heading font-bold text-[#FFFFFF] text-base">{assoc.club_name || assoc.association_name}</p>
+            <p className="text-[12px] text-[#00AEEF] font-mono font-bold mt-1">@{assoc.username}</p>
           </button>
         ))}
       </div>
 
       <Modal
         open={Boolean(selected)}
-        title={selected?.club_name || 'Events'}
+        title={(selected?.club_name || 'PROPOSED EVENTS').toUpperCase()}
         onClose={() => setSelected(null)}
         wide
       >
         {eventsLoading && <TableSkeleton rows={4} />}
-        {!eventsLoading && events.length === 0 && <EmptyState title="No submitted ERM forms" />}
-        <div className="space-y-2">
+        {!eventsLoading && events.length === 0 && <EmptyState title="NO SUBMITTED ERM FORMS" />}
+        <div className="space-y-3">
           {events.map((ev) => {
             const eventId = ev._id || ev.id;
             return (
-              <div key={eventId} className="flex items-center justify-between gap-3 border border-[var(--border)] rounded-lg p-3">
+              <div key={eventId} className="flex items-center justify-between gap-3 border border-[#252525] bg-[#000000] p-4">
                 <div>
-                  <p className="text-white text-[14px] font-medium">{ev.event_name || ev.name}</p>
+                  <p className="text-[#FFFFFF] text-[14px] font-bold">{ev.event_name || ev.name}</p>
                   <div className="mt-1">
                     <Badge status={ev.status} />
                   </div>
                 </div>
-                <Button onClick={() => navigate(`/grant-allocation/${eventId}`)}>Open allocation</Button>
+                <Button onClick={() => navigate(`/grant-allocation/${eventId}`)}>OPEN ALLOCATION</Button>
               </div>
             );
           })}
@@ -114,3 +114,4 @@ export default function GrantItems() {
     </div>
   );
 }
+

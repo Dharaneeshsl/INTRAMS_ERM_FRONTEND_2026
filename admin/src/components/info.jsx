@@ -86,65 +86,52 @@ export default function Dashboard() {
   return (
     <div>
       <PageHeader
-        title="INTRAMS ERM Dashboard"
-        subtitle="Monitor associations, events, inventory and allocations"
+        title="ADMIN CONTROL CENTER"
+        subtitle="System overview, ERM proposals, equipment stock, and allocation controls"
         actions={
-          <>
-            <Button variant="secondary" onClick={() => navigate('/associations')}>
-              View Associations
-            </Button>
-            <Button variant="secondary" onClick={() => navigate('/events')}>
-              Review Submissions
-            </Button>
-            <Button onClick={() => navigate('/grant-allocation')}>Grant Allocation</Button>
-            <Button variant="secondary" onClick={() => navigate('/inventory')}>
-              Manage Inventory
-            </Button>
-            <Button variant="secondary" onClick={() => navigate('/procurement')}>
-              Procurement
-            </Button>
-          </>
+          <Button onClick={() => navigate('/grant-allocation')}>+ GRANT ALLOCATION</Button>
         }
       />
 
-      {error && <p className="mb-4 text-[13px] text-rose-300">{error}</p>}
+      {error && <p className="mb-4 text-[13px] font-bold text-[#FF4D67] border border-[#FF4D67]/40 bg-[#050505] p-3">{error}</p>}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        <StatCard title="Associations" value={stats.totalClubs} subtext="Registered clubs" icon={Building2} onClick={() => navigate('/associations')} />
-        <StatCard title="Total Events" value={stats.totalEvents} subtext="All ERM proposals" icon={Calendar} onClick={() => navigate('/events')} />
-        <StatCard title="Submitted ERM" value={stats.submittedEvents} subtext="Awaiting or under review" icon={Calendar} onClick={() => navigate('/events')} />
-        <StatCard title="Pending Submissions" value={stats.pendingSubmissions} subtext="Still in draft" icon={FileWarning} />
-        <StatCard title="Master Items" value={stats.totalItems} subtext="Catalog entries" icon={Package} onClick={() => navigate('/items')} />
-        <StatCard title="Available Inventory" value={stats.totalAvailableStock} subtext="Units currently in stock" icon={Warehouse} onClick={() => navigate('/inventory')} />
-        <StatCard title="Allocated Items" value={stats.totalGrants} subtext="Grant records" icon={Gift} onClick={() => navigate('/grant-history')} />
-        <StatCard title="Shortages" value={stats.procurementCount} subtext="Procurement requisitions" icon={ShoppingCart} onClick={() => navigate('/procurement')} />
-        <StatCard title="Pending Edit Requests" value={stats.pendingEditRequests} subtext="Convenor edit access" icon={ShieldCheck} onClick={() => navigate('/edit-access')} />
+      {/* System Overview Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard title="ASSOCIATIONS" value={stats.totalClubs} subtext="Registered Clubs" icon={Building2} onClick={() => navigate('/associations')} />
+        <StatCard title="TOTAL EVENTS" value={stats.totalEvents} subtext="Submitted ERM Proposals" icon={Calendar} onClick={() => navigate('/events')} />
+        <StatCard title="SUBMITTED ERM" value={stats.submittedEvents} subtext="Awaiting or Under Review" icon={Calendar} onClick={() => navigate('/events')} />
+        <StatCard title="PENDING DRAFTS" value={stats.pendingSubmissions} subtext="Draft Submissions" icon={FileWarning} />
+        <StatCard title="MASTER ITEMS" value={stats.totalItems} subtext="SU Catalog Entries" icon={Package} onClick={() => navigate('/items')} />
+        <StatCard title="AVAILABLE STOCK" value={stats.totalAvailableStock} subtext="SU Equipment Units" icon={Warehouse} onClick={() => navigate('/inventory')} />
+        <StatCard title="ACTIVE GRANTS" value={stats.totalGrants} subtext="Granted Allocations" icon={Gift} onClick={() => navigate('/grant-history')} />
+        <StatCard title="SHORTAGES" value={stats.procurementCount} subtext="Procurement Requisitions" icon={ShoppingCart} onClick={() => navigate('/procurement')} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-6">
+        {/* Recent Events Table */}
         <Card className="xl:col-span-2 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
-            <h2 className="font-heading text-base font-semibold">Recent events</h2>
-            <Button variant="ghost" onClick={() => navigate('/events')}>
-              View all
+          <div className="px-4 py-3 border-b border-[#252525] bg-[#000000] flex items-center justify-between">
+            <h2 className="font-heading text-sm font-bold uppercase tracking-wider text-[#FFFFFF]">RECENT SUBMITTED EVENTS</h2>
+            <Button variant="ghost" className="text-[11px]" onClick={() => navigate('/events')}>
+              VIEW ALL
             </Button>
           </div>
           {events.length === 0 ? (
-            <EmptyState title="No events" message="Submitted ERM forms will appear here." />
+            <EmptyState title="NO EVENTS" message="Submitted ERM forms will appear here." />
           ) : (
             <Table>
               <THead>
                 <tr>
-                  <Th>Event</Th>
-                  <Th>Association</Th>
-                  <Th>Status</Th>
-                  <Th numeric>Items</Th>
+                  <Th>EVENT</Th>
+                  <Th>ASSOCIATION</Th>
+                  <Th>STATUS</Th>
+                  <Th numeric>ITEMS</Th>
                 </tr>
               </THead>
               <tbody>
                 {events.slice(0, 8).map((ev) => (
                   <Tr key={ev._id || ev.id} onClick={() => navigate(`/events/${ev._id || ev.id}`)}>
-                    <Td className="text-white font-medium">{ev.name || ev.event_name || 'Untitled'}</Td>
+                    <Td className="text-[#FFFFFF] font-bold">{ev.name || ev.event_name || 'UNTITLED'}</Td>
                     <Td>{ev.club_name || '—'}</Td>
                     <Td>
                       <Badge status={ev.status} />
@@ -157,21 +144,22 @@ export default function Dashboard() {
           )}
         </Card>
 
+        {/* Inventory Snapshot */}
         <Card className="overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
-            <h2 className="font-heading text-base font-semibold">Inventory snapshot</h2>
-            <Button variant="ghost" onClick={() => navigate('/inventory')}>
-              Open
+          <div className="px-4 py-3 border-b border-[#252525] bg-[#000000] flex items-center justify-between">
+            <h2 className="font-heading text-sm font-bold uppercase tracking-wider text-[#FFFFFF]">INVENTORY SNAPSHOT</h2>
+            <Button variant="ghost" className="text-[11px]" onClick={() => navigate('/inventory')}>
+              OPEN
             </Button>
           </div>
           {items.length === 0 ? (
-            <EmptyState title="No inventory" message="Master items will appear here." />
+            <EmptyState title="NO INVENTORY" message="Master items will appear here." />
           ) : (
-            <div className="divide-y divide-[var(--border)]">
+            <div className="divide-y divide-[#252525]">
               {items.slice(0, 8).map((item) => (
-                <div key={item._id} className="px-4 py-3 flex justify-between text-[13px]">
-                  <span className="text-white">{item.item_name}</span>
-                  <span className="font-mono text-slate-400">{item.available_quantity ?? 0}</span>
+                <div key={item._id} className="px-4 py-3 flex justify-between text-[13px] bg-[#000000] hover:bg-[#080808]">
+                  <span className="text-[#FFFFFF] font-bold">{item.item_name}</span>
+                  <span className="font-mono text-[#00AEEF] font-bold">{item.available_quantity ?? 0}</span>
                 </div>
               ))}
             </div>
@@ -181,3 +169,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

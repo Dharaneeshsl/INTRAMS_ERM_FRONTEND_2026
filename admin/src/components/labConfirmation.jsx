@@ -64,31 +64,31 @@ export default function LabConfirmation() {
   return (
     <div>
       <PageHeader
-        title="Lab confirmation"
-        subtitle="Review preferred venues and confirm or reject lab allocations"
+        title="LAB & VENUE CONFIRMATIONS"
+        subtitle="Review preferred event venues, computer labs, and confirm or reject hall allocations"
         actions={
           <Button variant="secondary" onClick={fetchEvents}>
-            Refresh
+            REFRESH
           </Button>
         }
       />
-      <div className="max-w-sm mb-5">
-        <Input placeholder="Search event, association or venue" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      <div className="max-w-md mb-5">
+        <Input placeholder="SEARCH EVENT, ASSOCIATION OR VENUE..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px]">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] font-bold border border-[#FF4D67]/40 bg-[#050505] p-3 mb-4">{error}</p>}
       {!loading && !error && (
         <Card className="overflow-hidden">
           {filtered.length === 0 ? (
-            <EmptyState icon={FlaskConical} title="No lab records" message="Events with venue requests will appear here." />
+            <EmptyState icon={FlaskConical} title="NO LAB VENUE RECORDS" message="Events requesting specific computer labs or halls will appear here." />
           ) : (
             <Table>
               <THead>
                 <tr>
-                  <Th>Event</Th>
-                  <Th>Association</Th>
-                  <Th>Preferred venue</Th>
-                  <Th>Lab status</Th>
+                  <Th>EVENT</Th>
+                  <Th>ASSOCIATION</Th>
+                  <Th>PREFERRED VENUE / LAB</Th>
+                  <Th>LAB STATUS</Th>
                   <Th></Th>
                 </tr>
               </THead>
@@ -98,9 +98,9 @@ export default function LabConfirmation() {
                   const halls = event.form?.preferred_halls || event.preferred_halls || 'Not specified';
                   return (
                     <Tr key={event._id}>
-                      <Td className="text-white">{event.name || event.event_name}</Td>
+                      <Td className="text-[#FFFFFF] font-bold">{event.name || event.event_name}</Td>
                       <Td>{event.club_name || '—'}</Td>
-                      <Td>{Array.isArray(halls) ? halls.join(', ') : halls}</Td>
+                      <Td className="text-[#00AEEF] font-bold">{Array.isArray(halls) ? halls.join(', ') : halls}</Td>
                       <Td>
                         <Badge status={labStatus} />
                       </Td>
@@ -112,7 +112,7 @@ export default function LabConfirmation() {
                             disabled={labStatus === 'approved' || labStatus === 'confirmed'}
                             onClick={() => updateStatus(event._id, 'approved')}
                           >
-                            Confirm
+                            CONFIRM
                           </Button>
                           <Button
                             variant="danger"
@@ -120,7 +120,7 @@ export default function LabConfirmation() {
                             disabled={labStatus === 'rejected'}
                             onClick={() => updateStatus(event._id, 'rejected')}
                           >
-                            Reject
+                            REJECT
                           </Button>
                         </div>
                       </Td>
@@ -135,3 +135,4 @@ export default function LabConfirmation() {
     </div>
   );
 }
+

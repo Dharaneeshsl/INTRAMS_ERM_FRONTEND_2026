@@ -2,12 +2,15 @@ import React from 'react';
 
 export default function PageHeader({ title, subtitle, actions }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6 pb-4 border-b border-[#252525]">
       <div>
-        <h1 className="text-[30px] leading-tight font-heading font-semibold text-white">{title}</h1>
-        {subtitle && <p className="text-[14px] text-slate-400 mt-1">{subtitle}</p>}
+        <h1 className="text-[26px] sm:text-[28px] leading-tight font-bold uppercase tracking-wider text-[#FFFFFF] font-heading border-l-4 border-[#00AEEF] pl-3">
+          {title}
+        </h1>
+        {subtitle && <p className="text-[13px] text-[#A0A0A0] mt-1 pl-4 uppercase font-bold tracking-wide">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </div>
   );
 }
+

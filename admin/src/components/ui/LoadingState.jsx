@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function Skeleton({ className = '' }) {
-  return <div className={`animate-pulse rounded-md bg-white/[0.06] ${className}`} />;
+  return <div className={`animate-pulse rounded-none bg-[#0D0D0D] border border-[#252525] ${className}`} />;
 }
 
 export function DashboardSkeleton() {
@@ -35,3 +35,4 @@ export default function LoadingState({ label = 'Loading…' }) {
     </div>
   );
 }
+

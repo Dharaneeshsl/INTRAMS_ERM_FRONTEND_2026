@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Warehouse, Download, Package, BarChart3 } from 'lucide-react';
+import { Warehouse, Download, Package, BarChart3, DollarSign } from 'lucide-react';
 import { adminAPI } from '../api';
 import { getApiErrorMessage } from '../utils/apiError';
 import { useToast } from '../context/ToastContext';
 import Input from './ui/Input';
 import EmptyState from './ui/EmptyState';
 import { TableSkeleton } from './ui/LoadingState';
+import PageHeader from './ui/PageHeader';
+import Button from './ui/Button';
 
 export default function Inventory() {
   const { showToast } = useToast();
@@ -71,88 +73,77 @@ export default function Inventory() {
   const filtered = stocks.filter((s) => (s.item_name || '').toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
-    <div className="space-y-8 pb-10">
-      {/* Header & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-heading uppercase tracking-wide">
-            ITEM STATISTICS
-          </h1>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mt-1">
-            VIEW COMPREHENSIVE ITEM ANALYTICS AND EXPORT REPORTS
-          </p>
-        </div>
-
-        <button
-          onClick={handleDownloadExcel}
-          disabled={stocks.length === 0}
-          className="self-start sm:self-auto bg-white hover:bg-zinc-200 text-black font-extrabold px-6 py-3.5 rounded-none text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 border border-black disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Download className="w-4 h-4 text-black" />
-          DOWNLOAD EXCEL
-        </button>
-      </div>
+    <div className="space-y-6 pb-10">
+      <PageHeader
+        title="SU INVENTORY OVERVIEW"
+        subtitle="View Students Union equipment stock levels, valuation breakdown, and export CSV reports"
+        actions={
+          <Button onClick={handleDownloadExcel} disabled={stocks.length === 0} className="flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            EXPORT CSV
+          </Button>
+        }
+      />
 
       {/* KPI Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Total Items Card */}
-        <div className="bg-white border-2 border-black p-6 rounded-none shadow-md flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-black text-white rounded-none flex items-center justify-center flex-shrink-0">
-              <Package className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-[#000000] border border-[#00AEEF] text-[#00AEEF] flex items-center justify-center flex-shrink-0">
+              <Package className="w-5 h-5 text-[#00AEEF]" />
             </div>
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Total Items</p>
-              <h3 className="text-3xl font-extrabold text-black font-mono tracking-tight mt-0.5">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#A0A0A0]">TOTAL UNITS IN STOCK</p>
+              <h3 className="text-2xl font-bold text-[#FFFFFF] font-heading tracking-tight mt-0.5 tabular-nums">
                 {totalItemsCount.toLocaleString()}
               </h3>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Total Value Card */}
-        <div className="bg-white border-2 border-black p-6 rounded-none shadow-md flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-black text-white rounded-none flex items-center justify-center font-bold text-xl flex-shrink-0">
-              $
+            <div className="w-10 h-10 bg-[#000000] border border-[#00D084] text-[#00D084] flex items-center justify-center font-bold text-lg flex-shrink-0">
+              ₹
             </div>
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Total Value</p>
-              <h3 className="text-3xl font-extrabold text-black font-mono tracking-tight mt-0.5">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#A0A0A0]">TOTAL INVENTORY VALUE</p>
+              <h3 className="text-2xl font-bold text-[#FFFFFF] font-heading tracking-tight mt-0.5 tabular-nums">
                 ₹{totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </h3>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Unique Items Card */}
-        <div className="bg-white border-2 border-black p-6 rounded-none shadow-md flex items-center justify-between">
+        <Card className="p-5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-black text-white rounded-none flex items-center justify-center flex-shrink-0">
-              <BarChart3 className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-[#000000] border border-[#18BFFF] text-[#18BFFF] flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="w-5 h-5 text-[#18BFFF]" />
             </div>
             <div>
-              <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Unique Items</p>
-              <h3 className="text-3xl font-extrabold text-black font-mono tracking-tight mt-0.5">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[#A0A0A0]">CATALOG TYPES</p>
+              <h3 className="text-2xl font-bold text-[#FFFFFF] font-heading tracking-tight mt-0.5 tabular-nums">
                 {uniqueItemsCount.toLocaleString()}
               </h3>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Item Breakdown Table */}
-      <div className="bg-white border-2 border-black rounded-none shadow-xl overflow-hidden p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-black pb-4">
-          <h2 className="text-lg font-extrabold text-black font-heading uppercase tracking-wide">
-            ITEM BREAKDOWN
+      <Card className="p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#252525] pb-4">
+          <h2 className="text-sm font-bold text-[#FFFFFF] font-heading uppercase tracking-wider">
+            STOCK BREAKDOWN BY ITEM
           </h2>
-          <div className="w-full sm:w-64">
+          <div className="w-full sm:w-80">
             <Input
-              placeholder="Search master items..."
+              placeholder="SEARCH MASTER ITEMS..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-white text-black border-black focus:ring-black"
             />
           </div>
         </div>
@@ -160,36 +151,36 @@ export default function Inventory() {
         {loading ? (
           <TableSkeleton />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={Warehouse} title="No master items found" message="Master items added in the Items section will appear here automatically." />
+          <EmptyState icon={Warehouse} title="NO INVENTORY RECORDS FOUND" message="Master items added in the Items section will appear here automatically." />
         ) : (
-          <div className="overflow-x-auto border border-black">
+          <div className="overflow-x-auto border border-[#252525]">
             <table className="w-full text-left text-xs border-collapse">
-              <thead className="bg-white text-black font-extrabold uppercase tracking-wider border-b-2 border-black">
+              <thead className="bg-[#080808] text-[#00AEEF] font-bold uppercase tracking-wider border-b border-[#252525]">
                 <tr>
-                  <th className="py-3.5 px-4 border-r border-black font-extrabold">ITEM NAME</th>
-                  <th className="py-3.5 px-4 text-center border-r border-black font-extrabold">QUANTITY</th>
-                  <th className="py-3.5 px-4 text-right border-r border-black font-extrabold">UNIT PRICE</th>
-                  <th className="py-3.5 px-4 text-right font-extrabold">TOTAL VALUE</th>
+                  <th className="py-3.5 px-4 border-r border-[#252525] font-bold">ITEM NAME</th>
+                  <th className="py-3.5 px-4 text-center border-r border-[#252525] font-bold">QUANTITY IN STOCK</th>
+                  <th className="py-3.5 px-4 text-right border-r border-[#252525] font-bold">UNIT PRICE</th>
+                  <th className="py-3.5 px-4 text-right font-bold">TOTAL ESTIMATED VALUE</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black bg-white text-black">
+              <tbody className="divide-y divide-[#252525] bg-[#000000] text-[#E5E5E5]">
                 {filtered.map((stock) => {
                   const available = stock.available_quantity ?? stock.quantity ?? 0;
                   const price = Number(stock.price_per_unit) || 0;
                   const totalVal = available * price;
 
                   return (
-                    <tr key={stock._id} className="hover:bg-zinc-50 transition-colors">
-                      <td className="py-3 px-4 font-bold text-black border-r border-black font-sans">
+                    <tr key={stock._id} className="hover:bg-[#080808] transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-[#FFFFFF] border-r border-[#252525]">
                         {stock.item_name}
                       </td>
-                      <td className="py-3 px-4 text-center font-mono font-bold text-black border-r border-black">
+                      <td className="py-3.5 px-4 text-center font-mono font-bold text-[#00AEEF] border-r border-[#252525]">
                         {available.toLocaleString()}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono text-black border-r border-black">
+                      <td className="py-3.5 px-4 text-right font-mono text-[#E5E5E5] border-r border-[#252525]">
                         ₹{price.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-extrabold text-black">
+                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[#FFFFFF]">
                         ₹{totalVal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </td>
                     </tr>
@@ -199,7 +190,7 @@ export default function Inventory() {
             </table>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

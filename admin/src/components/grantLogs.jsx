@@ -38,7 +38,7 @@ export default function GrantLogs() {
   }, []);
 
   const revert = async (id) => {
-    if (!window.confirm('Reverting this allocation will return the allocated quantity to inventory.')) return;
+    if (!window.confirm('Reverting this allocation will return the allocated quantity to SU inventory.')) return;
     try {
       await adminAPI.revertGrant(id);
       showToast('Grant reverted. Inventory updated.', 'success');
@@ -66,38 +66,38 @@ export default function GrantLogs() {
   return (
     <div>
       <PageHeader
-        title="Grant history"
-        subtitle="Allocations across events, with revert back into SU inventory"
+        title="GRANT HISTORY LOGS"
+        subtitle="Complete log of allocated equipment grants with revert capabilities"
         actions={
           <>
             <Button variant="secondary" onClick={() => setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))}>
-              Sort {sortDir === 'desc' ? 'newest' : 'oldest'}
+              SORT {sortDir === 'desc' ? 'NEWEST' : 'OLDEST'}
             </Button>
             <Button variant="secondary" onClick={fetchLogs}>
-              Refresh
+              REFRESH
             </Button>
           </>
         }
       />
-      <div className="max-w-sm mb-5">
-        <Input placeholder="Search item, association or admin" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      <div className="max-w-md mb-5">
+        <Input placeholder="SEARCH ITEM, ASSOCIATION OR ADMIN..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px]">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] font-bold border border-[#FF4D67]/40 bg-[#050505] p-3 mb-4">{error}</p>}
       {!loading && !error && (
         <Card className="overflow-hidden">
           {filtered.length === 0 ? (
-            <EmptyState icon={History} title="No grants" message="Allocations will appear here after they are confirmed." />
+            <EmptyState icon={History} title="NO GRANT RECORDS FOUND" message="Allocations will appear here after they are confirmed." />
           ) : (
             <Table>
               <THead>
                 <tr>
-                  <Th>Date</Th>
-                  <Th>Item</Th>
-                  <Th>Association / event</Th>
-                  <Th numeric>Allocated</Th>
-                  <Th>Admin</Th>
-                  <Th>Status</Th>
+                  <Th>DATE & TIME</Th>
+                  <Th>ITEM NAME</Th>
+                  <Th>ASSOCIATION / EVENT</Th>
+                  <Th numeric>ALLOCATED QTY</Th>
+                  <Th>ADMIN</Th>
+                  <Th>STATUS</Th>
                   <Th></Th>
                 </tr>
               </THead>
@@ -105,9 +105,9 @@ export default function GrantLogs() {
                 {filtered.map((g) => (
                   <Tr key={g._id}>
                     <Td>{new Date(g.createdAt || g.created_at || g.granted_at).toLocaleString('en-IN')}</Td>
-                    <Td className="text-white">{g.item_name}</Td>
+                    <Td className="text-[#FFFFFF] font-bold">{g.item_name}</Td>
                     <Td>{g.granted_to || g.event_name || '—'}</Td>
-                    <Td numeric>{g.quantity ?? g.allocated_quantity ?? 0}</Td>
+                    <Td numeric className="text-[#00AEEF] font-bold">{g.quantity ?? g.allocated_quantity ?? 0}</Td>
                     <Td>{g.granted_by?.username || g.granted_by || 'Admin'}</Td>
                     <Td>
                       <Badge status={g.grant_status || 'active'} />
@@ -116,7 +116,7 @@ export default function GrantLogs() {
                       {g.grant_status !== 'returned' && (
                         <div className="flex justify-end">
                           <Button variant="danger" onClick={() => revert(g._id)}>
-                            Revert
+                            REVERT
                           </Button>
                         </div>
                       )}
@@ -131,3 +131,4 @@ export default function GrantLogs() {
     </div>
   );
 }
+

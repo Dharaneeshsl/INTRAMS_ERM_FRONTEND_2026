@@ -53,9 +53,18 @@ export const HoverEffect = ({ items, className }) => {
 };
 
 export const Card = ({ className, children }) => {
+  const cardRef = React.useRef(null);
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    cardRef.current.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+    cardRef.current.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+  };
   return (
     <div
-      className={`rounded-xl h-full w-full p-4 overflow-hidden bg-zinc-950 border border-zinc-800 shadow-md group-hover:border-zinc-700 transition-all duration-200 flex flex-col justify-between relative z-10 ${className || ''}`}
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      className={`white-glass-box rounded-none h-full w-full p-4 overflow-hidden shadow-md flex flex-col justify-between relative z-10 transition-all duration-300 ${className || ''}`}
     >
       <div>{children}</div>
     </div>

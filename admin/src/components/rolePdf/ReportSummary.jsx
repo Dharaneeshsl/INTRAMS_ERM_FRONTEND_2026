@@ -1,22 +1,24 @@
-﻿import React from 'react';
+import React from 'react';
 
-export default function ReportSummary({ role }) {
-  // Backend metadata endpoint not available; show placeholder info.
+export default function ReportSummary({ role, memberCount = 0 }) {
   return (
-    <div>
-      <h3 className="font-heading font-semibold mb-3">Report summary</h3>
+    <div className="space-y-4">
+      <h3 className="font-heading font-bold text-[#FFFFFF] text-sm uppercase tracking-wider">REPORT SUMMARY</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="p-3 bg-[rgba(255,255,255,0.02)] border border-[var(--border)] rounded-md">
-          <div className="text-sm text-slate-400">Selected role</div>
-          <div className="mt-1 font-medium text-white">{role}</div>
+        <div className="p-4 bg-[#000000] border border-[#252525]">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#A0A0A0]">SELECTED ROLE</div>
+          <div className="mt-1 text-base font-bold text-[#00AEEF] uppercase">{role}</div>
         </div>
-        <div className="p-3 bg-[rgba(255,255,255,0.02)] border border-[var(--border)] rounded-md">
-          <div className="text-sm text-slate-400">Members (estimate)</div>
-          <div className="mt-1 font-medium text-white">—</div>
+        <div className="p-4 bg-[#000000] border border-[#252525]">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#A0A0A0]">FORMAT SPECIFICATION</div>
+          <div className="mt-1 text-xs font-bold text-[#00D084] uppercase">INTRAMS OFFICIAL LANDSCAPE REPORT</div>
         </div>
       </div>
 
-      <div className="mt-4 text-sm text-slate-400">No membership metadata endpoint available. Preview the PDF to verify roster content.</div>
+      <p className="text-xs text-[#A0A0A0] leading-relaxed uppercase">
+        Generated reports group personnel by association header banners (#1F4E79) with structured table data (#D9E1F2 column headers and black grid borders).
+      </p>
     </div>
   );
 }
+

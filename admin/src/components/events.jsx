@@ -67,55 +67,55 @@ export default function EventsList() {
   return (
     <div>
       <PageHeader
-        title="Events"
-        subtitle="Search and review ERM submissions across associations"
+        title="EVENTS DIRECTORY"
+        subtitle="Search, filter, and review ERM proposals across all associations"
         actions={
           <Button variant="secondary" onClick={fetchEvents}>
-            Refresh
+            REFRESH
           </Button>
         }
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
-        <Input placeholder="Search event or association" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <Input placeholder="SEARCH EVENT OR ASSOCIATION..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           {statuses.map((s) => (
             <option key={s} value={s}>
-              {s === 'all' ? 'All statuses' : s.replace(/_/g, ' ')}
+              {s === 'all' ? 'ALL STATUSES' : s.replace(/_/g, ' ').toUpperCase()}
             </option>
           ))}
         </Select>
         <Select value={associationFilter} onChange={(e) => setAssociationFilter(e.target.value)}>
-          <option value="all">All associations</option>
+          <option value="all">ALL ASSOCIATIONS</option>
           {associations.map((name) => (
             <option key={name} value={name}>
-              {name}
+              {name.toUpperCase()}
             </option>
           ))}
         </Select>
         <Select value={submittedFilter} onChange={(e) => setSubmittedFilter(e.target.value)}>
-          <option value="all">Submitted and drafts</option>
-          <option value="submitted">Submitted</option>
-          <option value="not_submitted">Not submitted</option>
+          <option value="all">SUBMITTED & DRAFTS</option>
+          <option value="submitted">SUBMITTED</option>
+          <option value="not_submitted">NOT SUBMITTED</option>
         </Select>
       </div>
 
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px]">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] font-bold border border-[#FF4D67]/40 bg-[#050505] p-3 mb-4">{error}</p>}
 
       {!loading && !error && (
         <Card className="overflow-hidden">
           {filtered.length === 0 ? (
-            <EmptyState icon={Calendar} title="No events" message="No event proposals match these filters." />
+            <EmptyState icon={Calendar} title="NO EVENTS FOUND" message="No event proposals match these search filters." />
           ) : (
             <Table>
               <THead>
                 <tr>
-                  <Th>Event ID</Th>
-                  <Th>Event</Th>
-                  <Th>Association</Th>
-                  <Th>ERM status</Th>
-                  <Th numeric>Requested</Th>
+                  <Th>EVENT ID</Th>
+                  <Th>EVENT NAME</Th>
+                  <Th>ASSOCIATION</Th>
+                  <Th>ERM STATUS</Th>
+                  <Th numeric>REQUESTED ITEMS</Th>
                   <Th></Th>
                 </tr>
               </THead>
@@ -127,8 +127,8 @@ export default function EventsList() {
                   );
                   return (
                     <Tr key={eventId}>
-                      <Td className="font-mono text-slate-400">{ev.event_id || '—'}</Td>
-                      <Td className="text-white font-medium">{ev.name || ev.event_name || 'Untitled'}</Td>
+                      <Td className="font-mono text-[#00AEEF] font-bold">{ev.event_id || '—'}</Td>
+                      <Td className="text-[#FFFFFF] font-bold">{ev.name || ev.event_name || 'UNTITLED'}</Td>
                       <Td>{ev.club_name || '—'}</Td>
                       <Td>
                         <Badge status={ev.status} />
@@ -137,10 +137,10 @@ export default function EventsList() {
                       <Td>
                         <div className="flex justify-end gap-2">
                           <Button variant="secondary" onClick={() => navigate(`/events/${eventId}`)}>
-                            Details
+                            DETAILS
                           </Button>
                           {submitted && (
-                            <Button onClick={() => navigate(`/grant-allocation/${eventId}`)}>Allocate</Button>
+                            <Button onClick={() => navigate(`/grant-allocation/${eventId}`)}>ALLOCATE</Button>
                           )}
                         </div>
                       </Td>
@@ -155,3 +155,4 @@ export default function EventsList() {
     </div>
   );
 }
+

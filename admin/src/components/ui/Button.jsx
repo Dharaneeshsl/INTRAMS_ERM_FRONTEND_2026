@@ -2,11 +2,11 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 const variants = {
-  primary: 'bg-white text-black hover:bg-slate-200 shadow-[0_0_0_1px_rgba(255,255,255,0.1)]',
-  secondary: 'bg-[rgba(15,23,42,0.9)] text-slate-100 border border-white/10 hover:border-cyan-400/40 hover:text-white',
-  danger: 'bg-rose-950/80 text-rose-100 border border-rose-500/30 hover:bg-rose-900/80',
-  ghost: 'bg-transparent text-slate-300 hover:bg-white/5 hover:text-white',
-  success: 'bg-emerald-950/70 text-emerald-100 border border-emerald-500/30 hover:bg-emerald-900/60',
+  primary: 'bg-[#FFFFFF] text-[#000000] border border-[#FFFFFF] hover:bg-[#E5E5E5] hover:border-[#00AEEF]',
+  secondary: 'bg-[#050505] text-[#E5E5E5] border border-[#252525] hover:border-[#00AEEF] hover:text-[#FFFFFF]',
+  danger: 'bg-[#050505] text-[#FF4D67] border border-[#FF4D67]/40 hover:bg-[#FF4D67]/10',
+  ghost: 'bg-transparent text-[#E5E5E5] border border-transparent hover:border-[#252525] hover:text-[#FFFFFF]',
+  success: 'bg-[#050505] text-[#00D084] border border-[#00D084]/40 hover:bg-[#00D084]/10',
 };
 
 export default function Button({
@@ -22,10 +22,10 @@ export default function Button({
     <button
       type={type}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 disabled:cursor-not-allowed disabled:opacity-45 ${variants[variant] || variants.primary} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-none px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider transition-all duration-150 focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#00AEEF] disabled:cursor-not-allowed disabled:opacity-40 ${variants[variant] || variants.primary} ${className}`}
       {...props}
     >
-      {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+      {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
       {children}
     </button>
   );

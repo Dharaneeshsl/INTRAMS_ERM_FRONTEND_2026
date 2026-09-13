@@ -67,22 +67,22 @@ export default function Procurements() {
   return (
     <div>
       <PageHeader
-        title="Procurement"
-        subtitle="Shortage requisitions generated when requests exceed SU inventory"
+        title="PROCUREMENT REQUISITIONS"
+        subtitle="Shortage requisitions automatically logged when event requests exceed available SU inventory"
         actions={
           <Button variant="secondary" onClick={fetchProcurements}>
-            Refresh
+            REFRESH
           </Button>
         }
       />
-      <div className="max-w-sm mb-5">
-        <Input placeholder="Search event or association" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      <div className="max-w-md mb-5">
+        <Input placeholder="SEARCH EVENT OR ASSOCIATION..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </div>
       {loading && <TableSkeleton />}
-      {error && <p className="text-rose-300 text-[13px]">{error}</p>}
+      {error && <p className="text-[#FF4D67] text-[13px] font-bold border border-[#FF4D67]/40 bg-[#050505] p-3 mb-4">{error}</p>}
       {!loading && !error && filtered.length === 0 && (
         <Card>
-          <EmptyState icon={ShoppingCart} title="No procurement records" message="Shortages are logged when allocation demand exceeds stock." />
+          <EmptyState icon={ShoppingCart} title="NO PROCUREMENT RECORDS" message="Shortages are automatically logged when item allocation demand exceeds available stock." />
         </Card>
       )}
       <div className="space-y-3">
@@ -90,32 +90,32 @@ export default function Procurements() {
           const reqItems = items.filter((i) => i.procurement_id === proc._id || i.procurement_id?._id === proc._id);
           const eventId = proc.submission_id?._id || proc.submission_id;
           return (
-            <Card key={proc._id} className="p-4">
+            <Card key={proc._id} className="p-5 border border-[#252525] bg-[#050505]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <p className="font-heading font-semibold text-white">{proc.submission_id?.event_name || 'Event'}</p>
-                  <p className="text-[13px] text-slate-500">{proc.requested_by?.club_name || 'Association'}</p>
+                  <p className="font-heading font-bold text-[#FFFFFF] text-base">{proc.submission_id?.event_name || 'EVENT'}</p>
+                  <p className="text-[12px] text-[#00AEEF] font-bold mt-0.5">{proc.requested_by?.club_name || 'ASSOCIATION'}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge status={proc.status || 'pending'} />
                   {eventId && (
                     <>
                       <Button variant="secondary" loading={pdfLoading === eventId} onClick={() => pdf(eventId, true)}>
-                        Preview PDF
+                        PREVIEW PDF
                       </Button>
                       <Button variant="secondary" loading={pdfLoading === eventId} onClick={() => pdf(eventId, false)}>
-                        Download PDF
+                        DOWNLOAD PDF
                       </Button>
                     </>
                   )}
                 </div>
               </div>
-              <div className="mt-4 divide-y divide-[var(--border)]">
-                {reqItems.length === 0 && <p className="text-[13px] text-slate-500">Shortage logged during allocation.</p>}
+              <div className="mt-4 divide-y divide-[#252525] bg-[#000000] border border-[#252525] p-3">
+                {reqItems.length === 0 && <p className="text-[13px] text-[#A0A0A0]">Shortage logged during allocation.</p>}
                 {reqItems.map((item) => (
-                  <div key={item._id} className="py-2 flex justify-between text-[13px]">
-                    <span className="text-white">{item.item_name || item.item_id?.item_name}</span>
-                    <span className="font-mono text-slate-400">Shortage {item.requested_quantity ?? item.shortage_quantity ?? '—'}</span>
+                  <div key={item._id} className="py-2.5 flex justify-between text-[13px]">
+                    <span className="text-[#FFFFFF] font-bold">{item.item_name || item.item_id?.item_name}</span>
+                    <span className="font-mono text-[#FF4D67] font-bold">REQUIRED SHORTAGE: {item.requested_quantity ?? item.shortage_quantity ?? '—'}</span>
                   </div>
                 ))}
               </div>
@@ -126,3 +126,4 @@ export default function Procurements() {
     </div>
   );
 }
+
