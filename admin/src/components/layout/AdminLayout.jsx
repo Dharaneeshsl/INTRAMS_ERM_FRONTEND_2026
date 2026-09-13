@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import AnimatedNetworkBackground from './AnimatedNetworkBackground';
 import Sidebar from './Sidebar';
@@ -10,8 +10,9 @@ export default function AdminLayout({ children }) {
 
   useEffect(() => {
     const handleResize = () => {
+      // keep sidebar closed by default on resize; user controls open/close
       if (window.innerWidth >= 1024) {
-        setSidebarOpen(true);
+        setSidebarOpen(false);
       } else {
         setSidebarOpen(false);
       }
@@ -24,25 +25,20 @@ export default function AdminLayout({ children }) {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape' && window.innerWidth < 1024) setSidebarOpen(false);
+      if (event.key === 'Escape') setSidebarOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const toggleSidebar = () => setSidebarOpen((value) => !value);
-  
+
   const handleNavigate = () => {
-    if (window.innerWidth < 1024) {
-      setSidebarOpen(false);
-    }
+    // Always close overlay sidebar after navigation
+    setSidebarOpen(false);
   };
 
-  const handleClose = () => {
-    if (window.innerWidth < 1024) {
-      setSidebarOpen(false);
-    }
-  };
+  const handleClose = () => setSidebarOpen(false);
 
   if (isLoading) {
     return (
@@ -56,35 +52,31 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)]">
+    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-x-hidden">
       <AnimatedNetworkBackground />
 
-      {/* Desktop Static Sidebar (Always visible on lg screens) */}
-      <aside className="hidden lg:block fixed left-0 top-0 z-40 h-screen w-[280px] border-r border-white/10 bg-[rgba(11,17,28,0.97)] shadow-[0_0_30px_rgba(2,132,199,0.12)]">
-        <Sidebar onNavigate={() => {}} onClose={() => {}} isMobile={false} />
-      </aside>
-
-      {/* Mobile Drawer Sidebar (< 1024px) */}
+      {/* Overlay Sidebar (works on all screen sizes) */}
       <aside
-        className={`lg:hidden fixed left-0 top-0 z-40 h-screen w-[280px] border-r border-white/10 bg-[rgba(11,17,28,0.97)] shadow-[0_0_30px_rgba(2,132,199,0.12)] transition-transform duration-300 ease-out ${
+        className={`fixed left-0 top-0 z-40 h-screen w-[280px] border-r border-white/10 bg-[rgba(11,17,28,0.97)] shadow-[0_0_30px_rgba(2,132,199,0.12)] transition-transform duration-300 ease-out transform ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        aria-hidden={!sidebarOpen}
       >
-        <Sidebar onNavigate={handleNavigate} onClose={handleClose} isMobile={true} />
+        <Sidebar onNavigate={handleNavigate} onClose={handleClose} />
       </aside>
 
-      {/* Mobile Backdrop */}
+      {/* Backdrop when sidebar is open */}
       {sidebarOpen && (
         <button
           type="button"
           aria-label="Close navigation"
           onClick={handleClose}
-          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-[1px] lg:hidden"
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-[1px]"
         />
       )}
 
-      {/* Main Container - Padded 280px on desktop to accommodate static sidebar */}
-      <div className="relative z-10 min-h-screen lg:pl-[280px]">
+      {/* Main Container - full width when sidebar closed */}
+      <div className="relative z-10 min-h-screen">
         <Header onOpenSidebar={toggleSidebar} onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
         <main className="pt-[68px]">
           <div className="mx-auto max-w-[1600px] px-4 pb-10 pt-5 sm:px-5 lg:px-8 xl:px-10">{children}</div>
@@ -93,4 +85,3 @@ export default function AdminLayout({ children }) {
     </div>
   );
 }
-
