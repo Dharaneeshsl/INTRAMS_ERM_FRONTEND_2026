@@ -93,8 +93,7 @@ function LabConfirmationPage() {
 
   return (
     <UserLayout showSidebar={true}>
-      <div className="relative min-h-full font-sans text-white space-y-4 max-w-4xl w-full mx-auto">
-        <Particles id="lab-conf-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
+      <div className="relative z-10 min-h-full font-sans text-white space-y-4 max-w-4xl w-full mx-auto">
         {/* Header Box */}
         <div className="p-4 bg-zinc-950 border border-zinc-800 text-white rounded-lg shadow-sm">
           <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight uppercase">

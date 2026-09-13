@@ -101,8 +101,7 @@ function ViewEvents() {
 
   return (
     <UserLayout showSidebar={true}>
-      <div className="relative min-h-full max-w-6xl w-full mx-auto space-y-6">
-        <Particles id="view-events-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
+      <div className="relative z-10 min-h-full max-w-6xl w-full mx-auto space-y-6">
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-extrabold text-white font-heading">My Event Proposals</h1>

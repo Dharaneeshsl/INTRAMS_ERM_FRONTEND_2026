@@ -88,9 +88,7 @@ function HomePage() {
 
   return (
     <UserLayout showSidebar={true}>
-      <div className="relative min-h-full font-sans space-y-6 max-w-5xl mx-auto w-full">
-        <Particles id="home-particles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-0 pointer-events-none" />
-
+      <div className="relative z-10 min-h-full font-sans space-y-6 max-w-5xl mx-auto w-full">
         {/* Top Banner Box */}
         <div className="relative z-10 p-5 sm:p-6 bg-zinc-950 border border-zinc-800 text-white rounded-none shadow-md w-full">
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight uppercase">
