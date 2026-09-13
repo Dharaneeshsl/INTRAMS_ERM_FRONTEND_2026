@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -64,7 +64,7 @@ export default function Sidebar({ onNavigate, onClose }) {
         type="button"
         aria-label="Close navigation"
         onClick={onClose}
-        className="absolute right-3 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-white/6 bg-white/3 text-slate-200 hover:border-cyan-400/50 lg:hidden"
+        className="absolute right-3 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-white/6 bg-white/3 text-slate-200 hover:border-cyan-400/50"
       >
         <X className="h-4 w-4" />
       </button>
