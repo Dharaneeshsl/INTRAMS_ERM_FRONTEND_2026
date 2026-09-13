@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { adminAPI } from '../../api';
@@ -35,13 +35,13 @@ export default function Header({ onOpenSidebar, onToggleSidebar, sidebarOpen }) 
   const status = labels[health] || labels.connecting;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 h-[68px] border-b border-white/10 bg-[rgba(5,7,11,0.82)] backdrop-blur-md lg:left-[280px]">
+    <header className="fixed inset-x-0 top-0 z-30 h-[68px] border-b border-white/10 bg-[rgba(5,7,11,0.82)] backdrop-blur-md">
       <div className="mx-auto flex h-full max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-5 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
             aria-label={sidebarOpen ? 'Close navigation' : 'Open navigation'}
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-slate-200 transition hover:border-cyan-400/50 hover:text-white lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-slate-200 transition hover:border-cyan-400/50 hover:text-white"
             onClick={onToggleSidebar || onOpenSidebar}
           >
             {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -63,4 +63,3 @@ export default function Header({ onOpenSidebar, onToggleSidebar, sidebarOpen }) 
     </header>
   );
 }
-
