@@ -10,6 +10,8 @@ import { generateRolePdf } from '../../utils/generateRolePdf';
 import Button from '../ui/Button';
 import PageHeader from '../ui/PageHeader';
 
+import Card from '../ui/Card';
+
 const ROLES = [
   { id: 'secretary', label: 'Secretary' },
   { id: 'convenor', label: 'Convenor' },
@@ -47,7 +49,6 @@ export default function RolePdf() {
         pdfBlob = await generateExactPdfBlob();
       }
 
-      // If blob is small or not a valid PDF response, fallback to generating exact screenshot format
       if (!pdfBlob || pdfBlob.size < 100) {
         pdfBlob = await generateExactPdfBlob();
       }
@@ -147,7 +148,7 @@ export default function RolePdf() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="p-5 bg-[#050505] border border-[#252525]">
+        <Card className="p-5">
           <h3 className="font-heading font-bold text-[#FFFFFF] text-sm uppercase tracking-wider mb-3">SELECT ROLE</h3>
           <RoleSelector roles={ROLES} selected={selected} onSelect={onSelect} />
           <div className="mt-5 flex flex-wrap gap-2">
@@ -161,11 +162,11 @@ export default function RolePdf() {
               EXPORT CSV
             </Button>
           </div>
-        </div>
+        </Card>
 
-        <div className="col-span-2 p-5 bg-[#050505] border border-[#252525]">
+        <Card className="col-span-1 lg:col-span-2 p-5">
           <ReportSummary role={selected} />
-        </div>
+        </Card>
       </div>
 
       <PdfPreviewModal open={previewOpen} url={previewUrl} filename={`Role_${selected}.pdf`} onClose={() => setPreviewOpen(false)} />

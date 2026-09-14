@@ -11,6 +11,8 @@ import Badge from './ui/Badge';
 import EmptyState from './ui/EmptyState';
 import { TableSkeleton } from './ui/LoadingState';
 
+import Card from './ui/Card';
+
 export default function GrantItems() {
   const navigate = useNavigate();
   const [associations, setAssociations] = useState([]);
@@ -74,15 +76,16 @@ export default function GrantItems() {
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filtered.map((assoc) => (
-          <button
+          <Card
             key={assoc._id}
+            as="button"
             type="button"
             onClick={() => openAssociation(assoc)}
-            className="text-left bg-[#050505] border border-[#252525] rounded-none p-5 hover:border-[#00AEEF] hover:bg-[#080808] transition-all"
+            className="text-left p-5 cursor-pointer hover:border-[#00AEEF] transition-all"
           >
             <p className="font-heading font-bold text-[#FFFFFF] text-base">{assoc.club_name || assoc.association_name}</p>
             <p className="text-[12px] text-[#00AEEF] font-mono font-bold mt-1">@{assoc.username}</p>
-          </button>
+          </Card>
         ))}
       </div>
 

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -109,17 +109,17 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
 
   return (
     <Modal open={open} onClose={onClose} title={`${filename} — ${timestamp}`} wide>
-      <div className="flex items-center justify-between gap-2 mb-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 bg-[#000000] p-3 border border-[#252525]">
+        <div className="flex flex-wrap items-center gap-2">
           <Button variant="secondary" onClick={prevPage}>Prev</Button>
-          <div className="px-2">Page</div>
-          <div className="font-medium">{page}</div>
+          <div className="px-2 text-[12px] font-bold text-[#A0A0A0]">Page</div>
+          <div className="font-bold text-[#FFFFFF] text-[13px]">{page}</div>
           <Button variant="secondary" onClick={nextPage}>Next</Button>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button variant="secondary" onClick={zoomOut}>-</Button>
-          <div className="px-2">{zoom}%</div>
+          <div className="px-2 text-[12px] font-bold text-[#A0A0A0]">{zoom}%</div>
           <Button variant="secondary" onClick={zoomIn}>+</Button>
           <Button variant="secondary" onClick={rotate}>Rotate</Button>
           <Button onClick={download}>Download</Button>
@@ -128,7 +128,7 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
       </div>
 
       {url ? (
-        <div className="relative h-[70vh] border">
+        <div className="relative h-[65vh] min-h-[420px] w-full border border-[#252525] bg-[#000000] overflow-hidden">
           <div
             ref={overlayRef}
             onClick={addNoteAt}
@@ -139,16 +139,16 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
           <iframe
             title="PDF Preview"
             src={`${url}#page=${page}&zoom=${zoom}`}
-            className="w-full h-full bg-white"
+            className="w-full h-full bg-white border-0 block"
             style={{ transform: `rotate(${rotation}deg)` }}
           />
 
           {/* Notes overlay */}
-          <div className="absolute inset-0 z-30 pointer-events-none">
+          <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden">
             {notes.map((n) => (
               <div
                 key={n.id}
-                className="absolute bg-yellow-200/90 text-black text-sm px-2 py-1 rounded drop-shadow pointer-events-auto cursor-pointer"
+                className="absolute bg-yellow-200/90 text-black text-xs font-bold px-2 py-1 rounded drop-shadow pointer-events-auto cursor-pointer"
                 onClick={() => removeNote(n.id)}
                 style={{ left: `${n.x}%`, top: `${n.y}%`, transform: 'translate(-50%,-50%)' }}
                 title="Click to remove"
@@ -159,12 +159,13 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
           </div>
         </div>
       ) : (
-        <div>Loading preview…</div>
+        <div className="p-8 text-center text-[#A0A0A0] font-bold uppercase tracking-wider">Loading preview…</div>
       )}
 
-      <div className="mt-3 flex justify-end gap-2">
+      <div className="mt-4 flex justify-end gap-2">
         <Button variant="ghost" onClick={onClose}>Close</Button>
       </div>
     </Modal>
   );
 }
+
