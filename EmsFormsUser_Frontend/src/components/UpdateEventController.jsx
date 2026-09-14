@@ -62,16 +62,16 @@ function UpdateEventController() {
   };
 
   const handleUpdate = async (updatedData) => {
-    // Validate Basic Info (Step 2)
-    const { isValid: basicValid, errors: basicErrors } = validateStep(2, updatedData || formData);
-    // Validate Venue & Logistics (Step 3)
-    const { isValid: descValid, errors: descErrors } = validateStep(3, updatedData || formData);
-    // Validate Rounds (Step 4)
-    const { isValid: roundsValid, errors: roundsErrors } = validateStep(4, updatedData || formData);
+    const data = updatedData || formData;
+    const { isValid: basicValid, errors: basicErrors } = validateStep(2, data);
+    const { isValid: personnelValid, errors: personnelErrors } = validateStep(3, data);
+    const { isValid: descValid, errors: descErrors } = validateStep(4, data);
 
-    if (!basicValid || !descValid || !roundsValid) {
-      setErrors({ ...basicErrors, ...descErrors, ...roundsErrors });
-      alert('⚠️ Please fix the validation errors before updating.');
+    if (!basicValid || !personnelValid || !descValid) {
+      const allErrors = { ...basicErrors, ...personnelErrors, ...descErrors };
+      setErrors(allErrors);
+      const firstError = Object.values(allErrors)[0];
+      alert(`⚠️ Please fix required fields before updating:\n• ${firstError}`);
       return;
     }
 
