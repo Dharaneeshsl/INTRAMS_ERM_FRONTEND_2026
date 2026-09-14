@@ -1,24 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { useToast } from '../../context/ToastContext';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 export default function PdfPreviewModal({ open, url, filename, onClose }) {
   const { showToast } = useToast();
   const [page, setPage] = useState(1);
   const [zoom, setZoom] = useState(100);
   const [rotation, setRotation] = useState(0);
-  const [notes, setNotes] = useState([]);
-  const overlayRef = useRef(null);
 
   useEffect(() => {
     if (!open) {
       setPage(1);
       setZoom(100);
       setRotation(0);
-      setNotes([]);
     }
   }, [open]);
 
@@ -39,77 +35,18 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
     }
   };
 
-  const flattenAndDownload = async () => {
-    if (!url) {
-      showToast('No PDF to flatten.', 'error');
-      return;
-    }
-    try {
-      const res = await fetch(url);
-      const arrayBuffer = await res.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const helv = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-      const pageIndex = Math.max(0, page - 1);
-      if (pageIndex >= pdfDoc.getPageCount()) {
-        showToast('Page out of range for flattening.', 'error');
-        return;
-      }
-
-      const pdfPage = pdfDoc.getPage(pageIndex);
-      const { width, height } = pdfPage.getSize();
-
-      notes.forEach((n) => {
-        const x = (n.x / 100) * width;
-        const y = height - (n.y / 100) * height;
-        pdfPage.drawRectangle({ x: x - 12, y: y - 10, width: helv.widthOfTextAtSize(n.text, 10) + 8, height: 14, color: rgb(1, 1, 0.6) });
-        pdfPage.drawText(n.text, {
-          x: x - 10,
-          y: y - 8,
-          size: 10,
-          font: helv,
-          color: rgb(0, 0, 0),
-        });
-      });
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const u = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = u;
-      a.download = filename || 'report-annotated.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(u), 2000);
-    } catch (err) {
-      showToast(getApiErrorMessage(err, 'Failed to flatten PDF.'), 'error');
-    }
-  };
-
   const prevPage = () => setPage((p) => Math.max(1, p - 1));
   const nextPage = () => setPage((p) => p + 1);
-  const zoomIn = () => setZoom((z) => Math.min(400, z + 25));
-  const zoomOut = () => setZoom((z) => Math.max(25, z - 25));
+  const zoomIn = () => setZoom((z) => Math.min(300, z + 25));
+  const zoomOut = () => setZoom((z) => Math.max(50, z - 25));
   const rotate = () => setRotation((r) => (r + 90) % 360);
 
-  const addNoteAt = (e) => {
-    if (!overlayRef.current) return;
-    const rect = overlayRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    const text = prompt('Add annotation text');
-    if (!text) return;
-    setNotes((n) => [...n, { id: Date.now(), x, y, text }]);
-  };
-
-  const removeNote = (id) => setNotes((n) => n.filter((x) => x.id !== id));
-
-  const timestamp = new Date().toLocaleString();
+  const timestamp = new Date().toLocaleString('en-GB');
 
   return (
-    <Modal open={open} onClose={onClose} title={`${filename} — ${timestamp}`} wide>
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 bg-[#000000] p-3 border border-[#252525]">
+    <Modal open={open} onClose={onClose} title={`${filename || 'Personnel Report'} — ${timestamp}`} wide>
+      {/* Control Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 bg-[#09090b] p-3 border border-[#27272a] rounded-lg">
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="secondary" onClick={prevPage}>Prev</Button>
           <div className="px-2 text-[12px] font-bold text-[#A0A0A0]">Page</div>
@@ -122,44 +59,22 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
           <div className="px-2 text-[12px] font-bold text-[#A0A0A0]">{zoom}%</div>
           <Button variant="secondary" onClick={zoomIn}>+</Button>
           <Button variant="secondary" onClick={rotate}>Rotate</Button>
-          <Button onClick={download}>Download</Button>
-          <Button variant="secondary" onClick={flattenAndDownload}>Flatten & Download</Button>
+          <Button onClick={download}>Download PDF</Button>
         </div>
       </div>
 
+      {/* PDF View Container with scroll enabled */}
       {url ? (
-        <div className="relative h-[65vh] min-h-[420px] w-full border border-[#252525] bg-[#000000] overflow-hidden">
-          <div
-            ref={overlayRef}
-            onClick={addNoteAt}
-            className="absolute inset-0 z-20 pointer-events-auto"
-            style={{ transform: `rotate(${rotation}deg)` }}
-          />
-
+        <div className="relative h-[70vh] min-h-[480px] w-full border border-[#27272a] bg-[#09090b] rounded-lg overflow-auto">
           <iframe
             title="PDF Preview"
             src={`${url}#page=${page}&zoom=${zoom}`}
             className="w-full h-full bg-white border-0 block"
             style={{ transform: `rotate(${rotation}deg)` }}
           />
-
-          {/* Notes overlay */}
-          <div className="absolute inset-0 z-30 pointer-events-none overflow-hidden">
-            {notes.map((n) => (
-              <div
-                key={n.id}
-                className="absolute bg-yellow-200/90 text-black text-xs font-bold px-2 py-1 rounded drop-shadow pointer-events-auto cursor-pointer"
-                onClick={() => removeNote(n.id)}
-                style={{ left: `${n.x}%`, top: `${n.y}%`, transform: 'translate(-50%,-50%)' }}
-                title="Click to remove"
-              >
-                {n.text}
-              </div>
-            ))}
-          </div>
         </div>
       ) : (
-        <div className="p-8 text-center text-[#A0A0A0] font-bold uppercase tracking-wider">Loading preview…</div>
+        <div className="p-12 text-center text-[#A0A0A0] font-bold uppercase tracking-wider">Loading preview…</div>
       )}
 
       <div className="mt-4 flex justify-end gap-2">
@@ -168,4 +83,3 @@ export default function PdfPreviewModal({ open, url, filename, onClose }) {
     </Modal>
   );
 }
-

@@ -4,6 +4,7 @@ import Particles from 'react-tsparticles';
 import { loadSlim } from 'tsparticles-slim';
 import UserLayout from './UserLayout';
 import { userAPI } from '../api/api';
+import { generateEventPdf } from '../utils/generateEventPdf';
 import { useAuth } from '../context/AuthContext';
 import { RefreshCcw, Loader2, FileCheck, Building2, Calendar, Clock, UserCheck, Download } from 'lucide-react';
 
@@ -74,12 +75,27 @@ function LabConfirmationPage() {
   const handleDownloadPDF = async (eventId, eventName) => {
     setDownloadingId(eventId);
     try {
-      const res = await userAPI.getEventPDF(eventId);
-      const blob = new Blob([res.data], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
+      let eventObj = confirmations.find((e) => e._id === eventId || e.id === eventId);
+      if (!eventObj) {
+        try {
+          const res = await userAPI.getEventById(eventId);
+          eventObj = res.data?.data || res.data;
+        } catch (_) {
+          eventObj = null;
+        }
+      }
+      let pdfBlob;
+      try {
+        pdfBlob = await generateEventPdf(eventObj || { name: eventName });
+      } catch (_) {
+        const res = await userAPI.getEventPDF(eventId);
+        pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+      }
+
+      const url = URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `LabConfirmation_${eventName || 'Event'}.pdf`;
+      link.download = `LabConfirmation_${eventName || 'Event'}_DRAFT_ERM.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

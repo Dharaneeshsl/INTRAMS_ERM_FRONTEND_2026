@@ -82,18 +82,33 @@ function CreateEventLayout() {
   };
 
   const handleNext = () => {
-    if (currentStep === 1) {
-      setCurrentStep(2);
+    const { isValid, errors: stepErrors } = validateStep(currentStep, formData);
+    if (!isValid) {
+      setErrors(stepErrors);
+      const firstError = Object.values(stepErrors)[0];
+      alert(`⚠️ Please fill in all required fields before proceeding:\n• ${firstError}`);
       return;
     }
-    if (currentStep === 2) {
-      if (!formData.name.trim() || !formData.about.trim()) {
-        alert('Please fill in required Event Name and Description.');
+    setErrors({});
+    setCurrentStep((prev) => Math.min(prev + 1, 5));
+  };
+
+  const handleStepClick = (targetStep) => {
+    if (targetStep <= currentStep) {
+      setCurrentStep(targetStep);
+      return;
+    }
+    for (let s = currentStep; s < targetStep; s++) {
+      const { isValid, errors: stepErrors } = validateStep(s, formData);
+      if (!isValid) {
+        setErrors(stepErrors);
+        const firstError = Object.values(stepErrors)[0];
+        alert(`⚠️ Please fill in required fields for Step ${s} before proceeding:\n• ${firstError}`);
         return;
       }
     }
     setErrors({});
-    setCurrentStep((prev) => Math.min(prev + 1, 5));
+    setCurrentStep(targetStep);
   };
 
   const handleBack = () => {
@@ -118,7 +133,7 @@ function CreateEventLayout() {
     <UserLayout showSidebar={true}>
       <div className="relative z-10 min-h-full font-sans text-white space-y-4 max-w-4xl w-full mx-auto">
         <div className="relative z-10 w-full space-y-4">
-          <StepProgress currentStep={currentStep} totalSteps={5} onStepClick={(step) => setCurrentStep(step)} />
+          <StepProgress currentStep={currentStep} totalSteps={5} onStepClick={handleStepClick} />
 
           {/* STEP 1: Instructions */}
           {currentStep === 1 && <Instructions onNext={handleNext} />}
@@ -217,7 +232,7 @@ function CreateEventLayout() {
           {currentStep === 4 && (
             <div className="space-y-6">
               <NewDescriptionPage formData={formData} setFormData={setFormData} errors={errors} />
-              <ItemsPage formData={formData} setFormData={setFormData} />
+              <ItemsPage formData={formData} setFormData={setFormData} errors={errors} />
             </div>
           )}
 
