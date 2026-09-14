@@ -22,11 +22,11 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pl-4 lg:pl-[276px] lg:pr-6 overflow-y-auto">
       <button
         type="button"
         aria-label="Close dialog"
-        className="absolute inset-0 bg-black/80 backdrop-blur-[2px]"
+        className="fixed inset-0 bg-black/80 backdrop-blur-[2px]"
         onClick={onClose}
       />
       <div
@@ -34,7 +34,7 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
         onMouseMove={handleMouseMove}
         role="dialog"
         aria-modal="true"
-        className={`relative w-full ${wide ? 'max-w-5xl' : 'max-w-xl'} max-h-[90vh] overflow-y-auto white-glass-box shadow-[0_0_50px_rgba(0,0,0,0.9)]`}
+        className={`relative z-10 w-full ${wide ? 'max-w-5xl lg:max-w-[calc(100vw-320px)]' : 'max-w-xl'} max-h-[90vh] overflow-y-auto white-glass-box shadow-[0_0_50px_rgba(0,0,0,0.9)]`}
       >
         <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#252525] bg-[#000000]">
           <h2 className="text-base font-bold uppercase tracking-wider text-[#FFFFFF] font-heading">{title}</h2>
