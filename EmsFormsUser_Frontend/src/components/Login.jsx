@@ -130,6 +130,10 @@ function Login() {
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
+
+          <p className="text-center text-[11px] leading-relaxed text-zinc-500">
+            Forgot your password? Contact the Students Union administrator to reset your club credentials.
+          </p>
         </form>
       </div>
     </div>

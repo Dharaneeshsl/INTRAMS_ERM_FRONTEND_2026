@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { adminAPI } from '../api';
+import { adminAPI, resolveAssetUrl } from '../api';
 import { getApiErrorMessage } from '../utils/apiError';
 import { handlePdfBlob } from '../utils/pdf';
 import { getAllocated, getRequested } from '../utils/allocation';
@@ -188,7 +188,7 @@ export default function EventDetail() {
                 {event.annexures.map((ann, idx) => (
                   <a
                     key={ann._id || idx}
-                    href={ann.file_url || `#`}
+                    href={resolveAssetUrl(ann.file_url)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block p-2.5 bg-[#000000] border border-[#252525] hover:border-[#00AEEF] rounded text-xs font-medium text-[#E5E5E5] hover:text-white transition-colors truncate"

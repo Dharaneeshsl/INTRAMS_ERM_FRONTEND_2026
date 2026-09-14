@@ -6,7 +6,6 @@ import { adminAPI } from '../../api';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { useToast } from '../../context/ToastContext';
 import { handlePdfBlob } from '../../utils/pdf';
-import { generateRolePdf } from '../../utils/generateRolePdf';
 import Button from '../ui/Button';
 import PageHeader from '../ui/PageHeader';
 
@@ -25,31 +24,13 @@ export default function RolePdf() {
 
   const onSelect = (role) => setSelected(role);
 
-  const generateExactPdfBlob = async () => {
-    let rawData = [];
-    try {
-      const res = await adminAPI.getAssociations();
-      rawData = res.data?.data || res.data?.associations || [];
-    } catch (_) {
-      rawData = [];
-    }
-    return await generateRolePdf({ role: selected, data: rawData });
-  };
-
   const previewPdf = async () => {
     try {
       setBusy('preview');
-      let pdfBlob;
-      try {
-        const res = await adminAPI.getRoleWisePDF(selected);
-        pdfBlob = res.data;
-      } catch (_) {
-        pdfBlob = await generateExactPdfBlob();
-      }
-
-      // If blob is small or not a valid PDF response, fallback to generating exact screenshot format
+      const res = await adminAPI.getRoleWisePDF(selected);
+      const pdfBlob = res.data;
       if (!pdfBlob || pdfBlob.size < 100) {
-        pdfBlob = await generateExactPdfBlob();
+        throw new Error('The server returned an invalid PDF.');
       }
 
       const url = await handlePdfBlob({ data: pdfBlob }, { filename: `Role_${selected}.pdf`, preview: true });
@@ -67,16 +48,10 @@ export default function RolePdf() {
   const downloadPdf = async () => {
     try {
       setBusy('download');
-      let pdfBlob;
-      try {
-        const res = await adminAPI.getRoleWisePDF(selected);
-        pdfBlob = res.data;
-      } catch (_) {
-        pdfBlob = await generateExactPdfBlob();
-      }
-
+      const res = await adminAPI.getRoleWisePDF(selected);
+      const pdfBlob = res.data;
       if (!pdfBlob || pdfBlob.size < 100) {
-        pdfBlob = await generateExactPdfBlob();
+        throw new Error('The server returned an invalid PDF.');
       }
 
       await handlePdfBlob({ data: pdfBlob }, { filename: `Role_${selected}.pdf` });

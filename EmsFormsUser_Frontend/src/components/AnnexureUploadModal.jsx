@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { userAPI } from '../api/api';
+import { resolveAssetUrl, userAPI } from '../api/api';
 import { UploadCloud, FileText, Trash2, Loader2, AlertCircle, X, Download } from 'lucide-react';
 
 function AnnexureUploadModal({ eventId, eventName, onClose }) {
@@ -149,7 +149,7 @@ function AnnexureUploadModal({ eventId, eventName, onClose }) {
 
                 <div className="flex items-center gap-2">
                   <a
-                    href={`http://localhost:5000${item.file_url}`}
+                    href={resolveAssetUrl(item.file_url)}
                     target="_blank"
                     rel="noreferrer"
                     className="p-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 rounded-lg text-xs transition-colors"
